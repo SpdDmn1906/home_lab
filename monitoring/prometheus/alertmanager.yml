@@ -1,0 +1,110 @@
+# Alertmanager configuration for home datacenter
+global:
+  smtp_smarthost: 'smtp.gmail.com:587'  # Update with your SMTP server
+  smtp_from: 'your-email@gmail.com'     # Update with your email
+  smtp_auth_username: 'your-email@gmail.com'  # Update with your email
+  smtp_auth_password: 'your-app-password'     # Use app password for Gmail
+  smtp_require_tls: true
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'email-notifications'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'critical-email'
+      continue: true
+    - match:
+        severity: warning
+      receiver: 'warning-email'
+      continue: true
+    - match:
+        severity: info
+      receiver: 'info-email'
+
+receivers:
+  - name: 'email-notifications'
+    email_configs:
+      - to: 'your-email@gmail.com'  # Update with your email
+        subject: 'Home Datacenter Alert: {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Severity: {{ .Labels.severity }}
+          Instance: {{ .Labels.instance }}
+          Value: {{ .Value }}
+          Time: {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ end }}
+
+  - name: 'critical-email'
+    email_configs:
+      - to: 'your-phone-number@tmomail.net'  # SMS via carrier email (T-Mobile example)
+        subject: 'CRITICAL: {{ .GroupLabels.alertname }}'
+        body: |
+          CRITICAL ALERT: {{ .Annotations.summary }}
+          {{ .Annotations.description }}
+
+  - name: 'warning-email'
+    email_configs:
+      - to: 'your-email@gmail.com'
+        subject: 'WARNING: {{ .GroupLabels.alertname }}'
+
+  - name: 'info-email'
+    email_configs:
+      - to: 'your-email@gmail.com'
+        subject: 'INFO: {{ .GroupLabels.alertname }}'
+
+# Slack integration (optional)
+  - name: 'slack-notifications'
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'
+        channel: '#home-datacenter'
+        title: '{{ .GroupLabels.alertname }}'
+        text: |
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Severity:* {{ .Labels.severity }}
+          *Instance:* {{ .Labels.instance }}
+          *Value:* {{ .Value }}
+          {{ end }}
+        color: '{{ if eq .GroupLabels.severity "critical" }}danger{{ else if eq .GroupLabels.severity "warning" }}warning{{ else }}good{{ end }}'
+
+# Pushover integration (optional)
+  - name: 'pushover'
+    pushover_configs:
+      - user_key: 'YOUR_USER_KEY'
+        token: 'YOUR_APP_TOKEN'
+        title: '{{ .GroupLabels.alertname }}'
+        message: '{{ .Annotations.summary }} - {{ .Annotations.description }}'
+        priority: '{{ if eq .GroupLabels.severity "critical" }}2{{ else if eq .GroupLabels.severity "warning" }}1{{ else }}0{{ end }}'
+
+# Discord integration (optional)
+  - name: 'discord'
+    webhook_configs:
+      - url: 'https://discord.com/api/webhooks/YOUR/WEBHOOK/ID/TOKEN'
+        title: '{{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          **Alert:** {{ .Annotations.summary }}
+          **Description:** {{ .Annotations.description }}
+          **Severity:** {{ .Labels.severity }}
+          **Instance:** {{ .Labels.instance }}
+          {{ end }}
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'info'
+    equal: ['alertname', 'instance']

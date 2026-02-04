@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+  # Unbound recursive DNS resolver
+  unbound:
+    image: mvance/unbound:latest
+    container_name: unbound
+    restart: unless-stopped
+    networks:
+      - adguard-net
+    # Internal only: AdGuard will reach Unbound via Docker network name `unbound:53`.
+    # Do NOT publish Unbound to the LAN.
+    environment:
+      - TZ=America/New_York
+      - VERBOSITY=1
+      - NUM_THREADS=4
+      - ENABLE_CACHE=true
+      - CACHE_MIN_TTL=3600
+      - CACHE_MAX_TTL=86400
+      - DO_IP4=yes
+      - DO_IP6=yes
+      - DO_UDP=yes
+      - DO_TCP=yes
+      - DO_AUTH=yes
+      - DO_QUERY_MINIMIZE=yes
+      - DO_SCRUB=yes
+      - DO_DNSSEC=yes
+    volumes:
+      - ./unbound/config:/opt/unbound/etc/unbound
+    healthcheck:
+      test: ["CMD", "dig", "@127.0.0.1", "google.com"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # AdGuard Home DNS filtering
+  adguard:
+    image: adguard/adguardhome:latest
+    container_name: adguard
+    restart: unless-stopped
+    networks:
+      - adguard-net
+    ports:
+      # DNS ports (exposed to network)
+      - "53:53/udp"
+      - "53:53/tcp"
+      # Web interface
+      - "3000:80/tcp"
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - ./adguard/conf:/opt/adguardhome/conf
+      - ./adguard/work:/opt/adguardhome/work
+    cap_add:
+      - NET_ADMIN
+      - NET_BIND_SERVICE
+    depends_on:
+      - unbound
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  adguard-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+

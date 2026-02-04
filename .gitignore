@@ -1,0 +1,46 @@
+# Environment files
+.env
+.env.local
+*.env
+
+# Secrets and credentials
+secrets/
+*.key
+*.pem
+*.crt
+credentials.txt
+terraform.tfvars
+variables.env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Logs
+*.log
+logs/
+
+# Docker volumes (if stored locally)
+docker/volumes/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Backups
+backups/*
+!backups/.gitkeep
+*.zip
+
+# Temporary files
+tmp/
+temp/
+*.tmp

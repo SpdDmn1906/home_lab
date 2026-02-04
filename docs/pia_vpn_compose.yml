@@ -1,0 +1,14 @@
+version: "3"
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    cap_add:
+      - NET_ADMIN
+    volumes:
+            - /home/youruser/Docker/pia/us_florida.ovpn:/gluetun/us_florida.ovpn
+    environment:
+      - VPN_SERVICE_PROVIDER=custom
+      - OPENVPN_CUSTOM_CONFIG=/gluetun/us_florida.ovpn
+      - OPENVPN_USER=pxxxxxxx
+      - OPENVPN_PASSWORD=REDACTED
+      - REGIONS=US East

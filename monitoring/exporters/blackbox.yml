@@ -1,0 +1,126 @@
+# Blackbox exporter configuration for network monitoring
+modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+      valid_status_codes: []  # Defaults to 2xx
+      method: GET
+      headers:
+        Accept: "*/*"
+        User-Agent: "Blackbox Exporter/0.19.0"
+
+  http_post_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: []  # Defaults to 2xx
+      method: POST
+      headers:
+        Accept: "*/*"
+        User-Agent: "Blackbox Exporter/0.19.0"
+
+  tcp_connect:
+    prober: tcp
+    timeout: 5s
+
+  icmp:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: ip4
+
+  dns:
+    prober: dns
+    timeout: 5s
+    dns:
+      query_name: "google.com"
+      query_type: "A"
+      valid_rcodes:
+        - NOERROR
+
+  dns_tcp:
+    prober: dns
+    timeout: 5s
+    dns:
+      query_name: "google.com"
+      query_type: "A"
+      transport_protocol: "tcp"
+      valid_rcodes:
+        - NOERROR
+
+  # Plex specific probe
+  plex_health:
+    prober: http
+    timeout: 10s
+    http:
+      valid_status_codes: [200]
+      method: GET
+      headers:
+        Accept: "*/*"
+        User-Agent: "Blackbox Exporter/0.19.0"
+      # Plex health check endpoint
+      path: "/web/index.html"
+
+  # Grafana probe
+  grafana_health:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [200]
+      method: GET
+      headers:
+        Accept: "*/*"
+        User-Agent: "Blackbox Exporter/0.19.0"
+      # Grafana health endpoint
+      path: "/api/health"
+
+  # Prometheus probe
+  prometheus_health:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [200]
+      method: GET
+      headers:
+        Accept: "*/*"
+        User-Agent: "Blackbox Exporter/0.19.0"
+      # Prometheus health endpoint
+      path: "/-/healthy"
+
+  # NAS probe (adjust IP as needed)
+  nas_health:
+    prober: http
+    timeout: 10s
+    http:
+      valid_status_codes: [200]
+      method: GET
+      headers:
+        Accept: "*/*"
+        User-Agent: "Blackbox Exporter/0.19.0"
+      # Synology DSM login page
+      path: "/webman/index.cgi"
+
+  # Internet connectivity probes
+  internet_connectivity:
+    prober: http
+    timeout: 10s
+    http:
+      valid_status_codes: [200]
+      method: GET
+      headers:
+        Accept: "*/*"
+        User-Agent: "Blackbox Exporter/0.19.0"
+      # Fast.com speed test (reliable endpoint)
+      url: "https://fast.com"
+
+  # DNS resolution test
+  dns_resolution:
+    prober: dns
+    timeout: 5s
+    dns:
+      query_name: "github.com"
+      query_type: "A"
+      valid_rcodes:
+        - NOERROR

@@ -1,0 +1,51 @@
+# Step-by-Step Radarr Diagnostic Commands
+
+## Run these commands on your media server (mediaserver):
+
+### 1. Check all running containers
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+### 2. Check Gluetun status specifically
+docker ps | grep gluetun
+
+### 3. Check Gluetun logs (most important)
+docker logs gluetun --tail 20
+
+### 4. Check Gluetun VPN connection
+docker exec gluetun curl -s http://localhost:8000/v1/publicip/ip
+
+### 5. Check Gluetun port forwarding
+docker exec gluetun curl -s http://localhost:8000/v1/openvpn/portforwarded
+
+### 6. Check Radarr status
+docker ps | grep radarr
+
+### 7. Check Radarr logs
+docker logs radarr --tail 20
+
+### 8. Test Radarr web interface
+curl -s -I http://localhost:7878 | head -1
+
+### 9. Test Radarr API
+curl -s http://localhost:7878/api/v3/system/status | head -3
+
+### 10. Check network modes
+docker inspect radarr --format '{{.HostConfig.NetworkMode}}'
+docker inspect gluetun --format '{{.HostConfig.NetworkMode}}'
+
+## Expected Results:
+
+### Gluetun should show:
+- Container running
+- Logs showing successful VPN connection
+- Valid external IP from VPN
+- Port forwarding information
+
+### Radarr should show:
+- Container running
+- Network mode: service:gluetun (connected to VPN)
+- Web interface responding (HTTP 200)
+- API responding with version info
+
+## If issues found, run the fix script:
+./fix_radarr_connection.sh

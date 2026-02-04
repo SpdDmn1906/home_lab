@@ -1,0 +1,268 @@
+---
+# Home Lab Network Migration Playbook
+# Unifies dual-network setup using Infrastructure as Code
+
+- name: Network Migration - Phase 1
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars_files:
+    - vars/network.yml
+
+  pre_tasks:
+    - name: Display migration banner
+      debug:
+        msg: |
+          ===========================================
+          HOME LAB NETWORK MIGRATION STARTING
+          ===========================================
+          Target Network: {{ network.unified_subnet }}
+          Primary Router: {{ network.gateway }}
+          ===========================================
+
+    - name: Backup current network configuration
+      copy:
+        src: /etc/network/interfaces
+        dest: /tmp/network_backup_{{ ansible_date_time.iso8601 }}
+        remote_src: true
+      ignore_errors: true
+
+    - name: Create migration log
+      copy:
+        content: |
+          Migration started: {{ ansible_date_time.iso8601 }}
+          Target network: {{ network.unified_subnet }}
+          Primary router: {{ network.gateway }}
+        dest: /tmp/network_migration_{{ ansible_date_time.iso8601 }}.log
+
+  tasks:
+    - name: Phase 1 - Pre-Migration Validation
+      block:
+        - name: Check current network connectivity
+          command: ping -c 3 8.8.8.8
+          register: internet_check
+          ignore_errors: true
+
+        - name: Validate internet connectivity
+          fail:
+            msg: "No internet connectivity detected. Check network connection."
+          when: internet_check.rc != 0
+
+        - name: Document current network state
+          shell: |
+            echo "Current network state:" > /tmp/pre_migration_state.txt
+            ip addr show >> /tmp/pre_migration_state.txt
+            ip route show >> /tmp/pre_migration_state.txt
+          ignore_errors: true
+
+        - name: Display current network information
+          debug:
+            msg: |
+              Current Network State:
+              - IP Address: {{ ansible_default_ipv4.address }}
+              - Gateway: {{ ansible_default_ipv4.gateway }}
+              - Network: {{ ansible_default_ipv4.network }}
+
+      rescue:
+        - name: Pre-migration validation failed
+          debug:
+            msg: "Pre-migration validation failed. Check network connectivity and try again."
+
+- name: Network Migration - Phase 2 (Router Configuration)
+  hosts: routers
+  gather_facts: false
+  vars_files:
+    - vars/network.yml
+
+  tasks:
+    - name: Phase 2 - Router Configuration
+      block:
+        - name: Configure Xfinity Xfi Bridge Mode
+          when: inventory_hostname == 'xfinity' and routers.xfinity.bridge_mode
+          block:
+            - name: Display Xfinity configuration notice
+              debug:
+                msg: |
+                  ===========================================
+                  CONFIGURING XFINITY XFI - BRIDGE MODE
+                  ===========================================
+                  Manual Step Required:
+                  1. Open browser to: {{ routers.xfinity.admin_url }}
+                  2. Login with credentials
+                  3. Navigate: Gateway → At a Glance
+                  4. Enable Bridge Mode
+                  5. Wait 2 minutes for changes
+                  ===========================================
+
+            - name: Wait for manual Xfinity configuration
+              pause:
+                prompt: "Have you enabled Bridge Mode on Xfinity Xfi? (yes/no)"
+                echo: true
+              register: xfinity_bridge_confirm
+              until: xfinity_bridge_confirm.user_input | bool
+              retries: 10
+              delay: 30
+
+        - name: Configure Asus Nighthawk as Primary Router
+          when: inventory_hostname == 'asus' and routers.asus.primary_router
+          block:
+            - name: Display Asus configuration steps
+              debug:
+                msg: |
+                  ===========================================
+                  CONFIGURING ASUS NIGHTHAWK - PRIMARY ROUTER
+                  ===========================================
+                  Manual Steps Required:
+                  1. Connect to Asus admin: {{ routers.asus.admin_url }}
+                  2. Login with credentials
+                  3. WAN Settings:
+                     - Connection Type: Automatic IP (DHCP)
+                  4. LAN Settings: (verify current settings)
+                     - IP Address: {{ routers.asus.lan_settings.ip_address }}
+                     - Subnet Mask: {{ routers.asus.lan_settings.subnet }}
+                     - DHCP Range: {{ routers.asus.lan_settings.dhcp_range }}
+                  ===========================================
+
+            - name: Wait for Asus configuration
+              pause:
+                prompt: "Have you configured Asus as primary router? (yes/no)"
+                echo: true
+              register: asus_config_confirm
+              until: asus_config_confirm.user_input | bool
+              retries: 10
+              delay: 30
+
+        - name: Configure Eero as Access Point
+          when: inventory_hostname == 'eero' and routers.eero.access_point
+          block:
+            - name: Display Eero configuration steps
+              debug:
+                msg: |
+                  ===========================================
+                  CONFIGURING EERO - ACCESS POINT MODE
+                  ===========================================
+                  Manual Steps Required:
+                  1. Open Eero app on phone
+                  2. Settings → Network Settings → Advanced Settings
+                  3. Enable Bridge Mode or Access Point Mode
+                  4. PHYSICALLY MOVE Ethernet cable from Xfinity Xfi to Asus router LAN port
+                  5. Wait for Eero to restart and join network
+                  ===========================================
+
+            - name: Wait for Eero configuration
+              pause:
+                prompt: "Have you configured Eero as access point and moved the cable? (yes/no)"
+                echo: true
+              register: eero_config_confirm
+              until: eero_config_confirm.user_input | bool
+              retries: 10
+              delay: 30
+
+      rescue:
+        - name: Router configuration failed
+          debug:
+            msg: "Router configuration step failed. Check manual configuration steps."
+
+- name: Network Migration - Phase 3 (Device Verification)
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars_files:
+    - vars/network.yml
+
+  tasks:
+    - name: Phase 3 - Post-Migration Verification
+      block:
+        - name: Wait for network stabilization
+          pause:
+            seconds: 60
+
+        - name: Test unified network connectivity
+          command: ping -c 3 {{ network.gateway }}
+          register: gateway_ping
+          ignore_errors: true
+
+        - name: Validate gateway connectivity
+          fail:
+            msg: "Cannot reach primary router at {{ network.gateway }}"
+          when: gateway_ping.rc != 0
+
+        - name: Test internet connectivity
+          command: ping -c 3 8.8.8.8
+          register: internet_ping
+          ignore_errors: true
+
+        - name: Validate internet connectivity
+          fail:
+            msg: "Internet connectivity lost after migration"
+          when: internet_ping.rc != 0
+
+        - name: Document post-migration state
+          shell: |
+            echo "Post-migration network state:" > /tmp/post_migration_state.txt
+            date >> /tmp/post_migration_state.txt
+            ip addr show >> /tmp/post_migration_state.txt
+            ip route show >> /tmp/post_migration_state.txt
+          ignore_errors: true
+
+        - name: Display migration results
+          debug:
+            msg: |
+              ===========================================
+              NETWORK MIGRATION COMPLETED
+              ===========================================
+              New Network: {{ network.unified_subnet }}
+              Gateway: {{ network.gateway }}
+              DHCP Range: {{ network.dhcp_range }}
+              Internet: {{ 'CONNECTED' if internet_ping.rc == 0 else 'FAILED' }}
+              ===========================================
+
+      rescue:
+        - name: Post-migration verification failed
+          debug:
+            msg: "Post-migration verification failed. Check network configuration."
+
+- name: Network Migration - Phase 4 (Service Configuration)
+  hosts: servers
+  gather_facts: true
+  vars_files:
+    - vars/network.yml
+
+  tasks:
+    - name: Phase 4 - Service Updates
+      block:
+        - name: Update Docker service configurations
+          when: inventory_hostname == 'media_server'
+          block:
+            - name: Check Docker services
+              command: docker ps --format "table {{.Names}}\t{{.Status}}"
+              register: docker_status
+              ignore_errors: true
+
+            - name: Display Docker services
+              debug:
+                msg: |
+                  Current Docker Services:
+                  {{ docker_status.stdout }}
+
+            - name: Restart monitoring services
+              when: monitoring.enabled
+              command: docker-compose -f /path/to/docker-compose.yml restart prometheus grafana
+              ignore_errors: true
+
+        - name: Update NAS configuration
+          when: inventory_hostname == 'nas'
+          block:
+            - name: Verify NAS connectivity
+              command: ping -c 3 {{ ansible_host }}
+              register: nas_ping
+              ignore_errors: true
+
+            - name: Display NAS status
+              debug:
+                msg: "NAS connectivity: {{ 'OK' if nas_ping.rc == 0 else 'FAILED' }}"
+
+      rescue:
+        - name: Service update failed
+          debug:
+            msg: "Service update failed on {{ inventory_hostname }}"

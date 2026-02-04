@@ -1,0 +1,183 @@
+---
+# Network Migration Verification Playbook
+# Tests connectivity and services after migration
+
+- name: Migration Verification
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars_files:
+    - vars/network.yml
+
+  pre_tasks:
+    - name: Display verification banner
+      debug:
+        msg: |
+          ===========================================
+          NETWORK MIGRATION VERIFICATION
+          ===========================================
+          Testing unified network functionality
+          ===========================================
+
+  tasks:
+    - name: Network Connectivity Tests
+      block:
+        - name: Test primary router connectivity
+          command: ping -c 3 {{ network.gateway }}
+          register: gateway_test
+          ignore_errors: true
+
+        - name: Test internet connectivity
+          command: ping -c 3 8.8.8.8
+          register: internet_test
+          ignore_errors: true
+
+        - name: Test DNS resolution
+          command: nslookup google.com
+          register: dns_test
+          ignore_errors: true
+
+        - name: Display connectivity results
+          debug:
+            msg: |
+              Connectivity Test Results:
+              - Primary Router: {{ 'PASS' if gateway_test.rc == 0 else 'FAIL' }}
+              - Internet: {{ 'PASS' if internet_test.rc == 0 else 'FAIL' }}
+              - DNS: {{ 'PASS' if dns_test.rc == 0 else 'FAIL' }}
+
+    - name: Cross-Network Device Tests
+      block:
+        - name: Test media server connectivity
+          command: ping -c 3 {{ devices.media_server.expected_ip }}
+          register: media_server_test
+          ignore_errors: true
+
+        - name: Test NAS connectivity
+          command: ping -c 3 {{ devices.nas.expected_ip }}
+          register: nas_test
+          ignore_errors: true
+
+        - name: Test Plex service
+          uri:
+            url: "http://{{ devices.media_server.expected_ip }}:32400/web"
+            method: GET
+            status_code: 200
+          register: plex_test
+          ignore_errors: true
+
+        - name: Display device test results
+          debug:
+            msg: |
+              Device Connectivity Results:
+              - Media Server: {{ 'PASS' if media_server_test.rc == 0 else 'FAIL' }}
+              - NAS: {{ 'PASS' if nas_test.rc == 0 else 'FAIL' }}
+              - Plex Service: {{ 'PASS' if plex_test.status == 200 else 'FAIL' }}
+
+    - name: Monitoring Stack Verification
+      when: monitoring.enabled
+      block:
+        - name: Test Prometheus
+          uri:
+            url: "http://{{ devices.media_server.expected_ip }}:{{ monitoring.prometheus_port }}/-/healthy"
+            method: GET
+            status_code: 200
+          register: prometheus_test
+          ignore_errors: true
+
+        - name: Test Grafana
+          uri:
+            url: "http://{{ devices.media_server.expected_ip }}:{{ monitoring.grafana_port }}/api/health"
+            method: GET
+            status_code: 200
+          register: grafana_test
+          ignore_errors: true
+
+        - name: Display monitoring results
+          debug:
+            msg: |
+              Monitoring Stack Results:
+              - Prometheus: {{ 'PASS' if prometheus_test.status == 200 else 'FAIL' }}
+              - Grafana: {{ 'PASS' if grafana_test.status == 200 else 'FAIL' }}
+
+    - name: Performance Tests
+      block:
+        - name: Run speed test
+          command: |
+            curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 - --simple
+          register: speed_test
+          ignore_errors: true
+
+        - name: Display performance results
+          debug:
+            msg: |
+              Performance Test Results:
+              {{ speed_test.stdout | default('Speed test failed') }}
+
+    - name: Final Verification Report
+      block:
+        - name: Generate verification report
+          copy:
+            content: |
+              Network Migration Verification Report
+              ======================================
+
+              Timestamp: {{ ansible_date_time.iso8601 }}
+              Target Network: {{ network.unified_subnet }}
+              Primary Router: {{ network.gateway }}
+
+              Connectivity Tests:
+              - Primary Router: {{ 'PASS' if gateway_test.rc == 0 else 'FAIL' }}
+              - Internet: {{ 'PASS' if internet_test.rc == 0 else 'FAIL' }}
+              - DNS: {{ 'PASS' if dns_test.rc == 0 else 'FAIL' }}
+
+              Device Tests:
+              - Media Server: {{ 'PASS' if media_server_test.rc == 0 else 'FAIL' }}
+              - NAS: {{ 'PASS' if nas_test.rc == 0 else 'FAIL' }}
+              - Plex Service: {{ 'PASS' if plex_test.status == 200 else 'FAIL' }}
+
+              Monitoring:
+              - Prometheus: {{ 'PASS' if (prometheus_test.status == 200) else 'FAIL' if monitoring.enabled else 'N/A' }}
+              - Grafana: {{ 'PASS' if (grafana_test.status == 200) else 'FAIL' if monitoring.enabled else 'N/A' }}
+
+              Performance:
+              {{ speed_test.stdout | default('Speed test not available') }}
+
+              Migration Status: {{ 'SUCCESS' if (gateway_test.rc == 0 and internet_test.rc == 0 and media_server_test.rc == 0) else 'ISSUES DETECTED' }}
+            dest: "/tmp/migration_verification_{{ ansible_date_time.iso8601 }}.txt"
+
+        - name: Display final status
+          debug:
+            msg: |
+              ===========================================
+              MIGRATION VERIFICATION COMPLETE
+              ===========================================
+              Status: {{ 'SUCCESS' if (gateway_test.rc == 0 and internet_test.rc == 0 and media_server_test.rc == 0) else 'ISSUES DETECTED - CHECK LOGS' }}
+              ===========================================
+
+        - name: Success notification
+          debug:
+            msg: |
+              ✅ Network migration appears successful!
+              - All devices can communicate
+              - Internet connectivity restored
+              - Services are accessible
+
+              Next steps:
+              1. Test Plex streaming from multiple devices
+              2. Test file transfers between networks
+              3. Monitor Grafana dashboards
+              4. Update any static IP configurations
+          when: gateway_test.rc == 0 and internet_test.rc == 0 and media_server_test.rc == 0
+
+        - name: Failure notification
+          debug:
+            msg: |
+              ⚠️  Migration issues detected. Check:
+              1. Router configurations
+              2. Cable connections
+              3. Device IP addresses
+              4. Firewall settings
+
+              Run rollback if needed:
+              ansible-playbook rollback-migration.yml
+          when: not (gateway_test.rc == 0 and internet_test.rc == 0 and media_server_test.rc == 0)

@@ -1,0 +1,144 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Home Datacenter - Plex Media Server",
+    "tags": ["home-lab", "plex", "media"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Plex Service Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"plex\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "text": "DOWN",
+                    "color": "red"
+                  },
+                  "1": {
+                    "text": "UP",
+                    "color": "green"
+                  }
+                },
+                "type": "value"
+              }
+            ]
+          }
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Active Sessions",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "plex_session_count",
+            "legendFormat": "Sessions"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Transcoding Sessions",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "plex_session_transcoding",
+            "legendFormat": "Transcoding"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Library Statistics",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "plex_library_count",
+            "legendFormat": "{{library_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Session Details",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "plex_session_info",
+            "legendFormat": "{{user}} - {{title}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Plex CPU Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{container_name=\"plex\"}[5m]) * 100",
+            "legendFormat": "Plex CPU %"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 7,
+        "title": "Plex Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{container_name=\"plex\"} / 1024 / 1024 / 1024",
+            "legendFormat": "Plex Memory (GB)"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Network I/O",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(container_network_receive_bytes_total{pod=\"plex\"}[5m]) * 8 / 1000000",
+            "legendFormat": "Network RX (Mbps)"
+          },
+          {
+            "expr": "rate(container_network_transmit_bytes_total{pod=\"plex\"}[5m]) * 8 / 1000000",
+            "legendFormat": "Network TX (Mbps)"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+      }
+    ],
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 0,
+    "links": []
+  }
+}

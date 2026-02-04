@@ -1,0 +1,237 @@
+version: "3.9"
+
+# STARR Stack with Gluetun VPN
+# Production-ready configuration with security best practices
+#
+# Usage:
+#   1. Copy this file to docker-compose.yml
+#   2. Update .env file with your paths and credentials
+#   3. Ensure PUID/PGID match your user (run: id -u and id -g)
+#   4. Secure credentials file: chmod 600 /path/to/credentials.txt
+#   5. Start services: docker-compose up -d
+
+services:
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - NET_BIND_SERVICE
+      - SYS_MODULE
+    cap_drop:
+      - ALL
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8888:8888/tcp    # HTTP proxy
+      - 8082:8080/tcp    # qBittorrent WebUI (changed from 8080 to avoid conflict)
+      - 7878:7878/tcp    # Radarr WebUI
+      - 8989:8989/tcp    # Sonarr WebUI
+      - 9696:9696/tcp    # Prowlarr WebUI
+      - 8191:8191/tcp    # FlareSolverr
+    environment:
+      - VPN_SERVICE_PROVIDER=pia
+      - OPENVPN_CUSTOM_CONFIG=/gluetun/config/pia.ovpn
+      - OPENVPN_USER_FILE=/gluetun/config/credentials.txt
+      - OPENVPN_PASSWORD_FILE=/gluetun/config/credentials.txt
+      - SERVER_REGIONS=US East
+      - TZ=${TZ:-America/New_York}
+      - UPDATER_PERIOD=24h
+    volumes:
+      - ${GLUETUN_CONFIG_PATH:-./gluetun}:/gluetun
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "homelab.service=network"
+      - "homelab.type=vpn"
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID:-1000}  # Change to your user ID (run: id -u)
+      - PGID=${PGID:-1000}  # Change to your group ID (run: id -g)
+      - TZ=${TZ:-America/New_York}
+      - WEBUI_PORT=8080
+    volumes:
+      - ${QBITTORRENT_CONFIG_PATH:-./qbittorrent}:/config
+      - ${MEDIA_ROOT:-/data/media}/downloads:/downloads
+      - ${EXTERNAL_MEDIA_ROOT:-/external/media}/torrents:/data/torrents
+      - ${EXTERNAL_MEDIA_ROOT:-/external/media}:/external
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "homelab.service=media"
+      - "homelab.type=download"
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-America/New_York}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${RADARR_CONFIG_PATH:-./radarr}:/config
+      - ${MEDIA_ROOT:-/data/media}:/data
+      - ${MEDIA_ROOT:-/data/media}/Movies:/Movies
+      - ${MEDIA_ROOT:-/data/media}/downloads:/downloads
+      - ${EXTERNAL_MEDIA_ROOT:-/external/media}:/external
+      - ${SYNOLOGY_ROOT:-/data/synology}:/synology
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
+      - qbittorrent
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7878/api/v3/system/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "homelab.service=media"
+      - "homelab.type=arr"
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-America/New_York}  # Changed from Etc/UTC for consistency
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${SONARR_CONFIG_PATH:-./sonarr}:/config
+      - ${MEDIA_ROOT:-/data/media}:/data
+      - ${MEDIA_ROOT:-/data/media}/TV Shows:/TV Shows
+      - ${MEDIA_ROOT:-/data/media}/downloads:/downloads
+      - ${EXTERNAL_MEDIA_ROOT:-/external/media}:/external
+      - ${SYNOLOGY_ROOT:-/data/synology}:/synology
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
+      - qbittorrent
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8989/api/v3/system/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "homelab.service=media"
+      - "homelab.type=arr"
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-America/New_York}
+    volumes:
+      - ${PROWLARR_CONFIG_PATH:-./prowlarr}:/config
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
+      - flaresolverr
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9696/api/v1/system/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "homelab.service=media"
+      - "homelab.type=indexer"
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ:-America/New_York}
+      - LOG_LEVEL=info
+      - LOG_FILE=
+    volumes:
+      - ${FLARESOLVERR_CONFIG_PATH:-./flaresolverr}:/config
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8191/v1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "homelab.service=media"
+      - "homelab.type=utility"
+

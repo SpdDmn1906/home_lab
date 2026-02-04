@@ -1,0 +1,61 @@
+# Network Migration Variables
+# Customize these values for your specific setup
+
+# Network Configuration
+network:
+  unified_subnet: "192.168.1.0/24"
+  gateway: "192.168.1.1"
+  dhcp_range: "192.168.1.100-192.168.1.200"
+
+# Router Configurations
+routers:
+  xfinity:
+    bridge_mode: true
+    admin_url: "http://10.0.0.1"
+    credentials:
+      username: "admin"
+      password: "{{ xfinity_password | default('CHANGE_ME') }}"
+  asus:
+    primary_router: true
+    admin_url: "http://{{ network.gateway }}"
+    credentials:
+      username: "admin"
+      password: "{{ asus_password | default('CHANGE_ME') }}"
+    wan_settings:
+      connection_type: "dhcp"
+    lan_settings:
+      ip_address: "{{ network.gateway }}"
+      subnet: "255.255.255.0"
+      dhcp_range: "{{ network.dhcp_range }}"
+  eero:
+    access_point: true
+    upstream_ip: "{{ network.gateway }}"
+
+# Device Configurations
+devices:
+  media_server:
+    expected_ip: "192.168.1.11"
+    services: ["plex", "docker", "ssh"]
+  nas:
+    expected_ip: "192.168.1.20"
+    shares: ["media", "backups", "config"]
+
+# Monitoring Configuration
+monitoring:
+  enabled: true
+  prometheus_port: 9090
+  grafana_port: 3000
+  exporters: ["node", "cadvisor", "plex", "speedtest"]
+
+# Security Settings
+security:
+  firewall_enabled: true
+  ssh_keys_only: true
+  fail2ban_enabled: true
+
+# Migration Settings
+migration:
+  timeout: 300  # 5 minutes
+  retries: 3
+  delay: 10
+  backup_configs: true

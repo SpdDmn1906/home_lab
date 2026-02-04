@@ -1,0 +1,187 @@
+---
+# Network Migration Rollback Playbook
+# Reverts network changes if migration fails
+
+- name: Network Migration Rollback
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars_files:
+    - vars/network.yml
+
+  pre_tasks:
+    - name: Display rollback banner
+      debug:
+        msg: |
+          ===========================================
+          NETWORK MIGRATION ROLLBACK STARTING
+          ===========================================
+          Reverting to dual-network configuration
+          ===========================================
+
+  tasks:
+    - name: Rollback Phase 1 - Router Reconfiguration
+      block:
+        - name: Display rollback instructions for Xfinity Xfi
+          debug:
+            msg: |
+              ===========================================
+              ROLLBACK: XFINITY XFI ROUTER
+              ===========================================
+              Manual Steps Required:
+              1. Open browser to: http://10.0.0.1
+              2. Login to Xfinity Xfi admin
+              3. Navigate: Gateway → At a Glance
+              4. DISABLE Bridge Mode (return to Router Mode)
+              5. Wait 2 minutes for changes
+              ===========================================
+
+        - name: Wait for Xfinity rollback
+          pause:
+            prompt: "Have you disabled Bridge Mode on Xfinity Xfi? (yes/no)"
+            echo: true
+          register: xfinity_rollback_confirm
+          until: xfinity_rollback_confirm.user_input | bool
+          retries: 10
+          delay: 30
+
+        - name: Display rollback instructions for Eero
+          debug:
+            msg: |
+              ===========================================
+              ROLLBACK: EERO MESH SYSTEM
+              ===========================================
+              Manual Steps Required:
+              1. Open Eero app on phone
+              2. Settings → Network Settings → Advanced Settings
+              3. DISABLE Bridge Mode (return to Router Mode)
+              4. PHYSICALLY MOVE Ethernet cable back from Asus to Xfinity Xfi
+              5. Wait for Eero to restart
+              ===========================================
+
+        - name: Wait for Eero rollback
+          pause:
+            prompt: "Have you restored Eero router mode and moved the cable back? (yes/no)"
+            echo: true
+          register: eero_rollback_confirm
+          until: eero_rollback_confirm.user_input | bool
+          retries: 10
+          delay: 30
+
+    - name: Rollback Phase 2 - Network Stabilization
+      block:
+        - name: Wait for network stabilization
+          pause:
+            seconds: 120
+
+        - name: Test original network connectivity
+          command: ping -c 3 10.0.0.1
+          register: xfinity_ping
+          ignore_errors: true
+
+        - name: Test Asus connectivity
+          command: ping -c 3 192.168.1.1
+          register: asus_ping
+          ignore_errors: true
+
+        - name: Validate rollback connectivity
+          fail:
+            msg: "Network rollback failed - check router configurations"
+          when: xfinity_ping.rc != 0 or asus_ping.rc != 0
+
+        - name: Display rollback results
+          debug:
+            msg: |
+              Rollback Connectivity Results:
+              - Xfinity Router: {{ 'PASS' if xfinity_ping.rc == 0 else 'FAIL' }}
+              - Asus Router: {{ 'PASS' if asus_ping.rc == 0 else 'FAIL' }}
+
+    - name: Rollback Phase 3 - Device Verification
+      block:
+        - name: Test device connectivity on original networks
+          command: |
+            echo "Testing original network device connectivity..."
+            # Test Eero network devices
+            ping -c 2 10.0.0.10 2>/dev/null && echo "✓ Eero network devices reachable" || echo "✗ Eero network issues"
+            # Test Asus network devices
+            ping -c 2 192.168.1.11 2>/dev/null && echo "✓ Asus network devices reachable" || echo "✗ Asus network issues"
+          register: device_test
+          ignore_errors: true
+
+        - name: Display device connectivity results
+          debug:
+            msg: |
+              Device Connectivity After Rollback:
+              {{ device_test.stdout | default('Device tests completed') }}
+
+    - name: Rollback Phase 4 - Service Restoration
+      block:
+        - name: Verify service restoration
+          command: |
+            echo "Checking service restoration..."
+            # Test Plex (may take time to reconnect)
+            curl -s --max-time 5 http://192.168.1.11:32400/web/index.html >/dev/null && echo "✓ Plex service accessible" || echo "⚠ Plex service may need restart"
+            # Check Docker services
+            docker ps 2>/dev/null | grep -q "prometheus\|grafana" && echo "✓ Monitoring services running" || echo "⚠ Monitoring services may need restart"
+          register: service_test
+          ignore_errors: true
+
+        - name: Display service status
+          debug:
+            msg: |
+              Service Status After Rollback:
+              {{ service_test.stdout | default('Service checks completed') }}
+
+    - name: Final Rollback Report
+      block:
+        - name: Generate rollback report
+          copy:
+            content: |
+              Network Migration Rollback Report
+              ==================================
+
+              Timestamp: {{ ansible_date_time.iso8601 }}
+              Status: ROLLBACK COMPLETED
+
+              Network Connectivity:
+              - Xfinity Router: {{ 'PASS' if xfinity_ping.rc == 0 else 'FAIL' }}
+              - Asus Router: {{ 'PASS' if asus_ping.rc == 0 else 'FAIL' }}
+
+              Device Connectivity:
+              {{ device_test.stdout | default('Device tests completed') }}
+
+              Service Status:
+              {{ service_test.stdout | default('Service checks completed') }}
+
+              Next Steps:
+              1. Verify all devices are back on original networks
+              2. Test Plex streaming from original network locations
+              3. Check if any static IP configurations need restoration
+              4. Monitor for any remaining connectivity issues
+
+              If problems persist, consider:
+              - Power cycling all network equipment
+              - Checking cable connections
+              - Resetting router configurations to factory defaults
+            dest: "/tmp/migration_rollback_{{ ansible_date_time.iso8601 }}.txt"
+
+        - name: Display final rollback status
+          debug:
+            msg: |
+              ===========================================
+              NETWORK ROLLBACK COMPLETED
+              ===========================================
+              Original dual-network configuration restored.
+              ===========================================
+
+              ✅ Rollback appears successful!
+              - Original network topology restored
+              - Router configurations reverted
+              - Device connectivity verified
+
+              You can now:
+              1. Troubleshoot the original migration issues
+              2. Plan a new migration approach
+              3. Consider alternative network configurations
+
+              Rollback logs saved to: /tmp/migration_rollback_{{ ansible_date_time.iso8601 }}.txt

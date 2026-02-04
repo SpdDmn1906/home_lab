@@ -1,0 +1,221 @@
+# Infrastructure Configuration Variables
+# Main configuration for home lab infrastructure setup
+
+# Environment settings
+environment: production
+project_name: homelab
+domain: homelab.local
+
+# Network configuration
+network:
+  interface: eth0
+  ip_address: 192.168.1.11
+  netmask: 255.255.255.0
+  gateway: 192.168.1.1
+  subnet: 192.168.1.0/24
+  dhcp_range:
+    start: 192.168.1.100
+    end: 192.168.1.200
+  dns_servers:
+    - 192.168.1.1
+    - 8.8.8.8
+    - 1.1.1.1
+
+# System configuration
+system:
+  timezone: America/New_York
+  locale: en_US.UTF-8
+  hostname: mediaserver
+  user: homelab
+  ssh_port: 22
+
+# Docker configuration
+docker:
+  install_compose: true
+  compose_version: "2.17.3"
+  data_root: /var/lib/docker
+  log_driver: json-file
+  log_opts:
+    max-size: 10m
+    max-file: "3"
+
+# Service configurations
+services:
+  plex:
+    image: plexinc/pms-docker:latest
+    ports:
+      - "32400:32400"
+    volumes:
+      - "/opt/plex/config:/config"
+      - "/mnt/media:/data"
+    environment:
+      PLEX_CLAIM: "{{ plex_claim_token }}"
+      PLEX_UID: 1000
+      PLEX_GID: 1000
+    networks:
+      - media
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./monitoring/prometheus:/etc/prometheus"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./monitoring/grafana:/var/lib/grafana"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"
+    networks:
+      - monitoring
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    volumes:
+      - "/proc:/host/proc:ro"
+      - "/sys:/host/sys:ro"
+      - "/:/rootfs:ro"
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+    networks:
+      - monitoring
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:ro"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker:/var/lib/docker:ro"
+      - "/dev/disk:/dev/disk:ro"
+    privileged: true
+    networks:
+      - monitoring
+
+# Media services
+media_services:
+  sonarr:
+    image: linuxserver/sonarr:latest
+    ports:
+      - "8989:8989"
+    volumes:
+      - "/opt/sonarr:/config"
+      - "/mnt/media:/data"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: "{{ system.timezone }}"
+    networks:
+      - media
+
+  radarr:
+    image: linuxserver/radarr:latest
+    ports:
+      - "7878:7878"
+    volumes:
+      - "/opt/radarr:/config"
+      - "/mnt/media:/data"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: "{{ system.timezone }}"
+    networks:
+      - media
+
+# Monitoring configuration
+monitoring:
+  prometheus:
+    retention: 30d
+    scrape_interval: 15s
+    evaluation_interval: 15s
+
+  grafana:
+    admin_user: admin
+    admin_password: "{{ grafana_admin_password }}"
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus:9090
+        isDefault: true
+
+  alertmanager:
+    smtp_smarthost: smtp.gmail.com:587
+    smtp_from: "{{ alert_email }}"
+    smtp_auth_username: "{{ alert_email }}"
+    smtp_auth_password: "{{ alert_email_password }}"
+
+# Backup configuration
+backup:
+  enabled: true
+  source_directories:
+    - /mnt/media
+    - /opt/plex
+    - /opt/sonarr
+    - /opt/radarr
+  destination: /mnt/backup
+  retention_days: 30
+  schedule: "0 2 * * *"
+  encryption: true
+
+# Security configuration
+security:
+  firewall:
+    enabled: true
+    default_policy:
+      input: DROP
+      output: ACCEPT
+      forward: DROP
+
+  ssh:
+    port: 22
+    permit_root_login: false
+    password_authentication: false
+    allow_users:
+      - homelab
+
+  fail2ban:
+    enabled: true
+    bantime: 3600
+    maxretry: 3
+
+# Reverse proxy configuration
+reverse_proxy:
+  enabled: true
+  ssl_enabled: false  # Enable after SSL setup
+  services:
+    plex:
+      domain: plex.homelab.local
+      port: 32400
+    grafana:
+      domain: grafana.homelab.local
+      port: 3000
+    prometheus:
+      domain: prometheus.homelab.local
+      port: 9090
+
+# SSL configuration
+ssl:
+  enabled: false  # Set to true after domain setup
+  certbot_email: "{{ alert_email }}"
+  domains:
+    - plex.homelab.local
+    - grafana.homelab.local
+    - prometheus.homelab.local
+
+
