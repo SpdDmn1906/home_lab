@@ -1,0 +1,284 @@
+# Prometheus alerting rules for home datacenter
+groups:
+  - name: system_alerts
+    rules:
+      # System CPU usage alerts
+      - alert: HighCpuUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}% for 5 minutes"
+
+      - alert: CriticalCpuUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}% for 2 minutes"
+
+      # System memory alerts
+      - alert: HighMemoryUsage
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}% for 5 minutes"
+
+      - alert: CriticalMemoryUsage
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}% for 2 minutes"
+
+      # Disk space alerts
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk space is {{ $value }}% available on {{ $labels.mountpoint }}"
+
+      - alert: CriticalDiskSpace
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical disk space on {{ $labels.instance }}"
+          description: "Disk space is {{ $value }}% available on {{ $labels.mountpoint }}"
+
+      # System load alerts
+      - alert: HighSystemLoad
+        expr: node_load5 / count without(cpu, mode) (node_cpu_seconds_total{mode="idle"}) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High system load on {{ $labels.instance }}"
+          description: "System load is {{ $value }} for 5 minutes"
+
+  - name: network_alerts
+    rules:
+      # Network interface down
+      - alert: NetworkInterfaceDown
+        expr: up{job="node"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Network interface down on {{ $labels.instance }}"
+          description: "Network interface {{ $labels.device }} is down"
+
+      # High network utilization
+      - alert: HighNetworkUtilization
+        expr: rate(node_network_receive_bytes_total[5m]) * 8 / 1000000 > 800
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High network utilization on {{ $labels.instance }}"
+          description: "Network receive rate is {{ $value }} Mbps"
+
+      # Internet connectivity
+      - alert: InternetConnectivityDown
+        expr: probe_success{instance="https://google.com"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Internet connectivity is down"
+          description: "Unable to reach external services"
+
+      # DNS resolution failures
+      - alert: DNSResolutionFailure
+        expr: probe_success{instance=~"https://.*"} == 0 and probe_success{instance="https://google.com"} == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DNS resolution failure"
+          description: "DNS resolution is failing for some services"
+
+  - name: service_alerts
+    rules:
+      # Docker container down
+      - alert: ContainerDown
+        expr: up{job="cadvisor"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Docker container down"
+          description: "Container {{ $labels.container_name }} is not running"
+
+      # Plex service alerts
+      - alert: PlexServiceDown
+        expr: up{job="plex"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Plex media server is down"
+          description: "Plex service is not responding"
+
+      - alert: PlexHighTranscoding
+        expr: plex_session_transcoding == 1
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Active Plex transcoding session"
+          description: "Plex is actively transcoding content"
+
+      # Monitoring service alerts
+      - alert: PrometheusDown
+        expr: up{job="prometheus"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Prometheus is down"
+          description: "Prometheus monitoring service is not responding"
+
+      - alert: GrafanaDown
+        expr: up{job="grafana"} == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Grafana is down"
+          description: "Grafana dashboard service is not responding"
+
+      # Speed test alerts
+      - alert: SlowInternetDownload
+        expr: speedtest_download_bits_per_second / 1000000 < 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow internet download speed"
+          description: "Download speed is {{ $value }} Mbps"
+
+      - alert: SlowInternetUpload
+        expr: speedtest_upload_bits_per_second / 1000000 < 20
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow internet upload speed"
+          description: "Upload speed is {{ $value }} Mbps"
+
+      - alert: HighInternetLatency
+        expr: speedtest_ping_latency_milliseconds > 50
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High internet latency"
+          description: "Internet latency is {{ $value }} ms"
+
+  - name: storage_alerts
+    rules:
+      # NAS storage alerts
+      - alert: NASHighUsage
+        expr: (1 - node_filesystem_avail_bytes{mountpoint="/volume1"} / node_filesystem_size_bytes{mountpoint="/volume1"}) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "NAS storage usage high"
+          description: "NAS storage usage is {{ $value }}%"
+
+      - alert: NASCiriticalUsage
+        expr: (1 - node_filesystem_avail_bytes{mountpoint="/volume1"} / node_filesystem_size_bytes{mountpoint="/volume1"}) * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "NAS storage usage critical"
+          description: "NAS storage usage is {{ $value }}%"
+
+      # Disk I/O alerts
+      - alert: HighDiskIO
+        expr: rate(node_disk_io_time_seconds_total[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High disk I/O on {{ $labels.instance }}"
+          description: "Disk I/O utilization is {{ $value }}"
+
+      # SMART disk health
+      - alert: DiskSMARTFailure
+        expr: node_hwmon_sensor_label{label="SMART_Status"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk SMART failure detected"
+          description: "SMART status indicates failure on {{ $labels.device }}"
+
+  - name: temperature_alerts
+    rules:
+      # CPU temperature alerts
+      - alert: HighCpuTemperature
+        expr: node_hwmon_temp_celsius{label="CPU_Temp"} > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU temperature"
+          description: "CPU temperature is {{ $value }}°C"
+
+      - alert: CriticalCpuTemperature
+        expr: node_hwmon_temp_celsius{label="CPU_Temp"} > 90
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical CPU temperature"
+          description: "CPU temperature is {{ $value }}°C"
+
+      # System temperature alerts
+      - alert: HighSystemTemperature
+        expr: node_hwmon_temp_celsius > 70
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High system temperature"
+          description: "System temperature sensor {{ $labels.label }} is {{ $value }}°C"
+
+  - name: uptime_alerts
+    rules:
+      # System reboot alerts
+      - alert: SystemReboot
+        expr: time() - node_boot_time_seconds < 300
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "System reboot detected"
+          description: "System {{ $labels.instance }} rebooted recently"
+
+      # Service restart alerts
+      - alert: ServiceRestart
+        expr: increase(process_start_time_seconds[5m]) > 0
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "Service restart detected"
+          description: "Service {{ $labels.job }} restarted"

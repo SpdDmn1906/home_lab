@@ -1,0 +1,99 @@
+groups:
+  - name: homelab_alerts
+    interval: 30s
+    rules:
+      # System Alerts
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 80% for more than 5 minutes on {{ $labels.instance }}"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 85% on {{ $labels.instance }}"
+
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 15
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space"
+          description: "Disk space is below 15% on {{ $labels.instance }} at mountpoint {{ $labels.mountpoint }}"
+
+      # Network Alerts
+      - alert: HighNetworkLatency
+        expr: speedtest_ping_latency_ms > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High network latency detected"
+          description: "Network latency is above 100ms: {{ $value }}ms"
+
+      - alert: LowNetworkSpeed
+        expr: speedtest_download_bytes_per_second < 1000000000  # Less than 1 Gbps
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Network speed below expected"
+          description: "Download speed is below 1 Gbps: {{ $value | humanize }}B/s"
+
+      # Container Alerts
+      - alert: ContainerHighCPU
+        expr: rate(container_cpu_usage_seconds_total[5m]) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container high CPU usage"
+          description: "Container {{ $labels.name }} CPU usage is above 80%"
+
+      - alert: ContainerHighMemory
+        expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container high memory usage"
+          description: "Container {{ $labels.name }} memory usage is above 90%"
+
+      - alert: ContainerRestarting
+        expr: rate(container_start_time_seconds[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container restarting frequently"
+          description: "Container {{ $labels.name }} is restarting frequently"
+
+      # Plex Specific Alerts
+      - alert: PlexDown
+        expr: up{job="plex"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Plex Media Server is down"
+          description: "Plex Media Server has been down for more than 2 minutes"
+
+      # Service Availability
+      - alert: ServiceDown
+        expr: up == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "Service {{ $labels.job }} on {{ $labels.instance }} has been down for more than 3 minutes"
+

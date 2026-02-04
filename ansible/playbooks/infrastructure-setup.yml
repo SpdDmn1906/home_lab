@@ -1,0 +1,110 @@
+---
+# Home Lab Infrastructure Setup Playbook
+# Complete infrastructure deployment and configuration
+
+- name: Infrastructure Setup - Phase 1 (Network & Base)
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: true
+  vars_files:
+    - vars/infrastructure.yml
+    - vars/secrets.yml
+
+  pre_tasks:
+    - name: Display setup banner
+      debug:
+        msg: |
+          ===========================================
+          HOME LAB INFRASTRUCTURE SETUP STARTING
+          ===========================================
+          Environment: {{ environment }}
+          Target Server: {{ inventory_hostname }}
+          ===========================================
+
+    - name: Create setup log directory
+      file:
+        path: /var/log/homelab
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Initialize setup log
+      copy:
+        content: |
+          Infrastructure setup started: {{ ansible_date_time.iso8601 }}
+          Environment: {{ environment }}
+          Target: {{ inventory_hostname }}
+        dest: /var/log/homelab/setup_{{ ansible_date_time.iso8601 }}.log
+
+  tasks:
+    - name: Include network configuration tasks
+      include_tasks: tasks/network-config.yml
+
+    - name: Include system hardening tasks
+      include_tasks: tasks/system-hardening.yml
+
+    - name: Include Docker installation tasks
+      include_tasks: tasks/docker-install.yml
+
+- name: Infrastructure Setup - Phase 2 (Services)
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: true
+  vars_files:
+    - vars/infrastructure.yml
+    - vars/secrets.yml
+
+  tasks:
+    - name: Include monitoring stack deployment
+      include_tasks: tasks/monitoring-deploy.yml
+
+    - name: Include media services deployment
+      include_tasks: tasks/media-services.yml
+
+    - name: Include backup system setup
+      include_tasks: tasks/backup-setup.yml
+
+- name: Infrastructure Setup - Phase 3 (Configuration & Testing)
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: true
+  vars_files:
+    - vars/infrastructure.yml
+    - vars/secrets.yml
+
+  tasks:
+    - name: Include reverse proxy setup
+      include_tasks: tasks/reverse-proxy.yml
+
+    - name: Include SSL certificate setup
+      include_tasks: tasks/ssl-setup.yml
+
+    - name: Include final configuration tasks
+      include_tasks: tasks/final-config.yml
+
+  post_tasks:
+    - name: Run infrastructure verification
+      include_tasks: tasks/verify-setup.yml
+
+    - name: Generate setup report
+      include_tasks: tasks/generate-report.yml
+
+    - name: Display completion banner
+      debug:
+        msg: |
+          ===========================================
+          INFRASTRUCTURE SETUP COMPLETE
+          ===========================================
+          Access URLs:
+          - Grafana: http://{{ ansible_default_ipv4.address }}:3000
+          - Prometheus: http://{{ ansible_default_ipv4.address }}:9090
+          - Plex: http://{{ ansible_default_ipv4.address }}:32400
+          ===========================================
+          Setup completed: {{ ansible_date_time.iso8601 }}
+          ===========================================
+
+

@@ -1,0 +1,557 @@
+# STARR Stack Module with Gluetun VPN
+# Deploys Gluetun VPN with qBittorrent, Radarr, Sonarr, Prowlarr, and FlareSolverr
+# All STARR services use network_mode: "service:gluetun" for VPN routing
+
+terraform {
+  required_providers {
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "~> 3.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
+  }
+}
+
+# Gluetun VPN Container
+resource "docker_container" "gluetun" {
+  name  = "gluetun"
+  image = "qmcgaw/gluetun:latest"
+
+  # Port mappings - exposed through Gluetun
+  ports {
+    internal = 8888
+    external = 8888
+    protocol = "tcp"
+  }
+
+  # qBittorrent WebUI (mapped through Gluetun)
+  ports {
+    internal = 8080
+    external = 8080
+    protocol = "tcp"
+  }
+
+  # Radarr WebUI
+  ports {
+    internal = 7878
+    external = 7878
+    protocol = "tcp"
+  }
+
+  # Sonarr WebUI
+  ports {
+    internal = 8989
+    external = 8989
+    protocol = "tcp"
+  }
+
+  # Prowlarr WebUI
+  ports {
+    internal = 9696
+    external = 9696
+    protocol = "tcp"
+  }
+
+  # FlareSolverr
+  ports {
+    internal = 8191
+    external = 8191
+    protocol = "tcp"
+  }
+
+  # Required capabilities for VPN (matching original docker-compose.yml)
+  # Note: AppArmor may block chown operations even with NET_ADMIN
+  # If chown errors persist, consider adding apparmor:unconfined to security_opts
+  capabilities {
+    add  = ["NET_ADMIN", "NET_BIND_SERVICE"]
+    drop = ["ALL"]
+  }
+
+  # TUN device for VPN
+  devices {
+    host_path      = "/dev/net/tun"
+    container_path = "/dev/net/tun"
+  }
+
+  # Environment variables
+  env = [
+    "VPN_TYPE=openvpn",
+    "VPN_SERVICE_PROVIDER=${var.vpn_service_provider}",
+    "PRIVATE_INTERNET_ACCESS_OPENVPN_ENCRYPTION_PRESET=normal",
+    "SERVER_REGIONS=${var.vpn_server_regions}",
+    "OPENVPN_USER_FILE=/gluetun/config/pia_user.txt",
+    "OPENVPN_PASSWORD_FILE=/gluetun/config/pia_pass.txt",
+    "TZ=${var.timezone}",
+    "UPDATER_PERIOD=24h",
+    # Allow incoming connections on these ports for STARR services
+    "FIREWALL_INPUT_PORTS=7878,8080,8191,8888,8989,9696",
+    # Use AdGuard DNS instead of DoT to avoid timeout issues
+    "DNS_SERVERS=192.168.1.11",
+    "DOT=off",
+    # Use IP address for healthcheck to avoid DNS resolution issues
+    "HEALTH_TARGET_ADDRESS=1.1.1.1:443",
+    # Require longer unhealthy period before restarting VPN (default 6s causes restarts on brief timeouts)
+    # 60s = transient 1.1.1.1:443 timeouts won't kill active downloads
+    "HEALTH_VPN_DURATION_INITIAL=60s",
+    "HEALTH_VPN_DURATION_ADDITION=30s",
+    # PIA port forwarding: Gluetun requests an open port from PIA and opens it in the container firewall.
+    # Get the port with: docker exec gluetun cat /tmp/gluetun/forwarded_port (or Gluetun HTTP API).
+    # Set qBittorrent listening port (Settings → Connection) to that port for best connectivity.
+    "PRIVATE_INTERNET_ACCESS_VPN_PORT_FORWARDING=on"
+  ]
+
+  # Volumes
+  volumes {
+    host_path      = var.gluetun_config_path
+    container_path = "/gluetun"
+  }
+
+  # Note: Docker security layers (AppArmor + seccomp) block chown operations for /etc/openvpn/target.ovpn
+  # Privileged mode disables both AppArmor and seccomp, allowing gluetun to chown OpenVPN config files
+  # This is required for gluetun to properly initialize OpenVPN configuration
+  privileged = true
+
+  # Health check - check if VPN interface (tun0) exists and has an IP
+  # This is more reliable than the HTTP endpoint check which can be inconsistent
+  # If tun0 exists with an IP, gluetun and VPN are working
+  healthcheck {
+    test     = ["CMD-SHELL", "ip addr show tun0 | grep -q 'inet ' || exit 1"]
+    interval = "30s"
+    timeout  = "10s"
+    retries  = 3
+    start_period = "120s" # Extended to 2 minutes - gluetun needs time to retry OpenVPN config
+  }
+
+  # Labels
+  labels {
+    label = "homelab.service"
+    value = "network"
+  }
+
+  labels {
+    label = "homelab.type"
+    value = "vpn"
+  }
+
+  labels {
+    label = "managed_by"
+    value = "terraform"
+  }
+
+  restart = "unless-stopped"
+
+  # Ensure gluetun starts successfully
+  must_run = true
+}
+
+# Wait for gluetun to be running and stable before creating dependent containers
+resource "null_resource" "wait_for_gluetun" {
+  depends_on = [docker_container.gluetun]
+
+  # Trigger recreation when gluetun container ID changes
+  triggers = {
+    gluetun_id = docker_container.gluetun.id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo "Waiting for gluetun container to be running and stable..."
+      timeout=120
+      elapsed=0
+      stable_count=0
+      while [ $elapsed -lt $timeout ]; do
+        if docker ps --format '{{.Names}}' | grep -q '^gluetun$'; then
+          # Check health status directly from docker inspect
+          HEALTH=$(docker inspect gluetun --format '{{.State.Health.Status}}' 2>/dev/null || echo "unknown")
+          
+          if [ "$HEALTH" = "healthy" ]; then
+            stable_count=$((stable_count + 1))
+            echo "✅ Gluetun is reporting healthy ($stable_count/3)..."
+            
+            if [ $stable_count -ge 3 ]; then
+              echo "✅ Gluetun is fully healthy and ready!"
+              # Also check for Initialization Sequence Completed in logs just to be sure it's not a false positive
+              if docker logs gluetun 2>&1 | grep -q "Initialization Sequence Completed"; then
+                 echo "✅ VPN connection confirmed in logs."
+                 exit 0
+              else
+                 echo "⚠️ Healthcheck passed but 'Initialization Sequence Completed' not found in logs yet. Waiting..."
+                 stable_count=0 
+              fi
+            fi
+          else
+            stable_count=0
+            echo "Gluetun health status: $HEALTH - waiting..."
+          fi
+        else
+          stable_count=0
+          echo "Gluetun container not found in docker ps - waiting..."
+        fi
+        sleep 5
+        elapsed=$((elapsed + 5))
+      done
+      echo "Timeout waiting for gluetun to stabilize"
+      docker logs gluetun --tail 20 2>&1 || true
+      exit 1
+    EOT
+  }
+}
+
+# qBittorrent Container
+resource "docker_container" "qbittorrent" {
+  name  = "qbittorrent"
+  image = "lscr.io/linuxserver/qbittorrent:latest"
+
+  # Network mode - uses Gluetun's network
+  # Note: Terraform Docker provider uses "container:" not "service:" (Docker Compose uses "service:")
+  network_mode = "container:gluetun"
+
+  # Environment variables
+  env = [
+    "PUID=${var.puid}",
+    "PGID=${var.pgid}",
+    "TZ=${var.timezone}",
+    "WEBUI_PORT=8080"
+  ]
+
+  # Volumes
+  volumes {
+    host_path      = var.qbittorrent_config_path
+    container_path = "/config"
+  }
+
+  volumes {
+    host_path      = var.qbittorrent_downloads_path
+    container_path = "/downloads"
+  }
+
+  volumes {
+    host_path      = var.qbittorrent_torrents_path
+    container_path = "/data/torrents"
+  }
+
+  volumes {
+    host_path      = var.external_media_path
+    container_path = "/external"
+  }
+
+  # Security options
+  security_opts = ["no-new-privileges:true"]
+
+  # Health check
+  healthcheck {
+    test        = ["CMD", "curl", "-f", "http://localhost:8080/api/v2/app/version"]
+    interval    = "30s"
+    timeout     = "10s"
+    retries     = 3
+    start_period = "40s"
+  }
+
+  # Labels
+  labels {
+    label = "homelab.service"
+    value = "media"
+  }
+
+  labels {
+    label = "homelab.type"
+    value = "download"
+  }
+
+  labels {
+    label = "managed_by"
+    value = "terraform"
+  }
+
+  restart = "unless-stopped"
+
+  depends_on = [
+    docker_container.gluetun,
+    null_resource.wait_for_gluetun
+  ]
+}
+
+# Radarr Container
+resource "docker_container" "radarr" {
+  name  = "radarr"
+  image = "lscr.io/linuxserver/radarr:latest"
+
+  # Network mode - uses Gluetun's network
+  # Note: Terraform Docker provider uses "container:" not "service:" (Docker Compose uses "service:")
+  network_mode = "container:gluetun"
+
+  # Environment variables
+  env = [
+    "PUID=${var.puid}",
+    "PGID=${var.pgid}",
+    "TZ=${var.timezone}"
+  ]
+
+  # Volumes
+  volumes {
+    host_path      = "/etc/localtime"
+    container_path = "/etc/localtime"
+    read_only      = true
+  }
+
+  volumes {
+    host_path      = var.radarr_config_path
+    container_path = "/config"
+  }
+
+  volumes {
+    host_path      = var.media_root_path
+    container_path = "/data"
+  }
+
+  volumes {
+    host_path      = "${var.media_root_path}/Movies"
+    container_path = "/Movies"
+  }
+
+  volumes {
+    host_path      = var.qbittorrent_downloads_path
+    container_path = "/downloads"
+  }
+
+  volumes {
+    host_path      = var.external_media_path
+    container_path = "/external"
+  }
+
+  # Security options
+  security_opts = ["no-new-privileges:true"]
+
+  # Health check - accepts 401 (Unauthorized) as healthy since service requires authentication
+  healthcheck {
+    test        = ["CMD-SHELL", "curl -f http://localhost:7878/api/v3/system/status || curl -s -o /dev/null -w '%%{http_code}' http://localhost:7878/api/v3/system/status | grep -q '401'"]
+    interval    = "30s"
+    timeout     = "10s"
+    retries     = 3
+    start_period = "40s"
+  }
+
+  # Labels
+  labels {
+    label = "homelab.service"
+    value = "media"
+  }
+
+  labels {
+    label = "homelab.type"
+    value = "arr"
+  }
+
+  labels {
+    label = "managed_by"
+    value = "terraform"
+  }
+
+  restart = "unless-stopped"
+
+  depends_on = [docker_container.gluetun, docker_container.qbittorrent]
+}
+
+# Sonarr Container
+resource "docker_container" "sonarr" {
+  name  = "sonarr"
+  image = "lscr.io/linuxserver/sonarr:latest"
+
+  # Network mode - uses Gluetun's network
+  # Note: Terraform Docker provider uses "container:" not "service:" (Docker Compose uses "service:")
+  network_mode = "container:gluetun"
+
+  # Environment variables
+  env = [
+    "PUID=${var.puid}",
+    "PGID=${var.pgid}",
+    "TZ=${var.timezone}"
+  ]
+
+  # Volumes
+  volumes {
+    host_path      = "/etc/localtime"
+    container_path = "/etc/localtime"
+    read_only      = true
+  }
+
+  volumes {
+    host_path      = var.sonarr_config_path
+    container_path = "/config"
+  }
+
+  volumes {
+    host_path      = var.media_root_path
+    container_path = "/data"
+  }
+
+  volumes {
+    host_path      = "${var.media_root_path}/TV Shows"
+    container_path = "/TV Shows"
+  }
+
+  volumes {
+    host_path      = var.qbittorrent_downloads_path
+    container_path = "/downloads"
+  }
+
+  volumes {
+    host_path      = var.external_media_path
+    container_path = "/external"
+  }
+
+  # Security options
+  security_opts = ["no-new-privileges:true"]
+
+  # Health check - accepts 401 (Unauthorized) as healthy since service requires authentication
+  healthcheck {
+    test        = ["CMD-SHELL", "curl -f http://localhost:8989/api/v3/system/status || curl -s -o /dev/null -w '%%{http_code}' http://localhost:8989/api/v3/system/status | grep -q '401'"]
+    interval    = "30s"
+    timeout     = "10s"
+    retries     = 3
+    start_period = "40s"
+  }
+
+  # Labels
+  labels {
+    label = "homelab.service"
+    value = "media"
+  }
+
+  labels {
+    label = "homelab.type"
+    value = "arr"
+  }
+
+  labels {
+    label = "managed_by"
+    value = "terraform"
+  }
+
+  restart = "unless-stopped"
+
+  depends_on = [docker_container.gluetun, docker_container.qbittorrent]
+}
+
+# Prowlarr Container
+resource "docker_container" "prowlarr" {
+  name  = "prowlarr"
+  image = "lscr.io/linuxserver/prowlarr:latest"
+
+  # Network mode - uses Gluetun's network
+  # Note: Terraform Docker provider uses "container:" not "service:" (Docker Compose uses "service:")
+  network_mode = "container:gluetun"
+
+  # Environment variables
+  env = [
+    "PUID=${var.puid}",
+    "PGID=${var.pgid}",
+    "TZ=${var.timezone}"
+  ]
+
+  # Volumes
+  volumes {
+    host_path      = var.prowlarr_config_path
+    container_path = "/config"
+  }
+
+  # Security options
+  security_opts = ["no-new-privileges:true"]
+
+  # Health check - accepts 401 (Unauthorized) as healthy since service requires authentication
+  healthcheck {
+    test        = ["CMD-SHELL", "curl -f http://localhost:9696/api/v1/system/status || curl -s -o /dev/null -w '%%{http_code}' http://localhost:9696/api/v1/system/status | grep -q '401'"]
+    interval    = "30s"
+    timeout     = "10s"
+    retries     = 3
+    start_period = "40s"
+  }
+
+  # Labels
+  labels {
+    label = "homelab.service"
+    value = "media"
+  }
+
+  labels {
+    label = "homelab.type"
+    value = "indexer"
+  }
+
+  labels {
+    label = "managed_by"
+    value = "terraform"
+  }
+
+  restart = "unless-stopped"
+
+  depends_on = [
+    docker_container.gluetun,
+    null_resource.wait_for_gluetun,
+    docker_container.flaresolverr
+  ]
+}
+
+# FlareSolverr Container
+resource "docker_container" "flaresolverr" {
+  name  = "flaresolverr"
+  image = "ghcr.io/flaresolverr/flaresolverr:latest"
+
+  # Network mode - uses Gluetun's network
+  # Note: Terraform Docker provider uses "container:" not "service:" (Docker Compose uses "service:")
+  network_mode = "container:gluetun"
+
+  # Environment variables
+  env = [
+    "TZ=${var.timezone}",
+    "LOG_LEVEL=info",
+    "LOG_FILE="
+  ]
+
+  # Volumes
+  volumes {
+    host_path      = var.flaresolverr_config_path
+    container_path = "/config"
+  }
+
+  # Security options
+  security_opts = ["no-new-privileges:true"]
+
+  # Health check - accepts 405 (Method Not Allowed) as healthy since service is responding
+  healthcheck {
+    test        = ["CMD-SHELL", "curl -f http://localhost:8191/v1 || curl -s -o /dev/null -w '%%{http_code}' http://localhost:8191/v1 | grep -qE '(200|405)'"]
+    interval    = "30s"
+    timeout     = "10s"
+    retries     = 3
+    start_period = "40s"
+  }
+
+  # Labels
+  labels {
+    label = "homelab.service"
+    value = "media"
+  }
+
+  labels {
+    label = "homelab.type"
+    value = "utility"
+  }
+
+  labels {
+    label = "managed_by"
+    value = "terraform"
+  }
+
+  restart = "unless-stopped"
+
+  depends_on = [
+    docker_container.gluetun,
+    null_resource.wait_for_gluetun
+  ]
+
+  # Wait for gluetun to be running before starting
+  must_run = true
+}

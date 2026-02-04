@@ -1,0 +1,702 @@
+# Comprehensive Media Corruption Scan Results
+# Scan Date: 2026-01-07 to 2026-01-09
+# Phase 1: 4294/4637 files scanned (20-part sampling, 20 parts x 10s slices)
+# Phase 2: 1436/1437 files confirmed (full-decode with 12 workers)
+#
+# Summary:
+#   - CORRUPT files: 504 (all quarantined)
+#   - TIMEOUT files: 174 (need manual review)
+#   - OK files: 758 (false positives cleared from Phase 1)
+#
+# Quarantine Status:
+#   - USB quarantine: /external/media/_quarantine/20260109_132000/ (261 files)
+#   - NAS quarantine (fallback): /external/media/_quarantine/NAS_FALLBACK/20260109_132000/ (10 files, 8 directories)
+#   - Note: NAS preferred path was not writable, so NAS items moved to USB fallback location
+#
+# All files are tracked in Radarr/Sonarr - refresh + missing search triggered automatically.
+
+=== CORRUPT Files (Quarantined) ===
+Total: 504 files
+
+/external/media/Kids Movies/How to Train Your Dragon (2025)/How to Train Your Dragon (2025) Bluray-1080p.mkv
+/external/media/Kids Movies/Tangled Before Ever After (2017)/Tangled Before Ever After (2017) WEBDL-1080p.mkv
+/external/media/Kids TV/Big City Greens (2018)/Big.City.Greens.S04E01.Truck.Stopped.1080p.DSNP.WEB-DL.DDP5.1.H.264-NTb[TGx]/Big.City.Greens.S04E01.Truck.Stopped.1080p.DSNP.WEB-DL.DDP5.1.H.264-NTb.mkv
+/external/media/Kids TV/Big City Greens (2018)/Season 2/Big City Greens - S02E06 - Bad Influencer WEBDL-1080p.mkv
+/external/media/Kids TV/Big City Greens (2018)/Season 3/Big City Greens - S03E35 - Bunny Farm WEBDL-1080p.mkv
+/external/media/Kids TV/Big City Greens (2018)/Season 4/Big City Greens - S04E01 - Truck Stopped WEBDL-1080p.mkv
+/external/media/Kids TV/Big City Greens (2018)/Season 4/Big City Greens - S04E07 - Handshaken WEBDL-720p.mkv
+/external/media/Kids TV/Knuckles (2024)/Season 1/Knuckles - S01E04 - The Flames of Disaster HDTV-1080p.mkv
+/external/media/Kids TV/Miraculous - Tales of Ladybug & Cat Noir (2015)/Season 6/Miraculous - Tales of Ladybug & Cat Noir - S06E12 - The Dark Castle HDTV-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E01 - What's This! My Heart Is Pounding WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E02 - Fluffy and Soft WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E03 - Kuromi's Great Recipe Heist WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E04 - Honey Car Chase! WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E05 - The Sweets Contest Begins WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E06 - The Secret of Kuromi's Dorayaki WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E07 - What Should I Do WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E08 - Time for Teamwork WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E09 - To the Cloud Kingdom! WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E10 - Pistachio's Past WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E11 - All For Our Best Friend WEBRip-1080p.mkv
+/external/media/Kids TV/My Melody & Kuromi (2025)/Season 1/My Melody & Kuromi - S01E12 - My Melody & Kuromi WEBRip-1080p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 6/Teen Titans Go! - S06E02 - Crab Shenanigans WEBDL-1080p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 7/Teen Titans Go! - S07E20 - What a Boy Wonders WEBDL-1080p Proper.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 7/Teen Titans Go! - S07E22 - Fat Cats WEBDL-720p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 8/Teen Titans Go! - S08E04 - Teen Titans Action WEBDL-1080p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 8/Teen Titans Go! - S08E05 - TV Knight 8 WEBDL-1080p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 8/Teen Titans Go! - S08E13 - Plot Holes WEBDL-720p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 8/Teen Titans Go! - S08E17 - Elasti-Bot WEBDL-1080p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 8/Teen Titans Go! - S08E18 - Negative Feels WEBDL-1080p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 8/Teen Titans Go! - S08E19 - New Chum WEBDL-1080p.mkv
+/external/media/Kids TV/Teen Titans Go! (2013)/Season 9/Teen Titans Go! - S09E03 - Teen! Titans WEBDL-720p.mkv
+/external/media/Kids TV/The Loud House (2016)/Season 7/The Loud House - S07E02 - Pranks Fore Nothing WEBDL-480p.mkv
+/external/media/Kids TV/The Loud House (2016)/Season 7/The Loud House - S07E32 - Welcome to the Doll Heist WEBDL-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E01 - Pilot WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E02 - The Bird Scene WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E03 - Stage Fighting WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E04 - The Birthweek Song WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E05 - Jade Dumps Beck WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E06 - Tori the Zombie WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E07 - Robarazzi WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E08 - Survival of the Hottest WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E09 - Wi-Fi in the Sky WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E10 - Beck's Big Break WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E11 - The Great Ping-Pong Scam WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E12 - Cat's New Boyfriend WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E13 - Freak the Freak Out WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E14 - Rex Dies WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E15 - The Diddly-Bops WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E16 - Wok Star WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E17 - The Wood WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E18 - A Film by Dale Squires WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 1/Victorious - S01E19 - Sleepover at Sikowitz's WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E01 - Beggin' on Your Knees WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E02 - Beck Falls For Tori WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E03 - Ice Cream for Ke$ha WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E04 - Tori Gets Stuck WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E05 - Prom Wrecker WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E06 - Locked Up! WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E07 - Helen Back Again WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E08 - Who Did It to Trina WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E09 - Tori Tortures Teacher WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E10 - Jade Gets Crushed WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E11 - Terror on Cupcake Street WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E12 - A Christmas Tori WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 2/Victorious - S02E13 - Blooptorious WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E01 - The Breakfast Bunch WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E02 - The Gorilla Club WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E03 - The Worst Couple WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E04 - Andre's Horrible Girl WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E05 - Car, Rain & Fire WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E06 - Tori and Jade's Playdate WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E07 - April Fools Blank WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E08 - Driving Tori Crazy WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E09 - How Trina Got In WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E10 - Tori Goes Platinum WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E11 - Crazy Ponnie WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 3/Victorious - S03E12 - The Blonde Squad WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E01 - Wanko's Warehouse WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E02 - The Hambone King WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E03 - Opposite Date WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E04 - Three Girls and a Moose WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E05 - Cell Block WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E06 - Tori Fixes Beck & Jade WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E07 - One Thousand Berry Balls WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E08 - Robbie Sells Rex WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E09 - The Bad Roommate WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E10 - Brain Squeezers WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E11 - The Slap Fight WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E12 - Star-Spangled Tori WEBRip-720p.mkv
+/external/media/Kids TV/Victorious (2010)/Season 4/Victorious - S04E13 - Victori-Yes WEBRip-720p.mkv
+/external/media/Movies/Fast & Furious (2009)/Fast & Furious (2009) Bluray-1080p.mp4
+/external/media/Movies/Ghostbusters (2016)/Ghostbusters (2016) Bluray-1080p.mkv
+/external/media/Movies/Ghostbusters II (1989)/Ghostbusters II (1989) Bluray-1080p.mkv
+/external/media/Movies/Glass Onion A Knives Out Mystery (2022)/Glass Onion A Knives Out Mystery (2022) WEBRip-1080p.mkv
+/external/media/Movies/Raiders of the Lost Ark (1981)/Raiders of the Lost Ark (1981) Bluray-1080p Proper.mkv
+/external/media/Movies/Star Trek Beyond (2016)/Star Trek Beyond (2016) Bluray-1080p.mkv
+/external/media/Movies/The Lost Bus (2025)/The Lost Bus (2025) WEBRip-1080p.mkv
+/external/media/Movies/The Martian (2015)/The Martian (2015) Bluray-1080p.mkv
+/external/media/TV/Afro Samurai Series/01AS.mkv
+/external/media/TV/Afro Samurai Series/03AS.mkv
+/external/media/TV/Afro Samurai Series/04AS.mkv
+/external/media/TV/Afro Samurai Series/05AS.mkv
+/external/media/TV/Archer/Archer.2009.S11E02.Bloodsploosh.720p.HDTV.x264-CRiMSON[rarbg]/Archer.S11E02.Bloodsploosh.720p.HDTV.x264-CRiMSON.mkv
+/external/media/TV/Ballers /Ballers.S05E01.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Ballers /Ballers.S05E02.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Ballers /Ballers.S05E03.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Ballers /Ballers.S05E04.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Ballers /Ballers.S05E05.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Ballers /Ballers.S05E06.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Ballers /Ballers.S05E07.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Ballers /Ballers.S05E08.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E01.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E02.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E03.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E04.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E05.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E06.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E07.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E08.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E09.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb.Your.Enthusiasm.S10.COMPLETE.720p.AMZN.WEBRip.x264-GalaxyTV[TGx]/Curb.Your.Enthusiasm.S10E10.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E01 Foisted!.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E02 The Pickle Gambit.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E03 A Disturbance in the Kitchen.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E04 Running with the Bulls.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E05 Thank You for Your Service.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E06 The Accidental Text on Purpose.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E07 Namaste.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E08 Never Wait For Seconds!.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E09 The Shucker.mkv
+/external/media/TV/Curb Your Enthusiasm Season 9 Complete 720p HDTV x264 [i_c]/Curb Your Enthusiasm S09E10 Fatwa!.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E01 Folie À Deux.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E02 Worth Several Cities.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E03 Render, and then Seize Her.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E04 Henny Penny the Sky is Falling.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E05 To Catch a Predator Predator.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E06 Ill Tidings.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E07 Bang Bang Shoot Chute.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E08 How the Sausage is Made.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E09 It Serves You Right to Suffer.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E10 Pick Your Poison.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E11 Be My Guest.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E12 Crowned Clown, Downtown Brown.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E13 Over a Barrel.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E14 Rekt in Real Life.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E15 Wrong Side of the Road.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E17 The Ballad of Lady Frances.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E18 Dead Man's Tale.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E19 High Heat.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E20 The Art of Sleights and Deception.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E21 Fly into a Rage, Make a Bad Landing.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E22 Moving Targets.mkv.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E23 Scrambled.mkv
+/external/media/TV/Elementary Season 5 Complete 720p HDTV x264 [i_c]/Elementary S05E24 Hurt Me, Hurt You.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E01 An Infinite Capacity for Taking Pains.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E02 Once You've Ruled Out God.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E03 Pushing Buttons.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E04 Our Time Is Up.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E05 Bits and Pieces.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E06 Give Me the Finger.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E07 Sober Companions.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E08 Sand Trap.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E09 Nobody Lives Forever.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E10 The Adventure of the Ersatz Sobekneferu.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E11 You've Come a Long Way Baby.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E12 Meet Your Maker.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E13 Breathe.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E14 Through the Fog.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E15 How to Get a Head.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E16 Uncanny Valley of the Dolls.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E17 The Worms Crawl In, the Worms Crawl Out.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E18 The Visions of Norman P. Horowitz.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E19 The Geek Interpreter.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E20 Fit to Be Tied.mkv
+/external/media/TV/Elementary Season 6 Complete 720p HDTV X264 [NOSUB] [i_c]/Elementary S06E21 Whatever Remains, However Improbable.mkv
+/external/media/TV/Godfather of Harlem (2019)/Season 1/Godfather of Harlem - S01E01 - By Whatever Means Necessary WEBDL-720p.mkv
+/external/media/TV/Godfather of Harlem (2019)/Season 1/Godfather of Harlem - S01E04 - I Am The Greatest WEBDL-720p.mkv
+/external/media/TV/Godfather of Harlem (2019)/Season 1/Godfather of Harlem - S01E05 - It's All In the Game WEBDL-720p.mkv
+/external/media/TV/Godfather of Harlem (2019)/Season 1/Godfather of Harlem - S01E06 - Il Canto de Malavita WEBDL-720p.mkv
+/external/media/TV/Godfather of Harlem (2019)/Season 1/Godfather of Harlem - S01E08 - How I Got Over WEBDL-480p.mkv
+/external/media/TV/Godfather of Harlem (2019)/Season 1/Godfather of Harlem - S01E09 - Rent Strike Blues WEBDL-480p.mkv
+/external/media/TV/Godfather of Harlem (2019)/Season 4/Godfather of Harlem - S04E09 - Black and White WEBDL-1080p.mkv
+/external/media/TV/Godfather of Harlem (2019)/Season 4/Godfather of Harlem - S04E10 - Unity Day WEBDL-1080p.mkv
+/external/media/TV/History of the World, Part II (2023)/Season 1/History of the World, Part II - S01E01 - I WEBRip-1080p.mkv
+/external/media/TV/History of the World, Part II (2023)/Season 1/History of the World, Part II - S01E02 - II WEBRip-1080p.mkv
+/external/media/TV/History of the World, Part II (2023)/Season 1/History of the World, Part II - S01E03 - III WEBRip-1080p.mkv
+/external/media/TV/History of the World, Part II (2023)/Season 1/History of the World, Part II - S01E07 - VII WEBRip-1080p.mkv
+/external/media/TV/History of the World, Part II (2023)/Season 1/History of the World, Part II - S01E08 - VIII WEBRip-1080p.mkv
+/external/media/TV/Insecure/Insecure Season 1 Complete 720p HDTV x264 [i_c]/Insecure S01E01 Insecure as Fuck.mkv
+/external/media/TV/Insecure/Insecure Season 1 Complete 720p HDTV x264 [i_c]/Insecure S01E02 Messy as Fuck.mkv
+/external/media/TV/Insecure/Insecure Season 1 Complete 720p HDTV x264 [i_c]/Insecure S01E03 Racist as Fuck.mkv
+/external/media/TV/Insecure/Insecure Season 1 Complete 720p HDTV x264 [i_c]/Insecure S01E04 Thirsty as Fuck.mkv
+/external/media/TV/Insecure/Insecure Season 1 Complete 720p HDTV x264 [i_c]/Insecure S01E05 Shady as Fuck.mkv
+/external/media/TV/Insecure/Insecure Season 1 Complete 720p HDTV x264 [i_c]/Insecure S01E06 Guilty as Fuck.mkv
+/external/media/TV/Insecure/Insecure Season 1 Complete 720p HDTV x264 [i_c]/Insecure S01E07 Real as Fuck.mkv
+/external/media/TV/Insecure/Insecure Season 1 Complete 720p HDTV x264 [i_c]/Insecure S01E08 Broken as Fuck.mkv
+/external/media/TV/Insecure/Insecure Season 2 Complete 720p WEB-DL x264 [i_c]/Insecure S02E01 Hella Great.mkv
+/external/media/TV/Insecure/Insecure Season 2 Complete 720p WEB-DL x264 [i_c]/Insecure S02E03 Hella Open.mkv
+/external/media/TV/Insecure/Insecure Season 2 Complete 720p WEB-DL x264 [i_c]/Insecure S02E05 Hella Shook.mkv
+/external/media/TV/Insecure/Insecure Season 2 Complete 720p WEB-DL x264 [i_c]/Insecure S02E07 Hella Disrespectful.mkv
+/external/media/TV/Insecure.S04E07.720p.WEB.x265-MiNX[TGx]/Insecure.S04E07.720p.WEB.x265-MiNX.mkv
+/external/media/TV/Insecure.S04E08.720p.WEB.x265-MiNX[TGx]/Insecure.S04E08.720p.WEB.x265-MiNX.mkv
+/external/media/TV/Insecure.S04E09.720p.WEB.x265-MiNX[TGx]/Insecure.S04E09.720p.WEB.x265-MiNX.mkv
+/external/media/TV/Insecure.S04E10.720p.WEB.x265-MiNX[TGx]/Insecure.S04E10.720p.WEB.x265-MiNX.mkv
+/external/media/TV/Key & Peele (2012)/Season 1/Key & Peele - S01E01 - Series Premiere Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 1/Key & Peele - S01E02 - Black Hawk Up Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 1/Key & Peele - S01E03 - Das Negros Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 1/Key & Peele - S01E04 - The Branding Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 1/Key & Peele - S01E05 - Gay Marriage Legalized Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 1/Key & Peele - S01E06 - Flash Mob Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 1/Key & Peele - S01E07 - Bobby McFerrin vs. Michael Winslow Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 1/Key & Peele - S01E08 - Babysitting Forest Whitaker Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E01 - Obama College Years Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E02 - Dubstep Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E03 - Country Music Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E04 - I'm Retired Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E05 - Bone Thugs & Homeless Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E06 - Michael Jackson Halloween Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E07 - Non-Stop Party Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E08 - Manly Tears Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E09 - Gang Stand-Off Bluray-480p.mkv
+/external/media/TV/Key & Peele (2012)/Season 2/Key & Peele - S02E10 - Biological Dad Bluray-480p.mkv
+/external/media/TV/Mr. Robot (2015)/Season 3/Mr.Robot.S03E01.720p.HDTV.x264-AVS.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E01.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E02.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E03.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E04.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E05.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E06.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E07.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E08.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E09.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E10.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E11.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E12.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Mr. Robot (2015)/Season 4/Mr.Robot.S04E13.720p.AMZN.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Solar.Opposites.S01.COMPLETE.720p.HULU.WEBRip.x264-GalaxyTV[TGx]/Solar.Opposites.S01E01.720p.HULU.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Solar.Opposites.S01.COMPLETE.720p.HULU.WEBRip.x264-GalaxyTV[TGx]/Solar.Opposites.S01E02.720p.HULU.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Solar.Opposites.S01.COMPLETE.720p.HULU.WEBRip.x264-GalaxyTV[TGx]/Solar.Opposites.S01E03.720p.HULU.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Solar.Opposites.S01.COMPLETE.720p.HULU.WEBRip.x264-GalaxyTV[TGx]/Solar.Opposites.S01E04.720p.HULU.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Solar.Opposites.S01.COMPLETE.720p.HULU.WEBRip.x264-GalaxyTV[TGx]/Solar.Opposites.S01E05.720p.HULU.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Solar.Opposites.S01.COMPLETE.720p.HULU.WEBRip.x264-GalaxyTV[TGx]/Solar.Opposites.S01E06.720p.HULU.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Solar.Opposites.S01.COMPLETE.720p.HULU.WEBRip.x264-GalaxyTV[TGx]/Solar.Opposites.S01E07.720p.HULU.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/Solar.Opposites.S01.COMPLETE.720p.HULU.WEBRip.x264-GalaxyTV[TGx]/Solar.Opposites.S01E08.720p.HULU.WEBRip.x264-GalaxyTV.mkv
+/external/media/TV/South Park (1997)/Season 27/South Park - S27E01 - Sermon on the 'Mount WEBDL-720p.mkv
+/external/media/TV/South Park (1997)/Season 27/South Park - S27E03 - Sickofancy WEBDL-720p.mkv
+/external/media/TV/South Park (1997)/Season 27/South Park - S27E05 - Conflict of Interest WEBDL-720p.mkv
+/external/media/TV/South Park (1997)/Season 28/South Park - S28E02 - The Woman in the Hat HDTV-720p.mkv
+/external/media/TV/South Park (1997)/Season 28/South Park - S28E04 - Turkey Trot HDTV-720p.mkv
+/external/media/TV/South Park (1997)/South Park/Season 00/South Park - S00E01 - The Spirit of Christmas (Jesus vs. Frosty).avi
+/external/media/TV/South Park (1997)/South Park/Season 14/South Park s14 season 14 Complete UNCENSORED web-dl XVID mp3 avi NIT158/South Park s14e02 uncensored xvid mp3 NIT158 - The Tale of Scrotie McBoogerballs.avi
+/external/media/TV/Stranger Things (2016)/Season 5/Stranger Things - S05E05 - Chapter Five - Shock Jock WEBDL-1080p.mkv
+/external/media/TV/Stranger Things (2016)/Season 5/Stranger Things - S05E06 - Chapter Six - Escape from Camazotz WEBDL-1080p.mkv
+/external/media/TV/The Mandalorian Season 1 Complete 720p WEB x264 [i_c]/The Mandalorian S01E01 Chapter 1.mkv
+/external/media/TV/The Mandalorian Season 1 Complete 720p WEB x264 [i_c]/The Mandalorian S01E02 Chapter 2 The Child.mkv
+/external/media/TV/The Mandalorian Season 1 Complete 720p WEB x264 [i_c]/The Mandalorian S01E03 Chapter 3 The Sin.mkv
+/external/media/TV/The Mandalorian Season 1 Complete 720p WEB x264 [i_c]/The Mandalorian S01E04 Chapter 4 Sanctuary.mkv
+/external/media/TV/The Mandalorian Season 1 Complete 720p WEB x264 [i_c]/The Mandalorian S01E05 Chapter 5 The Gunslinger.mkv
+/external/media/TV/The Mandalorian Season 1 Complete 720p WEB x264 [i_c]/The Mandalorian S01E06 Chapter 6 The Prisoner.mkv
+/external/media/TV/The Mandalorian Season 1 Complete 720p WEB x264 [i_c]/The Mandalorian S01E07 Chapter 7 The Reckoning.mkv
+/external/media/TV/The Mandalorian Season 1 Complete 720p WEB x264 [i_c]/The Mandalorian S01E08 Chapter 8 Redemption.mkv
+/home/youruser/synology/media/Movies/22 Jump Street (2014)/22 Jump Street (2014) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/A.Day.to.Die.2022.1080p.WEBRip.x265-RARBG/A Day to Die (2022) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Annihilation (2018)/Annihilation.2018.Multi.1080p.BluRay.HEVC.AAC.5.1-DTOne.mkv
+/home/youruser/synology/media/Movies/Baby Driver (2017)/Baby Driver (2017) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Back on the Strip (2023)/Back on the Strip (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Bottoms (2023)/Bottoms (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Boyka Undisputed IV (2016) + Extras (1080p BluRay x265 HEVC 10bit DTS 5.1 SAMPA)/Featurettes/Scott Adkins Talks All Things Boyka.mkv
+/home/youruser/synology/media/Movies/Chi-Raq (2015)/Chi-Raq (2015) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Godzilla x Kong The New Empire (2024)/Godzilla x Kong The New Empire (2024) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Homecoming.A.Film.by.Beyonce.2019.720p.WEBRip.1GB.x264-GalaxyRG[TGx]/Homecoming.A.Film.by.Beyonce.2019.720p.WEBRip.1GB.x264-GalaxyRG.mkv
+/home/youruser/synology/media/Movies/Immortals (2011) [1080p]/Immortals (2011) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Jungle.Cruise.2021.1080p.WEBRip.x264-RARBG/Jungle Cruise (2021) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Just.Mercy.2019.720p.SCREENER.900MB.x264-GalaxyRG[TGx]/Just.Mercy.2019.720p.SCREENER.900MB.x264-GalaxyRG.mkv
+/home/youruser/synology/media/Movies - Kids/A.Boy.Called.Christmas.2021.1080p.WEBRip.x264-RARBG/A Boy Called Christmas (2021) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Big City Greens The Movie Spacecation (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/Big.City.Greens.The.Movie.Spacecation.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies - Kids/Chip.n.Dale.Rescue.Rangers.2022.1080p.DSNP.WEBRip.DDP5.1.Atmos.x264-CM/Chip.n.Dale.Rescue.Rangers.2022.1080p.DSNP.WEB-DL.DDP5.1.Atmos.H.264-CM.mkv
+/home/youruser/synology/media/Movies - Kids/Descendants.2.2017.720p.WEBRip.x264.AAC-Ozlem/Descendants 2 (2017) WEBRip-1080p.mkv
+/home/youruser/synology/media/Movies - Kids/Descendants The Rise Of Red (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/Descendants.The.Rise.Of.Red.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies - Kids/DreamWorks Home For the Holidays (2017)/DreamWorks Home For the Holidays (2017) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Gnome Alone (2017) [WEBRip] [1080p] [YTS.AM]/Gnome Alone (2017) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Hotel.Transylvania.4.Transformania.2022.1080p.WEBRip.x264-RARBG/Hotel Transylvania Transformania (2022) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Inside Out 2 (2024) [1080p] [BluRay] [5.1] [YTS.MX]/Inside.Out.2.2024.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies - Kids/Kung Fu Panda 4 (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/Kung Fu Panda 4 (2024) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Migration.2023.1080p.WEBRip.DDP5.1.x265.10bit-GalaxyRG265[TGx]/Migration (2023) WEBRip-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Minions The Rise of Gru (2022) NEW Source TELESYNC x264 AAC - HushRips.mkv
+/home/youruser/synology/media/Movies - Kids/Once Upon A Studio (2023) [1080p] [WEBRip] [5.1] [YTS.MX]/Once.Upon.A.Studio.2023.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies - Kids/PAW.Patrol.The.Mighty.Movie.2023.1080p.AMZN.WEBRip.1400MB.DD5.1.x264-GalaxyRG[TGx]/PAW Patrol The Mighty Movie (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Ruby Gillman Teenage Kraken (2023) [1080p] [WEBRip] [5.1] [YTS.MX]/Ruby Gillman, Teenage Kraken (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Shrek the Halls (2007)/Shrek the Halls (2007) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Snoopy Presents Welcome Home Franklin (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/Snoopy.Presents.Welcome.Home.Franklin.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies - Kids/Teenage.Mutant.Ninja.Turtles.Mutant.Mayhem.2023.1080p.WEBRip.1400MB.DD5.1.x264-GalaxyRG[TGx]/Teenage Mutant Ninja Turtles Mutant Mayhem (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Trolls Band Together (2023) [1080p] [WEBRip] [x265] [10bit] [5.1] [YTS.MX]/Trolls Band Together (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Wicked (2024)/Wicked (2024) WEBRip-1080p.mkv
+/home/youruser/synology/media/Movies - Kids/Wish.2023.1080p.WEBRip.1400MB.DD5.1.x264-GalaxyRG[TGx]/Wish (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/M3GAN 2.0 (2025)/M3GAN 2.0 (2025) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/No.Hard.Feelings.2023.1080p.WEBRip.1400MB.DD5.1.x264-GalaxyRG[TGx]/No Hard Feelings (2023) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Pacific.Rim.2013.2160p.10bit.HDR.BluRay.8CH.x265.HEVC-PSA/Pacific Rim (2013) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Piece By Piece (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/Piece by Piece (2024) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Ready Player One (2018)/Ready Player One (2018) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Skyline (2010) [1080p]/Skyline 2010 1080p BDRip [Multi Audio] (DD 5.1Ch) [Hindi-Tamil-Telugu-Eng] ~HI-MAN (HDDR).mkv
+/home/youruser/synology/media/Movies/South Park The End of Obesity (2024)/South.Park.The.End.Of.Obesity.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/South Park the Streaming Wars Part 2 (2022)/South Park the Streaming Wars Part 2 (2022) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Spiderhead.2022.1080p.NF.WEBRip.DDP5.1.Atmos.x264-SMURF/Spiderhead.2022.1080p.NF.WEB-DL.DDP5.1.Atmos.x264-SMURF.mkv
+/home/youruser/synology/media/Movies/Star Wars Episode I - The Phantom Menace (1999) [2160p] [4K] [BluRay] [5.1] [YTS.MX]/Star Wars Episode I - The Phantom Menace (1999) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/The.Bubble.2022.1080p.NF.WEBRip.DDP5.1.Atmos.x264-TEPES/The.Bubble.2022.1080p.NF.WEB-DL.DDP5.1.Atmos.x264-TEPES.mkv
+/home/youruser/synology/media/Movies/The Matrix (1999)/The Matrix (1999) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/The To Do List (2013)/The To Do List (2013) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Transformers One (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/Transformers.One.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/TV Shows/Ahsoka (2023)/Season 1/Ahsoka - S01E01 - Part One - Master and Apprentice WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ahsoka (2023)/Season 1/Ahsoka - S01E02 - Part Two - Toil and Trouble WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ahsoka (2023)/Season 1/Ahsoka - S01E03 - Part Three - Time to Fly WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ahsoka (2023)/Season 1/Ahsoka - S01E04 - Part Four - Fallen Jedi WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ahsoka (2023)/Season 1/Ahsoka - S01E05 - Part Five - Shadow Warrior WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ahsoka (2023)/Season 1/Ahsoka - S01E06 - Part Six - Far, Far Away WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ahsoka (2023)/Season 1/Ahsoka - S01E07 - Part Seven - Dreams and Madness WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ahsoka (2023)/Season 1/Ahsoka - S01E08 - Part Eight - The Jedi, the Witch, and the Warlord WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/American Dad!/Season 12/American Dad! - S12E07 - LGBSteve WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/American Dad!/Season 12/American Dad! - S12E11 - Manhattan Magical Murder Mystery Tour HDTV-720p.mkv
+/home/youruser/synology/media/TV Shows/American Dad!/Season 15/American Dad! - S15E07 - Klaustastrophe.tv WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/American Dad!/Season 15/American Dad! - S15E15 - Flavortown WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/American Dad!/Season 21/American Dad! - S21E12 - The Legend of Mike Madonia, the Rototiller Man WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Awkwafina is Nora From Queens (2020)/Season 3/Awkwafina Is Nora From Queens - S03E01 - Nightmares WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Bel-Air.S03.COMPLETE.720p.PCOK.WEBRip.x264-GalaxyTV[TGx]/Season 4/Bel-Air - S04E02 - Be a Kid WEBDL-1080p.mp4
+/home/youruser/synology/media/TV Shows/Bel-Air.S03.COMPLETE.720p.PCOK.WEBRip.x264-GalaxyTV[TGx]/Season 4/Bel-Air - S04E07 - Soulmates WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Bobs.Burgers.S12E05.1080p.WEB.H264-CAKES[rarbg]/bobs.burgers.s12e05.1080p.web.h264-cakes.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Bobs.Burgers.S12E06.1080p.WEB.H264-CAKES[rarbg]/bobs.burgers.s12e06.1080p.web.h264-cakes.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Bobs.Burgers.S12E07.1080p.WEB.H264-CAKES[rarbg]/bobs.burgers.s12e07.1080p.web.h264-cakes.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Bobs.Burgers.S15E03.1080p.WEB.H264-SuccessfulCrab[TGx]/bobs.burgers.s15e03.1080p.web.h264-successfulcrab.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Bobs.Burgers.S15E05.1080p.WEB.H264-SuccessfulCrab[TGx]/bobs.burgers.s15e05.1080p.web.h264-successfulcrab.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 15/Bobs.Burgers.S15E03.1080p.WEB.H264-SuccessfulCrab[TGx].mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 15/Bobs.Burgers.S15E05.1080p.WEB.H264-SuccessfulCrab[TGx].mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 15/Bobs Burgers S15E09 1080p WEB H264-SuccessfulCrab.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e01.Ear-sy.Rider.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e03.Bob.Fires.the.Kids.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e04.Mutiny.on.the.Windbreaker.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e05.An.Indecent.Thanksgiving.Proposal.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e07.Tina-Rannosaurus.Wrecks.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e09.God.Rest.Ye.Merry.Gentle-Mannequins.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e12.Broadcast.Wagstaff.School.News.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e13.My.Fuzzy.Valentine.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e16.Topsy.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e17.Two.for.Tina.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e20.The.Kids.Run.the.Restaurant.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e22.Carpe.Museum.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers (2011)/Season 3/Bobs.Burgers.s03e23.The.Unnatural.mkv
+/home/youruser/synology/media/TV Shows/Bobs.Burgers.S15E11.720p.HEVC.x265-MeGusta[EZTVx.to].mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers/Season 14/Bob's Burgers - S14E01 - Fight at the Not Okay Chore-ral WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers/Season 14/Bob's Burgers - S14E02 - The Amazing Rudy WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers/Season 14/Bob's Burgers - S14E03 - The Pickleorette WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers/Season 14/Bob's Burgers - S14E14 - The Big Stieblitzki WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Bob's Burgers/Season 14/Bob's Burgers - S14E16 - To Catch a Beef WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Chief of War (2025)/Season 1/Chief of War - S01E01 - The Chief of War WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Chief of War (2025)/Season 1/Chief of War - S01E04 - City of Flowers Part ll WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Chief of War (2025)/Season 1/Chief of War - S01E07 - Day of Spilled Brains WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Fallout (2024)/Season 1/Fallout - S01E03 - The Head WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Fallout (2024)/Season 1/Fallout - S01E04 - The Ghouls WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Fallout (2024)/Season 1/Fallout - S01E05 - The Past WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Fallout (2024)/Season 1/Fallout - S01E07 - The Radio WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Fallout (2024)/Season 1/Fallout - S01E08 - The Beginning WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family.Guy.S20E01.1080p.WEB.H264-CAKES[rarbg]/Season 22/Family.Guy.S22E12.1080p.WEB.H264-SuccessfulCrab[TGx].mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family.Guy.S20E01.1080p.WEB.H264-CAKES[rarbg]/Season 22/Family.Guy.S22E13.1080p.WEB.H264-SuccessfulCrab[TGx].mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family.Guy.S20E07.1080p.WEB.H264-CAKES[rarbg]/family.guy.s20e07.1080p.web.h264-cakes.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family Guy S22E01 Fertilized Megg 1080p DSNP WEB-DL DDP5 1 H 264-NTb[TGx]/Season 22/Family Guy - S22E04 - Old World Harm WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family Guy S22E01 Fertilized Megg 1080p DSNP WEB-DL DDP5 1 H 264-NTb[TGx]/Season 22/Family Guy - S22E05 - Baby, It's Cold Inside WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family Guy S22E01 Fertilized Megg 1080p DSNP WEB-DL DDP5 1 H 264-NTb[TGx]/Season 22/Family Guy - S22E10 - Cabin Pressure WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family Guy S22E01 Fertilized Megg 1080p DSNP WEB-DL DDP5 1 H 264-NTb[TGx]/Season 23/Family Guy - S23E04 - Lois C.K WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family Guy S22E01 Fertilized Megg 1080p DSNP WEB-DL DDP5 1 H 264-NTb[TGx]/Season 23/Family Guy - S23E13 - The Fat Lotus HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family.Guy.S22E04.720p.WEB.h264-BAE[TGx]/Family.Guy.S22E04.720p.WEB.h264-BAE.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family.Guy.S22E10.720p.WEB.h264-BAE[TGx]/Family.Guy.S22E10.720p.WEB.h264-BAE.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family.Guy.S22E12.1080p.WEB.H264-SuccessfulCrab[TGx]/family.guy.s22e12.1080p.web.h264-successfulcrab.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Family.Guy.S22E13.1080p.WEB.H264-SuccessfulCrab[TGx]/family.guy.s22e13.1080p.web.h264-successfulcrab.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 15/Family Guy - S15E15 - Cop and a Half-Wit WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 17/Family Guy - S17E07 - The Griffin Winter Games WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 18/Family Guy - S18E03 - Absolutely Babulous WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 19/Family Guy - S19E17 - Young Parent Trap WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 22/Family Guy - S22E02 - Supermarket Pete WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 22/Family Guy - S22E05 - Baby, It's Cold Inside WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 23/Family Guy - S23E10 - A Real Who's Hulu WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 23/Family Guy - S23E13 - The Fat Lotus WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Family Guy (1999)/Season 23/Family Guy - S23E17 - Karenheit 451 WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/From (2022)/Season 1/From - S01E01 - Long Day's Journey Into Night WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.in.Philadelphia.S15E01.PROPER.1080p.WEB.H264-GGEZ[rarbg]/Season 16/It's Always Sunny in Philadelphia - S16E04 - Frank vs. Russia WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.in.Philadelphia.S15E01.PROPER.1080p.WEB.H264-GGEZ[rarbg]/Season 16/It's Always Sunny in Philadelphia - S16E06 - Risk E. Rat's Pizza and Amusement Center WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.in.Philadelphia.S15E01.PROPER.1080p.WEB.H264-GGEZ[rarbg]/Season 17/It's Always Sunny in Philadelphia - S17E02 - Frank Is in a Coma WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.in.Philadelphia.S15E01.PROPER.1080p.WEB.H264-GGEZ[rarbg]/Season 17/It's Always Sunny in Philadelphia - S17E04 - Thought Leadership - A Corporate Conversation WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.in.Philadelphia.S15E01.PROPER.1080p.WEB.H264-GGEZ[rarbg]/Season 17/It's Always Sunny in Philadelphia - S17E05 - The Gang Goes to a Dog Track WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.in.Philadelphia.S15E01.PROPER.1080p.WEB.H264-GGEZ[rarbg]/Season 17/It's Always Sunny in Philadelphia - S17E06 - Overage Drinking - A National Concern WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.in.Philadelphia.S15E01.PROPER.1080p.WEB.H264-GGEZ[rarbg]/Season 17/It's Always Sunny in Philadelphia - S17E07 - The Gang Gets Ready for Primetime WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.In.Philadelphia.S16E04.720p.WEB.x265-MiNX[TGx]/Its.Always.Sunny.In.Philadelphia.S16E04.720p.WEB.x265-MiNX.mkv
+/home/youruser/synology/media/TV Shows/Its.Always.Sunny.In.Philadelphia.S16E06.720p.WEB.x265-MiNX[TGx]/Its.Always.Sunny.In.Philadelphia.S16E06.720p.WEB.x265-MiNX.mkv
+/home/youruser/synology/media/TV Shows/Key.and.Peele.s03e04.720p.web.dl.x264.Sujaidr (pimprg)/Key.and.Peele.s03e04.720p.web.dl.x264.Sujaidr (pimprg).mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E03 - Hades Nuts WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E05 - Krapocalypse WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E06 - National Lampoon's The Odyssey! WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E07 - Ty Man Woman Table Chairs Food WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E12 - Baby Boom WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E13 - Ty Big Fat Greek Wedding HDTV-720p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E20 - Love Week HDTV-720p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E21 - Don Tyxote HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 2/Krapopolis - S02E22 - Ty Died HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Krapopolis (2023)/Season 3/Krapopolis - S03E08 - The Anniversary Present WEBDL-1080p.mp4
+/home/youruser/synology/media/TV Shows/Krapopolis.S02E06.1080p.WEB.H264-SuccessfulCrab[TGx]/krapopolis.s02e06.1080p.web.h264-successfulcrab.mkv
+/home/youruser/synology/media/TV Shows/krapopolis.s02e12.1080p.web.h264-successfulcrab[EZTVx.to].mkv
+/home/youruser/synology/media/TV Shows/Krapopolis.S02E13.720p.HEVC.x265-MeGusta[EZTVx.to].mkv
+/home/youruser/synology/media/TV Shows/Krapopolis.S02E20.720p.HEVC.x265-MeGusta[EZTVx.to].mkv
+/home/youruser/synology/media/TV Shows/Krapopolis.S02E22.1080p.HEVC.x265-MeGusta[EZTVx.to].mkv
+/home/youruser/synology/media/TV Shows/Lioness.2023.S02E06.1080p.AV1.10bit-MeGusta[TGx]/Lioness.2023.S02E06.1080p.AV1.10bit-MeGusta.mkv
+/home/youruser/synology/media/TV Shows/Lioness/Season 2/Lioness - S02E03 - Along Came a Spider HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Lioness/Season 2/Lioness - S02E04 - Five Hundred Children HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Lioness/Season 2/Lioness - S02E06 - 2831 HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Paradise.2025.S01E07.1080p.HEVC.x265-MeGusta[EZTVx.to].mkv
+/home/youruser/synology/media/TV Shows/Reacher (2022)/Season 3/Reacher - S03E05 - Smackdown WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Reacher (2022)/Season 3/Reacher - S03E06 - Smoke on the Water WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Reacher.S03E05.720p.WEB-DL-[Feranki1980].mp4
+/home/youruser/synology/media/TV Shows/Reacher.S03E06.720p.WEB-DL-[Feranki1980].mp4
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - S05E01 - Mort Dinner Rick Andre.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E01.The.Rickshank.Rickdemption.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E02.Rickmancing.the.Stone.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E03.Pickle.Rick.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E04.Vindicators.3.The.Return.of.Worldender.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E05.The.Whirly.Dirly.Conspiracy.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E06.Rest.and.Ricklaxation.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E07.The.Ricklantis.Mixup.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E08.Morty's.Mind.Blowers.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E09.The.ABC's.of.Beth.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 3 (2017) [1080p]/Rick.and.Morty.S03E10.The.Rickchurian.Mortydate.1080p.Amazon.WEB-DL.x264-Rapta.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 4 [1080p]/Rick and Morty - S04E01 - Edge of Tomorty - Rick Die Rickpeat.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 4 [1080p]/Rick and Morty - S04E02 - The Old Man and the Seat.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 4 [1080p]/Rick and Morty - S04E03 - One Crew Over the Crewcoo's Morty.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 4 [1080p]/Rick and Morty - S04E04 - Claw and Hoarder - Special Ricktim's Morty.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 4 [1080p]/Rick and Morty - S04E05 - Rattlestar Ricklactica.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 4 [1080p]/Rick and Morty - S04E06 - Never Ricking Morty.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 4 [1080p]/Rick and Morty - S04E09 - Childrick of Mort.mkv
+/home/youruser/synology/media/TV Shows/Rick and Morty (2013)/Rick and Morty - Season 4 [1080p]/Rick and Morty - S04E10 - Star Mort Rickturn of the Jerri.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia (2024)/Season 1/Sausage Party - Foodtopia - S01E01 - First Course WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia (2024)/Season 1/Sausage Party - Foodtopia - S01E02 - Second Course WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia (2024)/Season 1/Sausage Party - Foodtopia - S01E03 - Third Course WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia (2024)/Season 1/Sausage Party - Foodtopia - S01E04 - Fourth Course WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia (2024)/Season 1/Sausage Party - Foodtopia - S01E05 - Fifth Course WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia (2024)/Season 1/Sausage Party - Foodtopia - S01E06 - Sixth Course WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia (2024)/Season 1/Sausage Party - Foodtopia - S01E07 - Seventh Course WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia (2024)/Season 1/Sausage Party - Foodtopia - S01E08 - Eighth Course WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia - Season 1 (2024)/Sausage Party - Foodtopia - S01E01 - First Course.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia - Season 1 (2024)/Sausage Party - Foodtopia - S01E02 - Second Course.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia - Season 1 (2024)/Sausage Party - Foodtopia - S01E03 - Third Course.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia - Season 1 (2024)/Sausage Party - Foodtopia - S01E04 - Fourth Course.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia - Season 1 (2024)/Sausage Party - Foodtopia - S01E05 - Fifth Course.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia - Season 1 (2024)/Sausage Party - Foodtopia - S01E06 - Sixth Course.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia - Season 1 (2024)/Sausage Party - Foodtopia - S01E07 - Seventh Course.mkv
+/home/youruser/synology/media/TV Shows/Sausage Party - Foodtopia - Season 1 (2024)/Sausage Party - Foodtopia - S01E08 - Eight Course.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off (2023)/Season 1/Scott Pilgrim Takes Off - S01E01 - Scott Pilgrim's Precious Little Life WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off (2023)/Season 1/Scott Pilgrim Takes Off - S01E02 - A League of Their Own WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off (2023)/Season 1/Scott Pilgrim Takes Off - S01E03 - Ramona Rents a Video WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off (2023)/Season 1/Scott Pilgrim Takes Off - S01E04 - Whatever WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off (2023)/Season 1/Scott Pilgrim Takes Off - S01E05 - Lights. Camera. Sparks!! WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off (2023)/Season 1/Scott Pilgrim Takes Off - S01E06 - WHODIDIT WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off (2023)/Season 1/Scott Pilgrim Takes Off - S01E07 - 2 Scott 2 Pilgrim WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off (2023)/Season 1/Scott Pilgrim Takes Off - S01E08 - The World Vs Scott Pilgrim WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off [S01] (1080p WEB-RIP AV1 Opus) [NeoNyx343]/Scott Pilgrim Takes Off S01E01 Scott Pilgrims Precious Little Life (1080p WEB-RIP AV1 Opus) [NeoNyx343].mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off [S01] (1080p WEB-RIP AV1 Opus) [NeoNyx343]/Scott Pilgrim Takes Off S01E02 A League of Their Own (1080p WEB-RIP AV1 Opus) [NeoNyx343].mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off [S01] (1080p WEB-RIP AV1 Opus) [NeoNyx343]/Scott Pilgrim Takes Off S01E03 Ramona Rents a Video (1080p WEB-RIP AV1 Opus) [NeoNyx343].mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off [S01] (1080p WEB-RIP AV1 Opus) [NeoNyx343]/Scott Pilgrim Takes Off S01E04 Whatever (1080p WEB-RIP AV1 Opus) [NeoNyx343].mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off [S01] (1080p WEB-RIP AV1 Opus) [NeoNyx343]/Scott Pilgrim Takes Off S01E05 Lights Camera Sparks (1080p WEB-RIP AV1 Opus) [NeoNyx343].mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off [S01] (1080p WEB-RIP AV1 Opus) [NeoNyx343]/Scott Pilgrim Takes Off S01E06 WHODIDIT (1080p WEB-RIP AV1 Opus) [NeoNyx343].mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off [S01] (1080p WEB-RIP AV1 Opus) [NeoNyx343]/Scott Pilgrim Takes Off S01E07 2 Scott 2 Pilgrim (1080p WEB-RIP AV1 Opus) [NeoNyx343].mkv
+/home/youruser/synology/media/TV Shows/Scott Pilgrim Takes Off [S01] (1080p WEB-RIP AV1 Opus) [NeoNyx343]/Scott Pilgrim Takes Off S01E08 The World Vs Scott Pilgrim (1080p WEB-RIP AV1 Opus) [NeoNyx343].mkv
+/home/youruser/synology/media/TV Shows/See.S01E01.720p.WEB.x265-MiNX[eztv].mkv
+/home/youruser/synology/media/TV Shows/See.S01E02.720p.WEB.x265-MiNX[eztv].mkv
+/home/youruser/synology/media/TV Shows/See.S01E04.WEB.x264-PHOENiX[eztv].mkv
+/home/youruser/synology/media/TV Shows/See.S01E05.WEB.x264-PHOENiX[eztv].mkv
+/home/youruser/synology/media/TV Shows/See.S01E06.WEB.x264-PHOENiX[eztv].mkv
+/home/youruser/synology/media/TV Shows/See.S01E07.WEB.x264-PHOENiX[eztv].mkv
+/home/youruser/synology/media/TV Shows/See.S01E08.WEB.x264-PHOENiX[eztv].mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 1/See - S01E01 - Godflame WEBDL-480p.mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 1/See - S01E02 - Message in a Bottle WEBDL-480p.mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 1/See - S01E04 - The River WEBDL-480p.mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 1/See - S01E05 - Plastic WEBDL-480p.mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 1/See - S01E06 - Silk WEBDL-480p.mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 1/See - S01E07 - The Lavender Road WEBDL-480p.mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 1/See - S01E08 - House of Enlightenment WEBDL-480p.mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 2/See - S02E04 - The Witchfinder WEBDL-1080p.mp4
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 2/See - S02E05 - The Dinner Party WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/Severance (2022)/Season 2/Severance - S02E07 - Chikhai Bardo HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/The.Agency.2024.S01E01.720p.WEB.x265-MiNX[TGx]/The.Agency.2024.S01E01.720p.WEB.x265-MiNX.mkv
+/home/youruser/synology/media/TV Shows/The Agency (2024)/Season 1/The Agency (2024) - S01E01 - The Bends WEBDL-720p.mkv
+/home/youruser/synology/media/TV Shows/The Boys (2019)/Season 1/The Boys - S01E03 - Get Some SDTV.mkv
+/home/youruser/synology/media/TV Shows/The.Boys.S01E03.480p.x264-mSD[eztv].mkv
+/home/youruser/synology/media/TV Shows/The Righteous Gemstones (2019)/Season 4/The Righteous Gemstones - S04E01 - Prelude WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/The.Righteous.Gemstones.S04E01.720p.WEB-DL-[Feranki1980].mp4
+/home/youruser/synology/media/TV Shows/Wednesday (2022)/Season 1/Wednesday - S01E07 - If You Don't Woe Me By Now WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/www.1TamilMV.im - Reacher (2023) S02 EP04 - 1080p - HQ HDRip - [Tam + Tel + Hin + Mal + Kan + Eng] - (DD+5.1 - 192Kbps) - 900MB - ESub.mkv
+/home/youruser/synology/media/TV Shows/Zero Day (2025)/Season 1/Zero Day - S01E01 - Episode 1 WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Zero Day (2025)/Season 1/Zero Day - S01E02 - Episode 2 WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Zero Day (2025)/Season 1/Zero Day - S01E03 - Episode 3 WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Zero Day (2025)/Season 1/Zero Day - S01E04 - Episode 4 WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Zero Day (2025)/Season 1/Zero Day - S01E05 - Episode 5 WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Zero Day (2025)/Season 1/Zero Day - S01E06 - Episode 6 WEBDL-720p.mp4
+/home/youruser/synology/media/TV Shows/Zero.Day.S01E01.720p.WEB-DL-[Feranki1980].mp4
+/home/youruser/synology/media/TV Shows/Zero.Day.S01E02.720p.WEB-DL-[Feranki1980].mp4
+/home/youruser/synology/media/TV Shows/Zero.Day.S01E03.720p.WEB-DL-[Feranki1980].mp4
+/home/youruser/synology/media/TV Shows/Zero.Day.S01E04.720p.WEB-DL-[Feranki1980].mp4
+/home/youruser/synology/media/TV Shows/Zero.Day.S01E05.720p.WEB-DL-[Feranki1980].mp4
+/home/youruser/synology/media/TV Shows/Zero.Day.S01E06.720p.WEB-DL-[Feranki1980].mp4
+
+=== TIMEOUT Files (Need Manual Review) ===
+Total: 174 files
+
+/external/media/Kids Movies/Aladdin and the King of Thieves (1996)/Aladdin and the King of Thieves (1996) Bluray-1080p.mkv
+/external/media/Kids Movies/Alice in Wonderland (2010)/Alice in Wonderland (2010) Bluray-1080p.mkv
+/external/media/Kids Movies/Cars 2 (2011)/Cars 2 (2011) Bluray-1080p.mkv
+/external/media/Kids Movies/Flushed Away (2006)/Flushed Away (2006) Bluray-1080p.mkv
+/external/media/Kids Movies/Harry Potter and the Prisoner of Azkaban (2004)/Harry Potter and the Prisoner of Azkaban (2004) Bluray-1080p.mkv
+/external/media/Kids Movies/Ice Age (2002)/Ice Age (2002) Bluray-1080p.mkv
+/external/media/Kids Movies/Ice Age The Meltdown (2006)/Ice Age The Meltdown (2006) Bluray-1080p.mkv
+/external/media/Kids Movies/Snow White (2025)/Snow White (2025) Bluray-1080p.mp4
+/external/media/Kids Movies/Tarzan (1999)/Tarzan (1999) Bluray-1080p.mkv
+/external/media/Kids Movies/Tarzan II (2005)/Tarzan II (2005) WEBDL-1080p.mkv
+/external/media/Movies/A Bad Moms Christmas (2017)/A Bad Moms Christmas (2017) Bluray-1080p.mkv
+/external/media/Movies/Emily.the.Criminal.2022.1080p.WEBRip.x264-RARBG/Emily the Criminal (2022) Bluray-1080p.mkv
+/external/media/Movies/E.T. the Extra-Terrestrial (1982)/E.T. the Extra-Terrestrial (1982) Bluray-1080p.mkv
+/external/media/Movies/Gods of Egypt 2016 1080p BluRay x264 DTS-JYK/Gods of Egypt 2016 1080p BluRay x264 DTS-JYK.mkv
+/external/media/Movies/Goon (2012)/Goon (2012) Bluray-1080p.mkv
+/external/media/Movies/Ice Road Vengeance (2025)/Ice Road Vengeance (2025) Bluray-1080p.mp4
+/external/media/Movies/Independence Day (1996)/Independence Day (1996) Bluray-1080p.mkv
+/external/media/Movies/I, Robot (2004)/I, Robot (2004) Bluray-1080p.mkv
+/external/media/Movies/One Battle After Another (2025)/One Battle After Another (2025) WEBRip-1080p.mkv
+/external/media/Movies/Red Sonja (2025)/Red Sonja (2025) Bluray-1080p.mp4
+/external/media/Movies/Rocky V (1990)/Rocky V (1990) Bluray-1080p.mkv
+/external/media/Movies/Shaun of the Dead (2004)/Shaun of the Dead (2004) Bluray-1080p.mkv
+/external/media/Movies/Shutter Island (2010)/Shutter Island (2010) Bluray-1080p.mkv
+/external/media/Movies/Sin City A Dame to Kill For (2014)/Sin City A Dame to Kill For (2014) Bluray-1080p.mkv
+/external/media/Movies/Sky Captain and the World of Tomorrow (2004)/Sky Captain and the World of Tomorrow (2004) Bluray-1080p.mkv
+/external/media/Movies/Spaceballs (1987)/Spaceballs (1987) Bluray-1080p.mkv
+/external/media/Movies/Terminator 2 Judgment Day (1991)/Terminator 2 Judgment Day (1991) Bluray-1080p.mkv
+/external/media/Movies/The Book of Eli (2010)/The Book of Eli (2010) Bluray-1080p.mkv
+/external/media/Movies/The Huntsman Winter's War (2016)/The Huntsman Winter's War (2016) Bluray-1080p.mkv
+/external/media/Movies/Wake Up Dead Man A Knives Out Mystery (2025)/Wake Up Dead Man A Knives Out Mystery (2025) WEBRip-1080p.mp4
+/external/media/TV/Stranger Things (2016)/Season 4/Stranger Things - S04E05 - Chapter Five - The Nina Project HDTV-1080p.mkv
+/external/media/TV/Stranger Things (2016)/Season 4/Stranger Things - S04E06 - Chapter Six - The Dive HDTV-1080p.mkv
+/external/media/TV/Stranger Things (2016)/Season 5/Stranger Things - S05E07 - Chapter Seven - The Bridge WEBRip-1080p.mkv
+/external/media/TV/Stranger Things (2016)/Season 5/Stranger Things - S05E08 - Chapter Eight - The Rightside Up WEBRip-1080p.mkv
+/home/youruser/synology/media/Movies/A Complete Unknown (2024)/A Complete Unknown (2024) BR-DISK.mp4
+/home/youruser/synology/media/Movies/Ant-Man (2015)/Ant-Man 2015 1080p BluRay x264 DTS-JYK.mkv
+/home/youruser/synology/media/Movies/Aquaman (2018)/Aquaman.2018.2160p.4K.BluRay.x265.10bit.AAC5.1-[YTS.MX].mkv
+/home/youruser/synology/media/Movies/A Quiet Place Day One (2024)/A Quiet Place Day One (2024) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Austin.Powers.The.Spy.Who.Shagged.Me.1999.1080p.BluRay.x264-TiMELORDS/tl-aptswsm.mkv
+/home/youruser/synology/media/Movies/Avatar 2009 Extended Collectors Edition 1080p BluRay Hindi English x264 DD 5.1 MSubs - LOKiHD - Telly/Avatar 2009 Extended Collectors Edition 1080p BluRay Hindi English x264 DD 5.1 MSubs - LOKiHD - Telly.mkv
+/home/youruser/synology/media/Movies/Avengers Infinity War (2018)[1080p]/Avengers: Infinity War (2018)[1080p].mkv
+/home/youruser/synology/media/Movies/Babes (2024)/Babes.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Bad Boys Ride or Die (2024)/Bad.Boys.Ride.Or.Die.2024.BLURAY.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Bend It Like Beckham (2002)/Bend It Like Beckham (2002) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Beowulf (2007)/Beowulf (2007) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Black.Is.King.2020.1080p.DSNP.WEBRip.DDP5.1.x264-CM/Black.Is.King.2020.1080p.DSNP.WEBRip.DDP5.1.x264-CM.mkv
+/home/youruser/synology/media/Movies/Black Swan (2010)/Black.Swan.2010.Bluray.1080p.x264.AAC-SURGE.mkv
+/home/youruser/synology/media/Movies/Blue Beetle (2023) [1080p] [BluRay] [5.1] [YTS.MX]/Blue.Beetle.2023.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Bridesmaids.2011.EXTENDED.1080p.BluRay.x265-RARBG/Bridesmaids (2011) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Captain America Brave New World (2025)/Captain America Brave New World (2025) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Carry-On (2024)/Carry-On (2024) WEBRip-1080p.mp4
+/home/youruser/synology/media/Movies/Coming 2 America (2021)/Coming 2 America (2021) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Creed.2015.1080p.BluRay.x265-RARBG/Creed.2015.1080p.BluRay.x265-RARBG.mp4
+/home/youruser/synology/media/Movies/Creed.II.2018.1080p.10bit.BluRay.8CH.x265.HEVC-PSA/Creed.II.2018.1080p.10bit.BluRay.8CH.x265.HEVC-PSA.mkv
+/home/youruser/synology/media/Movies/Damaged (2024)/Damaged.2024.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Darkness of Man (2024)/Darkness.Of.Man.2024.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Dave.Chappelles.Block.Party.2005.1080p.WEBRip.x264-RARBG/Dave Chappelle's Block Party (2005) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Deadpool & Wolverine (2024)/Deadpool.Wolverine.2024.REPACK.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Den of Thieves 2 Pantera (2025)/Den of Thieves 2 Pantera (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Doin' It (2025)/Doin' It (2025) WEBDL-1080p.mkv
+/home/youruser/synology/media/Movies/Doom.2005.UNRATED.EXTENDED.CUT.1080p.BluRay.x264-HDDEViLS/Doom.2005.Extended.Remastered.1080p.BluRay.10Bit.X265.DDP.7.1-Chivaman.mkv
+/home/youruser/synology/media/Movies/Dr. No (1962)/Dr. No (1962) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Eddington (2025)/Eddington (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/EuroTrip.2004.UNRATED.1080p.WEBRip.x264-RARBG/EuroTrip (2004) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Everything Everywhere All at Once (2022)/Everything Everywhere All at Once (2022) Remux-1080p.mkv
+/home/youruser/synology/media/Movies/F1 The Movie (2025)/F1 (2025) WEBRip-1080p.mkv
+/home/youruser/synology/media/Movies/Fly Me to the Moon (2024)/Fly.Me.To.The.Moon.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Freaky Tales (2025)/Freaky Tales (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Ghostbusters Frozen Empire (2024)/Ghostbusters Frozen Empire (2024) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Girlfight (2000)/Girlfight (2000) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Gladiator II (2024)/Gladiator II (2024) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Good Fortune (2025)/Good Fortune (2025) WEBRip-1080p.mp4
+/home/youruser/synology/media/Movies/Gran Turismo (2023)/Gran Turismo (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/HIM (2025)/HIM (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Indiana Jones And The Dial Of Destiny (2023) [1080p] [WEBRip] [5.1] [YTS.MX]/Indiana Jones and the Dial of Destiny (2023) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Jackpot! (2024)/Jackpot.2024.REPACK.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Jojo Rabbit (2019) [1080p] [WEBRip] [5.1] [YTS.MX]/Jojo Rabbit (2019) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Joy Ride (2023) [1080p] [WEBRip] [5.1] [YTS.MX]/Joy Ride (2023) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Jumper (2008) (1080p BluRay x265 HEVC 10bit AAC 5.1 Silence)/Featurettes/Doug Liman's Jumper - Uncensored.mkv
+/home/youruser/synology/media/Movies/Jurassic World Rebirth (2025)/Jurassic World Rebirth (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Alexander and the Terrible, Horrible, No Good, Very Bad Road Trip (2025)/Alexander and the Terrible, Horrible, No Good, Very Bad Road Trip (2025) WEBRip-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/A Minecraft Movie (2025)/A Minecraft Movie (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Barbie 2023 1080p WEB-DL (HC-KOR) HEVC x265 BONE.mkv
+/home/youruser/synology/media/Movies - Kids/DC League of Super Pets (2022) 1080p TELESYNC x264 ESub AAC - HushRips.mkv
+/home/youruser/synology/media/Movies - Kids/Elemental.2023.1080p.WEBRip.1400MB.DD5.1.x264-GalaxyRG[TGx]/Elemental (2023) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies - Kids/Encanto.2021.1080p.WEBRip.x264-RARBG/Encanto (2021) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies - Kids/Frozen (2013)/Frozen (2013) BDRip 1080p ENG-ITA x265 - Il Regno Di Ghiaccio -Shiv@.mkv
+/home/youruser/synology/media/Movies - Kids/Pinocchio (2022)/Pinocchio (2022) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies - Kids/Space Jam (1996)/Space Jam (1996) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies - Kids/Spider-Man.Across.The.Spider-Verse.2023.1080p.WEBRip.1600MB.DD5.1.x264-GalaxyRG[TGx]/Spider-Man Across the Spider-Verse (2023) WEBRip-1080p.mkv
+/home/youruser/synology/media/Movies - Kids/Spirit.Untamed.2021.1080p.AMZN.WEBRip.DDP5.1.x264-CM/Spirit.Untamed.the.Movie.2021.1080p.AMZN.WEB-DL.DDP5.1.H.264-CMRG.mkv
+/home/youruser/synology/media/Movies - Kids/The Garfield Movie (2024) [1080p] [BluRay] [5.1] [YTS.MX]/The.Garfield.Movie.2024.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies - Kids/The Garfield Movie 2024 NEW V2 1080p English 1080p HD-TS 2GB - HushRips.mkv
+/home/youruser/synology/media/Movies - Kids/The Lion King (1994)/The Lion King (1994) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies - Kids/The.Super.Mario.Bros.Movie.2023.1080p.English.HDTC.AAC2.0.x265.mkv
+/home/youruser/synology/media/Movies - Kids/The Wild Robot (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/The Wild Robot (2024) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies - Kids/Z-O-M-B-I-E-S 2 (2020)/Z-O-M-B-I-E-S 2 (2020) WEBDL-1080p.mkv
+/home/youruser/synology/media/Movies/Lara Croft: Tomb Raider (2001)/Lara Croft Tomb Raider (2001) Bluray-2160p.mkv
+/home/youruser/synology/media/Movies/Lift (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/Lift.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Love Jones (1997)/Love Jones (1997) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Need for Speed (2014)/Need for Speed (2014) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/No.Sudden.Move.2021.1080p.WEB.H264-TIMECUT[rarbg]/No.Sudden.Move.2021.1080p.WEB.H264-TIMECUT.mkv
+/home/youruser/synology/media/Movies/Oceans Eight 2018.1080p.BRRip.x264.AAC.5.1.-.Hon3yHD/Oceans Eight 2018.1080p.BRRip.x264.AAC.5.1.-.Hon3yHD.mkv
+/home/youruser/synology/media/Movies/Pacific Rim Uprising 2018 1080p BluRay x264 DD 5.1-M2Tv/Pacific Rim Uprising 2018 1080p BluRay x264 DD 5.1-M2Tv.mkv
+/home/youruser/synology/media/Movies/Red One (2024)/Red One (2024) WEBDL-1080p.mkv
+/home/youruser/synology/media/Movies/Reminiscence.2021.1080p.WEBRip.x264-RARBG/Reminiscence (2021) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Reunion (2024)/Reunion.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Road House (2024) [1080p] [WEBRip] [5.1] [YTS.MX]/Road.House.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Rogue One A Star Wars Story (2016) [2160p] [4K] [BluRay] [5.1] [YTS.MX]/Rogue One A Star Wars Story (2016) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/Shaolin Soccer (2001)/Shaolin Soccer (2001) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Space Jam (1996)/Space Jam (1996) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Super.8.2011.1080p.BluRay.x264.AAC.5.1.MultiSub.-.Hon3y/Super.8.2011.1080p.BluRay.x264.AAC.5.1.MultiSub.-.Hon3y.mkv
+/home/youruser/synology/media/Movies/Swordfish (2001)/Swordfish (2001) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/Terminator Genisys (2015)/Terminator Genisys (2015) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/The 40 Year Old Virgin (2005)/The 40 Year Old Virgin (2005) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/The Amateur (2025)/The Amateur (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/The Book of Clarence (2024)/The Book of Clarence (2024) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/The Boondock Saints II - All Saints Day (2009) DC (1080p BluRay x265 HEVC 10bit AAC 5.1 Tigole)/Featurettes/The Boondock Saints Hit Comic-Con.mkv
+/home/youruser/synology/media/Movies/The Electric State (2025)/The Electric State (2025) WEBDL-1080p.mkv
+/home/youruser/synology/media/Movies/The Fall Guy (2024)/The.Fall.Guy.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/The Fantastic Four First Steps (2025)/The Fantastic 4 First Steps (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/The Foreigner 2017 1080p BluRay x264 DTS 5.1 MSubS - Hon3y/The Foreigner 2017 1080p BluRay x264 DTS 5.1 MSubS - Hon3y.mkv
+/home/youruser/synology/media/Movies/The Killer (2024)/The Killer (2024) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/The Legend Of Drunken Master (1994)-Jackie Chan-1080p-H264-AC 3 (DolbyDigital-5.1) & nickarad/The Legend of Drunken Master (1994) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/The.Lost.City.2022.1080p.AMZN.WEBRip.DDP5.1.x264-CM/The.Lost.City.2022.1080p.AMZN.WEB-DL.DDP5.1.H264-CM.mkv
+/home/youruser/synology/media/Movies/The.Marvels.2023.1080p.WEBRip.1400MB.DD5.1.x264-GalaxyRG[TGx]/The Marvels (2023) Bluray-1080p.mkv
+/home/youruser/synology/media/Movies/The Mighty Ducks Trilogy (1080p)/The Mighty Ducks (1992) [1080p].mkv
+/home/youruser/synology/media/Movies/The Smashing Machine (2025)/The Smashing Machine (2025) Bluray-1080p.mp4
+/home/youruser/synology/media/Movies/The Wolverine (2013) [1080p]/The Wolverine (2013) Extended (1080p BluRay x265 HEVC 10bit AAC 7.1 Tigole).mkv
+/home/youruser/synology/media/Movies/Till.Death.2021.1080p.WEB.H264-EMPATHY[rarbg]/Till.Death.2021.1080p.WEB.H264-EMPATHY.mkv
+/home/youruser/synology/media/Movies/Twisters (2024)/Twisters.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Wicked For Good (2025)/wicked.for.good.2025.v2.1080p.hevc.x265.rmteam.mkv
+/home/youruser/synology/media/Movies/Wolfs (2024)/Wolfs.2024.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
+/home/youruser/synology/media/Movies/Wonder Woman (2017) 1080p BrRip x264 - VPPV/Wonder.Woman.2017.1080p.BluRay.x264.VPPV.mkv
+/home/youruser/synology/media/Movies/Zoolander.2001.BluRay.1080p.x264.AAC.5.1.-.Hon3y/www.HDSector.com - Zoolander.2001.BluRay.1080p.x264.AAC.5.1.-.Hon3y.mkv
+/home/youruser/synology/media/TV Shows/Fallout (2024)/Season 1/Fallout - S01E01 - The End WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Fallout (2024)/Season 1/Fallout - S01E02 - The Target WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Fallout (2024)/Season 1/Fallout - S01E06 - The Trap WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/From (2022)/Season 3/From - S03E05 - The Light of Day WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Lioness/Season 1/Lioness - S01E06 - The Lie is the Truth WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Paradise (2025)/Season 1/Paradise (2025) - S01E01 - Wildcat Is Down WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Paradise (2025)/Season 1/Paradise (2025) - S01E04 - Agent Billy Pace WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Paradise (2025)/Season 1/Paradise (2025) - S01E05 - In the Palaces of Crowned Kings WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Reacher (2022)/Season 1/Reacher - S01E05 - No Apologies HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Reacher (2022)/Season 1/Reacher - S01E06 - Papier HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Reacher (2022)/Season 2/Reacher - S02E02 - What Happens in Atlantic City HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Reacher (2022)/Season 3/Reacher - S03E04 - Dominique HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Reacher (2022)/Season 3/Reacher - S03E07 - L.A. Story HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Reacher (2022)/Season 3/Reacher - S03E08 - Unfinished Business WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Reacher.S01E05.1080p.HEVC.x265-MeGusta[eztv.re].mkv
+/home/youruser/synology/media/TV Shows/Reacher.S02E02.1080p.x265-ELiTE[EZTVx.to].mkv
+/home/youruser/synology/media/TV Shows/Reacher.S03E04.1080p.x265-ELiTE/Reacher.S03E04.1080p.x265-ELiTE.mkv
+/home/youruser/synology/media/TV Shows/See.S01E03.720p.WEB.x265-MiNX[eztv].mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 1/See - S01E03 - Fresh Blood WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/See.S01.WEB-DL.x264-ION10/Season 3/See - S03E06 - The Lowlands HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/See.S02E01.1080p.HEVC.x265-MeGusta[eztv.re].mkv
+/home/youruser/synology/media/TV Shows/See.S03E06.1080p.HEVC.x265-MeGusta[eztv.re].mkv
+/home/youruser/synology/media/TV Shows/Severance (2022)/Season 1/Severance - S01E02 - Half Loop HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/Severance (2022)/Season 2/Severance - S02E01 - Hello, Ms. Cobel WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Severance (2022)/Season 2/Severance - S02E02 - Goodbye, Mrs. Selvig WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/Severance.S01E02.Half.Loop.1080p.HEVC.x265-MeGusta[TGx]/Severance.S01E02.Half.Loop.1080p.HEVC.x265-MeGusta.mkv
+/home/youruser/synology/media/TV Shows/Shogun 2024 S01E03 Tomorrow Is Tomorrow 720p DSNP WEB-DL DD 5 1 H 264-playWEB[TGx]/Season 1/Shōgun - S01E04 - The Eightfold Fence WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ted.Lasso.S01.WEB-DL.x264-ION10/Season 2/Ted Lasso - S02E10 - No Weddings and a Funeral Bluray-1080p.mkv
+/home/youruser/synology/media/TV Shows/Ted.Lasso.S02E03.1080p.WEB.H264-CAKES[rarbg]/ted.lasso.s02e03.1080p.web.h264-cakes.mkv
+/home/youruser/synology/media/TV Shows/Ted.Lasso.S02E11.1080p.WEB.H264-CAKES[rarbg]/ted.lasso.s02e11.1080p.web.h264-cakes.mkv
+/home/youruser/synology/media/TV Shows/The Last of Us (2023)/Season 1/The Last of Us - S01E03 - Long, Long Time HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/The Last of Us (2023)/Season 1/The Last of Us - S01E06 - Kin WEBDL-1080p.mkv
+/home/youruser/synology/media/TV Shows/The Last of Us (2023)/Season 2/The Last of Us - S02E02 - Through the Valley HDTV-1080p.mkv
+/home/youruser/synology/media/TV Shows/The.Last.of.Us.S02E02.1080p.HEVC.x265-MeGusta[EZTVx.to].mkv
+/home/youruser/synology/media/TV Shows/Wednesday (2022)/Season 1/Wednesday - S01E04 - Woe What a Night Bluray-1080p.mkv
+/home/youruser/synology/media/TV Shows/Wednesday (2022)/Season 1/Wednesday - S01E05 - You Reap What You Woe Bluray-1080p.mkv
+/home/youruser/synology/media/TV Shows/Wednesday (2022)/Season 2/Wednesday - S02E01 - Here We Woe Again WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Wednesday (2022)/Season 2/Wednesday - S02E03 - Call of the Woe WEBRip-1080p.mkv
+/home/youruser/synology/media/TV Shows/Wednesday (2022)/Season 2/Wednesday - S02E05 - Hyde and Woe Seek WEBRip-1080p.mkv

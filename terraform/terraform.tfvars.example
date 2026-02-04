@@ -1,0 +1,145 @@
+# Home Lab Terraform Variables
+# Copy this file to terraform.tfvars and customize for your environment
+
+# Network Configuration
+network = {
+  unified_subnet = "192.168.1.0/24"
+  gateway_ip     = "192.168.1.1"
+  dhcp_range     = ["192.168.1.100", "192.168.1.200"]
+  dns_servers    = ["192.168.1.1", "8.8.8.8"]
+}
+
+# Service Credentials (REPLACE WITH YOUR VALUES)
+plex = {
+  claim_token = "YOUR_PLEX_CLAIM_TOKEN"
+}
+
+grafana = {
+  admin_password = "YOUR_SECURE_GRAFANA_PASSWORD"
+}
+
+adguard = {
+  admin_username = "admin"
+  admin_password = "YOUR_ADGUARD_ADMIN_PASSWORD"
+}
+
+# Environment Settings
+environment = "production"
+
+# ----------------------------
+# Docker (Terraform-managed)
+# ----------------------------
+#
+# This lets Terraform manage *all* Docker containers you choose to declare.
+# Start with a small set (AdGuard + monitoring), then migrate Plex/STARR.
+#
+# NOTE: Paths below are examples. Use your audited server paths (see config/mediaserver.env.example).
+
+docker_networks = [
+  "monitoring",
+  "media"
+]
+
+docker_network_subnets = {
+  monitoring = "172.22.0.0/16"
+  media      = "172.23.0.0/16"
+}
+
+docker_volumes = {}
+
+docker_services = {
+  # Example: Prometheus + Grafana (adjust volumes to match your host layout)
+  prometheus = {
+    image   = "prom/prometheus:latest"
+    ports   = ["9090:9090"]
+    volumes = ["/home/youruser/Docker/DevOps-Docker-Prometheus-Grafana-IaaC/prometheus:/etc/prometheus"]
+    command = ["--config.file=/etc/prometheus/prometheus.yml"]
+    networks = ["monitoring"]
+  }
+
+  grafana = {
+    image       = "grafana/grafana:latest"
+    ports       = ["3000:3000"]
+    volumes     = ["/home/youruser/Docker/DevOps-Docker-Prometheus-Grafana-IaaC/grafana:/var/lib/grafana"]
+    environment = ["GF_SECURITY_ADMIN_PASSWORD=CHANGE_ME"]
+    networks    = ["monitoring"]
+  }
+}
+
+# Server Configuration
+server_config = {
+  hostname   = "mediaserver"
+  ip_address = "192.168.1.11"
+  cpu_cores  = 4
+  memory_gb  = 16
+  storage_gb = 1000
+}
+
+# Monitoring Configuration
+monitoring = {
+  retention_days     = 30
+  alert_email        = "your-email@example.com"
+  enable_external_alerts = false
+}
+
+# Backup Configuration
+backup = {
+  enabled        = true
+  schedule       = "0 2 * * *"
+  retention_days = 30
+  destination    = "/mnt/backup"
+  encryption     = true
+}
+
+# Security Configuration
+security = {
+  enable_fail2ban     = true
+  enable_firewall     = true
+  ssh_port           = 22
+  allowed_ips        = ["192.168.1.0/24"]
+  password_policy    = "strong"
+}
+
+# STARR Stack Configuration (Media Automation with VPN)
+# NOTE: Update all paths to match your actual server paths
+# IMPORTANT: Credentials for VPN are read from credentials.txt file in gluetun_config_path
+# The credentials.txt file should contain two lines:
+#   Line 1: VPN username
+#   Line 2: VPN password
+starr = {
+  puid                      = 1000
+  pgid                      = 1004  # Match your actual PGID
+  vpn_service_provider      = "pia"          # Options: pia, nordvpn, surfshark, etc.
+  vpn_server_regions        = "CA Montreal"  # For PIA port forwarding use a supported region (e.g. CA Montreal, Germany, Netherlands); US East does not support it
+  gluetun_config_path       = "/home/youruser/Docker/config/data_gluetun"  # Must contain credentials.txt
+  qbittorrent_config_path   = "/usr/local/bin/qbittorrent/config"
+  qbittorrent_downloads_path = "/data/media/downloads"
+  qbittorrent_torrents_path = "/external/media/torrents"
+  external_media_path       = "/external/media"
+  radarr_config_path        = "/usr/local/bin/radarr/config"
+  sonarr_config_path        = "/usr/local/bin/sonarr/config"
+  prowlarr_config_path      = "/usr/local/bin/prowlarr/data"
+  flaresolverr_config_path  = "/usr/local/bin/flaresolverr/data"
+  media_root_path           = "/data/media"
+  synology_path             = "/home/youruser/synology"  # Synology NAS mount point
+}
+
+# Feature Flags
+features = {
+  enable_adguard           = true
+  enable_parental_controls = false
+  enable_remote_access     = true
+  enable_starr             = false  # Set to true when ready to deploy STARR stack
+  vpn_server               = false
+  reverse_proxy            = true
+  load_balancer            = false
+  distributed_storage      = false
+  gpu_passthrough          = false
+}
+
+# Debug Settings (set to false for production)
+debug = {
+  enable_logs     = true
+  verbose_output  = false
+  skip_validation = false
+}
