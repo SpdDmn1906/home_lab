@@ -26,6 +26,11 @@ output "starr_services" {
       name   = docker_container.flaresolverr.name
       status = "managed_by_terraform"
     }
+    bazarr = {
+      id     = docker_container.bazarr.id
+      name   = docker_container.bazarr.name
+      status = "managed_by_terraform"
+    }
   }
 }
 
@@ -37,5 +42,6 @@ output "service_urls" {
     sonarr      = "http://192.168.1.11:8989"
     prowlarr    = "http://192.168.1.11:9696"
     flaresolverr = "http://192.168.1.11:8191"
+    bazarr      = "http://192.168.1.11:6767"
   }
 }

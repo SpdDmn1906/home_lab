@@ -87,6 +87,16 @@ groups:
           summary: "Plex Media Server is down"
           description: "Plex Media Server has been down for more than 2 minutes"
 
+      # Plex Fortress Guard
+      - alert: PlexTvDegraded
+        expr: plex_fortress_guard_state == 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "plex.tv is degraded - fortress guard active"
+          description: "plex.tv is returning errors. Fortress guard is blocking {{ $value }} IPs so Plex uses local cache."
+
       # Service Availability
       - alert: ServiceDown
         expr: up == 0

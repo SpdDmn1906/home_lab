@@ -58,6 +58,12 @@ resource "docker_container" "qbittorrentvpn" {
     external = 8191
     protocol = "tcp"
   }
+  # Bazarr
+  ports {
+    internal = 6767
+    external = 6767
+    protocol = "tcp"
+  }
 
   # Privileged mode required for WireGuard kernel module access and iptables
   privileged = true
@@ -78,7 +84,7 @@ resource "docker_container" "qbittorrentvpn" {
     "VPN_PASS=${trimspace(file("/home/youruser/Docker/config/data_gluetun/config/pia_pass.txt"))}",
     "VPN_PROV=pia",
     "VPN_CLIENT=wireguard",
-    "VPN_INPUT_PORTS=7878,8989,9696,8191",
+    "VPN_INPUT_PORTS=7878,8989,9696,8191,6767",
     "VPN_OPTIONS=", # Optional: add extra openvpn/wireguard options
     "STRICT_PORT_FORWARD=yes",
     "ENABLE_PRIVOXY=yes",

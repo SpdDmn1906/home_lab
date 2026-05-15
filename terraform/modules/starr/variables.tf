@@ -105,3 +105,10 @@ variable "flaresolverr_config_path" {
   type        = string
   default     = "/usr/local/bin/flaresolverr/data"
 }
+
+# Bazarr Configuration
+variable "bazarr_config_path" {
+  description = "Path to Bazarr config directory on host"
+  type        = string
+  default     = "/usr/local/bin/bazarr/config"
+}

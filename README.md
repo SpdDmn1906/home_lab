@@ -29,7 +29,11 @@ A comprehensive, production-like home datacenter setup with monitoring, automati
 ```
 home_lab/
 ├── docs/                            # Documentation Center
-│   ├── architecture/                # High-level design & diagrams
+│   ├── roadmap/                     # ★ Roadmaps & purchasing (START HERE for direction)
+│   │   ├── INFRASTRUCTURE_HARDENING_ROADMAP.md   # Phased execution plan (incl. Phase 6 vision)
+│   │   ├── HARDWARE_ROADMAP.md                    # Unified purchasing sequence
+│   │   └── ups-deep-dive.md                       # Phase 4 UPS sizing + NUT setup
+│   ├── architecture/                # High-level design & target topology
 │   ├── guides/                      # How-to guides & setup instructions
 │   ├── troubleshooting/             # Fixes for common issues
 │   ├── reports/                     # Deep-dive analysis & audits
@@ -38,14 +42,24 @@ home_lab/
 ├── terraform/                       # Infrastructure as Code (Terraform)
 ├── ansible/                         # Configuration Management (Ansible)
 ├── scripts/                         # Automation & Utility Scripts
+│   ├── fortress/                    # Plex fortress guard (iptables watchdog)
+│   ├── health-checks/               # Health monitoring
 │   ├── diagnostics/                 # System & network checks
 │   ├── fixes/                       # Auto-fix scripts
 │   ├── backup/                      # Backup automation
-│   ├── health-checks/               # Health monitoring
-│   └── maintenance/                 # Routine maintenance
+│   ├── maintenance/                 # Routine maintenance
+│   └── log-error-scanner.sh         # Container log error textfile collector
 ├── monitoring/                      # Prometheus/Grafana configs
 └── README.md                        # This file
 ```
+
+## 🌅 Direction & Roadmap
+
+**Guiding principle**: Internet-Optional Household — fortress mode generalized from Plex to the whole family.
+
+- 📍 **[Infrastructure Hardening Roadmap](docs/roadmap/INFRASTRUCTURE_HARDENING_ROADMAP.md)** — phased execution plan from emergency stabilization through 2-5 year vision.
+- 🛒 **[Hardware Roadmap](docs/roadmap/HARDWARE_ROADMAP.md)** — single source of truth for all hardware purchases, sequenced against the roadmap phases.
+- 🏗️ **[Architecture](docs/architecture/architecture.md)** — current state, target multi-node topology, and the SPOFs each phase eliminates.
 
 ## 🚀 Quick Start
 
@@ -65,25 +79,31 @@ cat docs/guides/quick-start.md
 
 ### 📘 Setup & Guides (`docs/guides/`)
 - [STARR Stack Deployment](docs/guides/starr-deployment.md) - **Complete Terraform Deployment Guide**
-- [Network Setup](docs/guides/network-setup.md) - Configuration & Optimization
+- [Bazarr Setup](docs/guides/bazarr-setup.md) - Automated subtitles for Sonarr/Radarr (Plex)
+- [Quick Start Guide](docs/guides/quick-start.md) - Fast track setup
 - [DNS Setup](docs/guides/dns-setup.md) - Name resolution & Static IPs
 - [AdGuard Home Setup](docs/guides/adguard-setup.md) - Ad blocking & Unbound DNS
 - [Infrastructure Management](docs/guides/infrastructure-management.md) - IaC Guide
+- [Network Unification Checklist](docs/guides/network-unification-checklist.md) - Network migration guide
 
 ### 🔧 Troubleshooting (`docs/troubleshooting/`)
-- [CIFS Storage Fixes](docs/troubleshooting/cifs-storage.md) - Fix mount errors & permissions
-- [STARR App Connectivity](docs/troubleshooting/starr-connectivity.md) - VPN & API issues
-- [Plex Playback Issues](docs/troubleshooting/plex-playback.md) - Remote access & buffering fixes
-- [qBittorrent Performance](docs/troubleshooting/qbittorrent-performance.md) - Speed optimization
-- [Network Latency](docs/troubleshooting/network-latency.md) - Eero mesh fixes
+- [CIFS Storage Fixes](docs/troubleshooting/NETWORK_SERVICE_AND_CIFS_FIXES.md) - Fix mount errors & permissions
+- [STARR App Connectivity](docs/troubleshooting/RADARR_CONNECTION_TROUBLESHOOTING.md) - VPN & API issues
+- [Plex Playback Issues](docs/troubleshooting/PLAYBACK_ISSUE_RESOLUTION.md) - Remote access & buffering fixes
+- [qBittorrent Performance](docs/troubleshooting/QB_PERFORMANCE_TROUBLESHOOTING.md) - Speed optimization
+- [Network Latency](docs/troubleshooting/EERO_LATENCY_FIX_GUIDE.md) - Eero mesh fixes
+- [General Troubleshooting](docs/troubleshooting/general-troubleshooting.md) - Common issues
 
 ### 🏗️ Architecture (`docs/architecture/`)
 - [Architecture Details](docs/architecture/architecture.md)
+- [Network Setup](docs/architecture/network-setup.md)
 - [Security Hardening](docs/architecture/security.md)
+- [Gaming Network](docs/architecture/gaming-network.md)
+- [Security Cameras](docs/architecture/security-cameras.md)
 
 ### 📊 Reports & Audits (`docs/reports/`)
-- [Server Audit Analysis](docs/reports/audits/SERVER_AUDIT_ANALYSIS.md)
-- [Media Corruption Scans](docs/reports/scans/)
+- [Infrastructure Audit](docs/reports/infrastructure/running-infrastructure-audit.md)
+- [Media Corruption Scans](docs/reports/infrastructure/media-corruption-scanning.md)
 - [Duplicate Media Analysis](docs/reports/duplicate-media/)
 
 ## 📊 Monitoring Stack
@@ -95,9 +115,9 @@ cat docs/guides/quick-start.md
 - **Exporters**: Node, cAdvisor, Plex, Speedtest, Blackbox
 
 ### Access
-- Grafana: http://localhost:3000 (default: admin/admin)
-- Prometheus: http://localhost:9090
-- Plex: http://localhost:32400/web
+- **Grafana**: http://localhost:3000 (default: admin/admin)
+- **Prometheus**: http://localhost:9090
+- **Plex**: http://localhost:32400/web
 
 ## 🔧 Maintenance & Automation
 

@@ -4,6 +4,11 @@
 **Issue**: High latency on "SC Home_Ext" (Eero mesh network)
 **Status**: ✅ **LATENCY IMPROVED** - See [NETWORK_LATENCY_IMPROVEMENT_ANALYSIS.md](NETWORK_LATENCY_IMPROVEMENT_ANALYSIS.md) for latest results
 
+> **2026-02-06 Update**: Confirmed "Node Failure" congestion mode.
+> When Eero Node 3 ("Garage") went offline, the Nest Cam roamed to Node 2 ("Living Room"), causing congestion that affected the TV on the same node.
+> **Fix**: Reconnecting Node 3 resolved the congestion. TV latency dropped to ~3ms.
+> **Lesson**: If Eero latency spikes, check for offline nodes causing "crowding" on remaining nodes.
+
 > **2025-12-30 Note**: Not all Plex “freezing” symptoms are caused by Eero latency.
 > During live testing, we identified **server USB topology risks** (USB NIC + USB media drive on the same hub) and **client receiver-window stalls** that can manifest even on `SC Home`.
 > See: [PLEX_PLAYBACK_FREEZING_INVESTIGATION.md](PLEX_PLAYBACK_FREEZING_INVESTIGATION.md).
