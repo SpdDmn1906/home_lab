@@ -4,7 +4,7 @@
 # If so, restarts them to re-establish network stack connection.
 
 VPN_CONTAINER="qbittorrentvpn"
-DEPENDENTS=("radarr" "sonarr" "prowlarr" "flaresolverr")
+DEPENDENTS=("radarr" "sonarr" "prowlarr" "flaresolverr" "bazarr")
 
 # Check if VPN is running
 VPN_STATE=$(docker inspect -f '{{.State.Running}}' $VPN_CONTAINER 2>/dev/null)

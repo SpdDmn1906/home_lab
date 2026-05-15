@@ -1,0 +1,14 @@
+[Unit]
+Description=Plex Fortress Guard - blocks plex.tv when degraded so Plex uses cache
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/homelab/scripts/fortress/plex-fortress-guard.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=plex-fortress-guard
+
+[Install]
+WantedBy=multi-user.target

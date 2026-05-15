@@ -93,6 +93,7 @@ services:
       - "9594:9594"
     networks:
       - monitoring
+      - media
     depends_on:
       - plex
 
@@ -139,66 +140,22 @@ services:
     image: plexinc/pms-docker:latest
     container_name: plex
     restart: unless-stopped
+    network_mode: host
     environment:
       - PLEX_CLAIM=${PLEX_CLAIM}  # Get from https://plex.tv/claim
-      - PLEX_UID=1000
-      - PLEX_GID=1000
-      - TZ=America/New_York  # Change to your timezone
-      - ADVERTISE_IP=http://localhost:32400/
+      - PLEX_UID=${PUID:-1000}
+      - PLEX_GID=${PGID:-1004}
+      - TZ=${TZ:-America/New_York}
+      - ADVERTISE_IP=http://${MEDIA_SERVER_IP:-192.168.1.11}:32400/
     volumes:
-      - ${PLEX_CONFIG_PATH}:/config
-      - ${PLEX_MEDIA_PATH}:/data
-      - ${PLEX_TRANSCODE_PATH}:/transcode
-    ports:
-      - "32400:32400/tcp"
-      - "3005:3005/tcp"
-      - "8324:8324/tcp"
-      - "32469:32469/tcp"
-      - "1900:1900/udp"
-      - "32410:32410/udp"
-      - "32412:32412/udp"
-      - "32413:32413/udp"
-      - "32414:32414/udp"
-    networks:
-      - media
+      - ${PLEX_CONFIG_PATH:-/app/plex/config}:/config
+      - ${PLEX_MEDIA_PATH:-/home/youruser/synology/Media}:/nas
+      - ${PLEX_EXTERNAL_PATH:-/external}:/external
     devices:
-      - /dev/dri:/dev/dri  # For hardware transcoding
+      - /dev/dri:/dev/dri  # Intel Quick Sync hardware transcoding
     tmpfs:
       - /tmp
-
-  # Sonarr (TV Shows)
-  sonarr:
-    image: linuxserver/sonarr:latest
-    container_name: sonarr
-    restart: unless-stopped
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
-    volumes:
-      - ${SONARR_CONFIG_PATH}:/config
-      - ${MEDIA_PATH}:/data
-    ports:
-      - "8989:8989"
-    networks:
-      - media
-
-  # Radarr (Movies)
-  radarr:
-    image: linuxserver/radarr:latest
-    container_name: radarr
-    restart: unless-stopped
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
-    volumes:
-      - ${RADARR_CONFIG_PATH}:/config
-      - ${MEDIA_PATH}:/data
-    ports:
-      - "7878:7878"
-    networks:
-      - media
+      - /transcode
 
 networks:
   monitoring:
