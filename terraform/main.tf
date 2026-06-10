@@ -1,8 +1,11 @@
-# Home Lab Infrastructure as Code - Terraform Configuration
-# Focus: manage Docker containers on the media server using Terraform.
+# Home Lab Infrastructure as Code
+# Focus: manage Docker containers on the media server. Runs under OpenTofu (`tofu`)
+# as of 2026-06-09 — Terraform (`terraform`) still works because HCL and state are
+# binary-compatible, but `tofu` is the canonical binary going forward.
+# Migration runbook: docs/guides/OPENTOFU_K3S_MIGRATION.md
 #
 # IMPORTANT:
-# - Terraform can reliably manage **Docker resources** on the server.
+# - This config can reliably manage Docker resources on the server.
 # - Consumer-router config (VLAN/DHCP/etc.) typically requires vendor APIs; keep that in docs/Ansible.
 
 terraform {
