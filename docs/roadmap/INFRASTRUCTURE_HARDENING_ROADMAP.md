@@ -77,6 +77,22 @@
     - [ ] Goal: `ansible-playbook site.yml` on a fresh Ubuntu install reproduces the entire stack in <10 min.
     - [ ] Roles: `cifs_mount`, `docker_host`, `plex_gpu` (if hardware transcode is used), `adguard`, `starr_stack`, `fortress_guard`, `monitoring_stack`.
     - [ ] Acceptance test: blow away the VM, run playbook, Plex serves a movie.
+- [ ] **OpenTofu migration** (added 2026-06-09):
+    - [ ] Replace Terraform with OpenTofu as the IaC binary. HCL syntax and provider ecosystem are identical, so this is a tooling swap, not a rewrite.
+    - [ ] Rationale: maintain OSS license clarity post-HashiCorp BSL change, stay aligned with current IaC ecosystem direction, gain credible portfolio talking point for OSS-leaning hiring managers.
+    - [ ] Procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 1 (state backup → `tofu init -migrate-state` → verify zero-change plan → update `infrastructure-manager.sh` wrapper).
+    - [ ] Rollback: copy state backup back, re-install Terraform, re-init. Symmetric because state file format is binary-compatible.
+    - [ ] Acceptance test: `tofu plan` returns "No changes" and `tofu apply` returns "0 added, 0 changed, 0 destroyed" against existing Docker stack.
+- [ ] **Self-hosted Git** (added 2026-06-10):
+    - [ ] Deploy Gitea or GitLab CE as the canonical home for personal repos (`home_lab`, `home_lab_k3s`, future projects). Removes GitHub dependency for portfolio code while preserving GitHub mirror for visibility.
+    - [ ] Recommend Gitea for lower resource footprint on home hardware; switch to GitLab CE if you want native CI/CD + container registry in one place.
+    - [ ] Deploy as Docker container on the media host initially; migrate to K3s once 5a is stable.
+    - [ ] Pair with a `git-mirror` cron that pushes selected repos to GitHub for hiring-manager visibility.
+- [ ] **DR / backup-restore drill** (added 2026-06-10):
+    - [ ] Quarterly cadence: pick one service, blow away its data, restore from backup, validate end-to-end.
+    - [ ] Target rotation: Q1 paperless-ngx, Q2 immich, Q3 K3s cluster manifests, Q4 a Docker volume from the media host.
+    - [ ] The point is testing the *restore*, not the *backup*. Track the elapsed wall-clock time and document gaps every drill.
+    - [ ] Note: Resilience requirement before scaling Phase 5e (Paperless-ngx) and Phase 5f (Immich) intake. Untested backups are a regression of fortress mode.
 
 ---
 
@@ -85,8 +101,10 @@
 
 **Rule of thumb**: Nothing in Phase 5 starts until Phase 2 (failing disk) and Phase 3 (DNS isolation) are complete. Production stability beats resume polish.
 
-### 5a. K3s Sidecar Cluster *(separate node, not main host)*
+### 5a. K3s Sidecar Cluster *(separate node, not main host)* — **ACTIVE (2026-06-09)**
 *Why this passes the smell test: a dedicated learning cluster doesn't put Plex at risk, and provides an isolation boundary for experimental workloads. The Pi from Phase 3 (or a second NUC) is the natural target.*
+
+Bring-up procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2.
 
 - [ ] **Hardware**: Reuse Phase 3 Pi (DNS first, K3s second) OR a separate mini-PC.
 - [ ] **Cluster bring-up**: Single-node K3s with `--disable traefik --disable servicelb` (use Tailscale + nginx-ingress instead).
@@ -97,22 +115,33 @@
 - [ ] **Hard boundary**: Plex, STARR, AdGuard, fortress guard, monitoring **stay on Docker on the media host**. They have host networking, GPU passthrough, and host iptables requirements that fight K8s.
 - [ ] **Resume artifact**: Public GitHub repo of the cluster manifests + write-up of "why I chose hybrid Docker + K3s instead of full migration."
 
-### 5b. ArgoCD on the K3s Cluster
+### 5b. GitOps on the K3s Cluster (lean FluxCD)
 *Why this passes the smell test: GitOps demonstrably works for K8s manifests; pairs naturally with 5a; does NOT require migrating prod stack.*
 
-- [ ] Install ArgoCD into the K3s cluster (5a).
-- [ ] Manifests live in a separate `home_lab_k3s/` repo (or subfolder), watched by ArgoCD.
+- [ ] **Evaluation step before install** (revised 2026-06-10): both FluxCD and ArgoCD work, but the home-lab evidence leans Flux: native OpenTofu bootstrap, lighter footprint, CLI-first, and pairs cleanly with Renovate bot for image-version auto-PRs. ArgoCD has the better UI if you prefer a dashboard. Pick one; do not run both. Document the decision rationale as the resume artifact.
+- [ ] Install the chosen GitOps tool into the K3s cluster (5a).
+- [ ] Manifests live in a separate `home_lab_k3s/` repo (or subfolder), watched by the GitOps tool.
 - [ ] App-of-apps pattern for at least 3 workloads.
 - [ ] Demonstrate: git push → automatic deploy → rollback via git revert.
-- [ ] **Do not** try to GitOps the Docker-Compose stack. That's a different problem; if you want compose-GitOps later, look at `komodo` or `dockge`, not ArgoCD.
+- [ ] **Add Renovate bot** for automated image-version PRs. The pattern: cluster manifest references `image: foo:1.36`; Renovate sees `foo:1.42` upstream; auto-opens a PR to bump; you merge; GitOps reconciles. End-to-end automation story without losing the human approval gate.
+- [ ] **Do not** try to GitOps the Docker-Compose stack. That's a different problem; if you want compose-GitOps later, look at `komodo` or `dockge`, not ArgoCD/FluxCD.
 
-### 5c. Go CLI: `sb-lab` (bounded scope)
-*Why this passes the smell test: bash struggles with structured Sonarr/Radarr/Plex API calls (JSON parsing, retries, concurrency, error handling). A Go CLI that targets specifically those operations is a real upgrade, not a rewrite.*
+### 5c. Custom tooling for home lab APIs (MCP server OR Go CLI)
+*Why this passes the smell test: bash struggles with structured Sonarr/Radarr/Plex API calls (JSON parsing, retries, concurrency, error handling). Either path — a custom MCP server OR a Go CLI — fills bash's actual weak spots. As of 2026-06-10, the MCP server is the stronger career-portfolio pick because MCP is the protocol Claude Code, Cursor, LM Studio, Hermes Agent, and most agentic tooling already consumes.*
+
+**Path A (recommended as of 2026-06-10): Custom MCP server for home lab APIs.**
+- [ ] Build a Python (or TypeScript) MCP server exposing the operations below as tool calls.
+- [ ] Consumed by Claude Code (which you already use daily), Claude Desktop, LM Studio, Cursor, Hermes Agent, and any other MCP client. Single implementation, many consumers.
+- [ ] Tool calls to expose: `home_lab.media.find_duplicates` (Sonarr/Radarr), `home_lab.plex.profile_check`, `home_lab.fortress.status`, `home_lab.backup.verify`, `home_lab.unifi.status`, `home_lab.proxmox.vm_state`.
+- [ ] Distribution: Docker container on the media host (initially) → K3s service after Phase 5a stabilizes. Docker MCP Gateway makes the tools remotely accessible if you want them callable from n8n or a remote Claude instance.
+- [ ] **Resume artifact**: "Built a custom MCP server that exposes my home lab as tool calls for Claude / Cursor / any MCP-aware agent. Demonstrates understanding of the protocol underlying modern agentic tooling." Much stronger differentiator in 2026-2027 than yet-another-Go-CLI.
+
+**Path B (alternative): Go CLI `sb-lab`.** Same operations, packaged as a single static binary. Still defensible if you want Go on the resume. Avoid building *both* — pick one path and ship it.
 
 - [ ] **Do NOT** rewrite `infrastructure-manager.sh` or any working bash. Bash is correct for orchestrating docker/iptables/systemd.
-- [ ] **Do** build `sb-lab` as a new tool that fills bash's actual weak spots:
-    - [ ] `sb-lab media find-duplicates` — concurrent Sonarr/Radarr API calls, deduplicated output.
-    - [ ] `sb-lab plex profile-check` — verifies managed user profiles are intact (early warning for the bug fortress guard fixes).
+- [ ] **Do** build the chosen tool to fill bash's actual weak spots:
+    - [ ] media find-duplicates — concurrent Sonarr/Radarr API calls, deduplicated output.
+    - [ ] plex profile-check — verifies managed user profiles are intact (early warning for the bug fortress guard fixes).
     - [ ] `sb-lab fortress status` — pretty-print of guard state + blocked IPs + Prometheus metric values.
     - [ ] `sb-lab backup verify` — checksums NAS-backed configs, alerts on drift.
 - [ ] **Distribution**: Single static binary, installed to `/usr/local/bin/sb-lab` via the Ansible playbook (5a/5b's deployment story closes the loop).
@@ -124,6 +153,90 @@
 - [ ] Expose custom Prometheus metrics from `sb-lab` (e.g., `sb_lab_duplicate_count`, `sb_lab_profile_check_passed`).
 - [ ] OpenTelemetry traces for `sb-lab` operations that span multiple API calls.
 - [ ] Grafana dashboard pulling from both Prometheus (metrics) and Loki (logs) on the same time range — "single pane of glass" story.
+
+### 5e. Paperless-ngx Document Stack on K3s
+*Why this passes the smell test: real multi-service workload for the K3s cluster (better K3s smoke test than throwaway demos), genuine personal utility (replaces Google Drive / Dropbox for documents), and the first concrete implementation of the Phase 6 Theme A ("move away from consumer cloud for primary storage") and Theme B ("retrieval over family docs") visions.*
+
+Two-stage rollout. Stage 1 ships without AI; Stage 2 waits until Theme B's GPU node exists.
+
+**Stage 1: Vanilla Paperless-ngx (do now, post-K3s bring-up)**
+- [ ] Deploy paperless-ngx stack on K3s: paperless-web + postgres + redis + tika + gotenberg.
+- [ ] Persistent volumes: documents + originals + thumbnails on Synology NAS (CIFS-mounted PV or NFS). Configs/DB on local node SSD.
+- [ ] Ingress via nginx-ingress (per 5a's ingress story). Tailscale Funnel for off-LAN access.
+- [ ] CPU-based OCR (Paperless-ngx defaults: tesseract). Good enough for typed docs and decent handwriting.
+- [ ] Backup discipline: paperless data dir is Tier-1 in 3-2-1 backup *before* first medical/tax document gets scanned.
+- [ ] Auto-import workflow: a watch folder on the NAS that paperless-ngx polls; mobile scanner app (Scanbot, Genius Scan, or iOS Notes) drops PDFs into the folder; auto-tagging on ingest.
+
+**Stage 2: Local AI integration (defer to Theme B)**
+- [ ] Wait for the GPU node from Phase 6 Theme B. CPU-only LLM inference is too slow to actually use day-to-day; if Stage 2 ships without a GPU, the AI features will get abandoned.
+- [ ] **Candidate runtime**: Ollama (model serving) + **Hermes Agent** (agent runtime layer from Nous Research) as the integration plane. Hermes Agent's selling points: skill distillation across repeated runs, persistent context, API-server pattern that bridges cleanly into paperless-ai or a custom integrator. Validate against the alternative (raw Ollama + paperless-ai direct) before committing.
+- [ ] **ToS caveat (added 2026-06-10)**: Anthropic announced restrictions on third-party agentic harnesses (OpenClaw, Hermes Agent, etc.) using Claude *subscription plans* for inference. Hermes Agent + open-source models on Ollama is unaffected. Hermes Agent + Anthropic API (pay-per-token, not subscription plan) is also fine. The path to avoid: Hermes Agent pointed at Claude Code subscription plans — that's the surface Anthropic restricted.
+- [ ] Use cases: better OCR cleanup on poorly-scanned originals, LLM-suggested document types and correspondents, semantic search across the corpus.
+- [ ] Hard rule: no document content ever leaves the LAN. The whole pitch is "self-hosted, no cloud."
+
+**Hard boundary**: this is *documents only*, not credentials (Vaultwarden's job) and not photos (Immich is Phase 5f). One stack, one purpose.
+
+**Risk callouts**:
+- Storage growth ~2-3x raw scanned size (originals + thumbnails + OCR text). Plan NAS capacity. Not a Stage 1 blocker; Synology handles the first 6+ months easily.
+- Backup is the single most important thing here. If the paperless data dir is your *only* copy of an important scan, you've made the household more fragile, not less. Get backups right before scaling document intake.
+
+**Resume artifact**: write-up of "self-hosted document workflow on K3s with local OCR, deferring AI integration until GPU hardware lands." The deliberate two-stage sequencing is the interview signal — shows you can split a project around hardware constraints instead of forcing a CPU-only build that nobody uses.
+
+### 5f. Immich Photo Stack on K3s
+*Why this passes the smell test: same architecture pattern as 5e (self-hosted alternative to consumer cloud, K3s as the runtime, NAS as durable storage), different data type. Hits the Phase 6 Theme A photos slice. Replaces iCloud Photos / Google Photos with a stack you control.*
+
+Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU node.
+
+**Stage 1: Vanilla Immich (do after 5e ships)**
+- [ ] Deploy Immich stack on K3s: immich-server + immich-machine-learning (CPU mode initially) + postgres (pgvector) + redis.
+- [ ] Persistent volumes: photo library on Synology NAS via CIFS or NFS PV. Postgres DB on local node SSD (vector search latency suffers on network FS).
+- [ ] Ingress via nginx-ingress + Tailscale Funnel for off-LAN access (so the iOS / Android Immich apps work from anywhere).
+- [ ] Migrate from iCloud / Google Photos: bulk export → Immich import via mobile app or CLI. Run for both spouses; family albums shared via Immich's sharing model.
+- [ ] Backup discipline: photo library is Tier-0 (irreplaceable). Synology snapshots + offsite (Backblaze B2 or a relative's NAS via Tailscale) on day 1. Don't ingest the first family photo until backup is proven.
+- [ ] Sunset criteria for cloud: keep iCloud / Google Photos running in parallel for 30-60 days post-migration. Only cancel cloud subscriptions after Immich proves out across mobile upload, search, sharing, and one full backup-restore drill.
+
+**Stage 2: ML features on GPU (defer to Theme B)**
+- [ ] Move immich-machine-learning to GPU mode on the Theme B GPU node. Enables fast face recognition, smart search (CLIP), and reverse-image lookup at usable speeds.
+- [ ] Validate face-recognition false-positive / false-negative rate before relying on it for album organization.
+- [ ] Note: this is separate from Hermes Agent / Paperless-AI. Immich's ML is built-in, no agent runtime needed.
+
+**Hard boundary**: photos only. No documents (that's 5e). No videos that aren't camera-roll (Plex's job). No backup of arbitrary file types (separate backup story).
+
+**Risk callouts**:
+- Photo library is the highest-value, hardest-to-replace data in the house. The single biggest risk is treating Immich as a backup tier when it is *primary storage*. Backup discipline outranks every other consideration.
+- Mobile-app auto-upload is non-negotiable for spouse adoption. If the iOS app fights you, fix that first; nothing else matters if uploads don't happen on their own.
+- CIFS PV latency can make initial library scans slow. Consider local SSD cache for hot thumbnails.
+
+**Resume artifact**: write-up of the same two-stage pattern as Paperless-ngx (5e), now applied to a second data type. The repeated pattern is the interview signal — "I have a deliberate architecture for self-hosted alternatives to consumer cloud, not a one-off project." Bonus: explicit family-adoption / migration-from-cloud playbook is a different angle than pure tech.
+
+### 5g. Frigate NVR (defer until 5e + 5f stable)
+*Why this passes the smell test: AI-driven surveillance fits the "internet-optional household" principle, hits Phase 6 Theme B (AI-driven NVR with Frigate), Phase 6 Theme D (Home Assistant integration), and Phase 6 Theme C (kids' safety lens). Lower hardware bar than previously estimated — Coral USB TPU at ~$100 handles object detection on 4-8 cameras, no need for a $1500+ GPU. The "AI on cheap hardware" angle is a legitimate portfolio talking point for edge-AI-deployment roles.*
+
+**Hardware bar (corrected 2026-06-10)**:
+- Compute: Raspberry Pi 5 (with AI Hat+) for 2-4 cameras, OR an old desktop with Coral USB Accelerator ($100) for 4-8 cameras.
+- Cameras: RTSP-capable. Cheap path: Reolink E1 Pro (~$56/each) — PTZ, no internet dependency, easy to firewall off entirely.
+- Network: cameras on isolated VLAN (Theme C tenant isolation prerequisite — when VLAN segmentation lands).
+
+**Stage 1: Wired + small deployment (do after 5e + 5f stable)**
+- [ ] Choose hardware target: Pi 5 + AI Hat+ for low-camera-count start, OR a small mini-PC + Coral USB if you expect to scale past 4 cameras.
+- [ ] Deploy Frigate via Docker Compose on the chosen node (NOT on `mediaserver` — same hard boundary as the K3s rule: AI/NVR cannot share hardware with Plex).
+- [ ] Configure RTSP feeds, object detection on Coral TPU, recording to NAS.
+- [ ] **Network discipline**: cameras on isolated VLAN, no internet egress. Frigate is the only thing on the LAN that talks to them.
+- [ ] Tailscale for remote viewing (do NOT expose Frigate UI publicly).
+
+**Stage 2: Home Assistant + facial recognition (later)**
+- [ ] Integrate Frigate with Home Assistant for "person detected at front door" automation (Theme D).
+- [ ] Enable facial recognition for family members; validate false-positive rate before relying on it for any automation.
+- [ ] License plate recognition if needed (driveway camera scenario).
+
+**Hard boundary**: Frigate replaces *cloud cameras* (Ring, Wyze, Nest), not Plex, not home automation core. One purpose: local AI-driven surveillance.
+
+**Risk callouts**:
+- Wireless cameras at scale will overwhelm your WiFi mesh (real lesson from NetworkChuck's deployment — 10 wireless cameras destroyed his network). Plan wired-first; reserve wireless for cameras that physically cannot be wired.
+- Cell-phone-network-down failure mode: if you depend on Frigate for any safety-critical view, design the redundancy. A camera that only works when your home internet is up is not a safety tool.
+- Storage for continuous recording grows fast. Budget NAS capacity and retention policy (motion-only vs continuous) before camera count grows.
+
+**Resume artifact**: "Built a fully local AI surveillance system on $100 of edge-inference hardware. Coral TPU handles object detection for [N] cameras with no cloud dependency, no data leaving the LAN. Demonstrates edge-AI deployment on commodity hardware — exactly the deployment skill the $25B-$143B edge AI market needs."
 
 ---
 
@@ -146,9 +259,12 @@ Fortress mode, generalized from Plex to the entire family. Everything important 
 - 3-2-1 backup discipline: 3 copies, 2 media types, 1 offsite.
 - Tiers: hot (SSD, working set), warm (HDD NAS, media + photos), cold (offsite or rotated drive).
 - Likely path: expand Synology, then DIY TrueNAS box for capacity tier when Synology fills.
+- **Concrete implementations of this theme**: Phase 5e (Paperless-ngx for documents), Phase 5f (Immich for photos). Future candidates: Vaultwarden for credentials, Joplin/Trilium for notes.
 
 ### Theme B — AI / Intelligence Layer
 - Local LLM serving (Ollama / vLLM) for daily-use chat, retrieval over family docs, automation glue.
+- **Candidate agent runtime layer**: Hermes Agent (Nous Research) on top of Ollama for persistent-context, skill-distilling agents — to be validated when the GPU node lands. Alternatives in this space include OpenClaw and raw Ollama + custom code; do not commit to a runtime until you've used it under real load.
+- **Candidate dev-tooling**: route Claude Code through Ollama for local-LLM-backed coding agent (cost lever for heavy personal sessions + portfolio talking point). Independent of Hermes.
 - Voice replacement for Amazon Echo: Home Assistant Voice (Whisper + Piper + local LLM) for fortress-mode-tolerant voice commands.
 - AI-driven NVR for security cameras (Frigate with GPU/Coral inference).
 - Hardware reality: requires GPU. Used 3090 (24GB VRAM) or Mac Studio with 64GB+ unified memory is the realistic entry point. Should NOT share hardware with Plex transcoding.
@@ -172,6 +288,15 @@ Fortress mode, generalized from Plex to the entire family. Everything important 
 - Optional: redundant internet (5G failover, secondary ISP) — separately tracked in `docs/architecture/ISP-ASSESSMENT.md`.
 - Private torrent trackers: VPN compliance + cross-seed + autobrr — tighter STARR stack discipline.
 
+### Theme F — Media Stack Evaluation (open question, NOT a commitment)
+*Goal: name the Jellyfin-vs-Plex question so it gets revisited deliberately, not drifted into.*
+
+- Current state: Plex is deeply ingrained — fortress guard, GPU transcode, host networking, managed-user profiles, mobile-app habits across the family. Switching cost is non-trivial.
+- Open question: is Jellyfin (open source, no licensing, no remote-access dependency on a third party) the right destination once fortress mode generalizes to the whole household?
+- Pros of evaluating: aligns with "internet-optional household" principle (Plex's remote-access path depends on plex.tv); removes Plex Pass licensing cost; future-proofs against Plex policy changes that have repeatedly burned the self-host community.
+- Cons of switching: family-adoption cost (kids' watch history, profiles, kids-app UX); GPU transcode parity needs verification; fortress guard logic is Plex-specific and would need a Jellyfin equivalent.
+- Decision gate: not before Phase 5e + 5f ship. Photos and documents are higher-value migrations than re-platforming a working media stack. Revisit after at least one of {Plex Pass renewal, family-impacting Plex policy change, fortress guard rewrite for other reasons} forces the question.
+
 ### Target Hardware Footprint (2-5 years)
 A realistic multi-node lab, NOT one giant box:
 
@@ -180,8 +305,10 @@ A realistic multi-node lab, NOT one giant box:
 | **`mediaserver`** (current) | Media host: Plex, STARR, fortress guard, qBittorrent | Existing |
 | **NAS** (Synology + future TrueNAS) | Primary storage tier, family backups, photos | Existing, needs expansion |
 | **Pi / control node** | DNS (AdGuard + Unbound), Home Assistant, automation hub | Phase 3 |
-| **AI / intelligence node** (GPU box) | Ollama, Frigate, voice (Whisper/Piper) | Theme B |
-| **K3s / dev node** | Wife's business stack, dev/staging, ephemeral services | Phase 5a + Theme C |
+| **AI / intelligence node** (GPU box) | Ollama, Hermes Agent, Frigate, voice (Whisper/Piper) | Theme B + 5e Stage 2 + 5g Stage 2 |
+| **K3s / dev node** | Wife's business stack, dev/staging, ephemeral services, Paperless-ngx, Immich, MCP server | Phase 5a + 5c + 5e + 5f + Theme C |
+| **Frigate / edge-inference node** | Local AI NVR (Coral TPU + RTSP cameras) | Phase 5g |
+| **Self-hosted Git node** | Gitea or GitLab CE for personal repos | Phase 4 (post-2026-06-10 add) |
 | **(Optional) failover / offsite** | Cold backup target, possibly at a relative's house via Tailscale | Theme A |
 
 ### Decision Anchors for Today
@@ -203,3 +330,26 @@ Naming Phase 6 now lets us make Phase 2–4 hardware decisions correctly:
 - **Uptime**: ~45 minutes (since 19:03 reboot)
 - **Known Failing Parts**: `/dev/sda` (Seagate 2TB)
 - **Network Dependency**: AdGuard (Docker) currently handles ALL home DNS.
+
+---
+
+## 🎯 **Local-AI Portfolio Strategy (2026-06-10)**
+
+Threading the Phase 5 + Phase 6 projects into a coherent career story for the cannabis-vertical, AI-startup, and small-SaaS job filter.
+
+**The framing:** "Edge AI is a $25B → $143B market growing at 21% CAGR. Most developers consume AI through cloud APIs; almost nobody knows how to deploy local AI inference on company hardware. I'm in the 18% of developers building AI integrations, and the 1-in-many that has run a multi-stage local AI pipeline against real personal data in a production-shaped home lab."
+
+**The supporting evidence on the roadmap:**
+- **Phase 5e Stage 2** — Paperless-ngx + Ollama + Hermes Agent for personal document retrieval. Demonstrates local LLM serving + agent runtime layer + privacy-preserving design.
+- **Phase 5f Stage 2** — Immich + GPU-accelerated ML for face recognition and CLIP smart search. Demonstrates local computer vision deployment.
+- **Phase 5g** — Frigate on Coral TPU for local AI surveillance. Demonstrates edge-inference deployment on commodity hardware, not flagship GPUs.
+- **Phase 5c (MCP path)** — custom MCP server exposing home lab APIs. Demonstrates protocol-level understanding of agentic tooling.
+- **Phase 6 Theme B (voice replacement)** — Home Assistant Voice with Whisper + Piper + local LLM. Demonstrates speech-to-text and TTS as production pipelines.
+
+**The "boring use cases that actually work" lens** (from 5Z2HBJTUNik):
+The local AI use cases that match or beat cloud are NOT the flashy ones. They're transcription (Whisper), narrow-tool agents, image classification, and OCR cleanup. Every concrete project above is in the "boring but works" category — none of them claim local LLM coding beats Claude, none claim 5-tool agentic chains work. The roadmap deliberately stays in the working zone.
+
+**The career-narrative payoff:**
+By the time Phase 5e Stage 2, 5f Stage 2, and 5g are all running, you have a portfolio that says: "I deploy local AI on commodity hardware for privacy-sensitive use cases. I've made the build-vs-buy and CPU-vs-GPU decisions deliberately based on actual benchmarks, not vibes. I understand the protocol layer (MCP), the model layer (Ollama + open-source models), and the runtime layer (Hermes Agent or raw integrations) — and I have working systems against real personal data to show it."
+
+That's the cannabis-vertical-and-AI-startup peer-group story. Avoid the FAANG-AI-research framing entirely; this is deployment engineering, not research.

@@ -85,6 +85,7 @@ cat docs/guides/quick-start.md
 - [AdGuard Home Setup](docs/guides/adguard-setup.md) - Ad blocking & Unbound DNS
 - [Infrastructure Management](docs/guides/infrastructure-management.md) - IaC Guide
 - [Network Unification Checklist](docs/guides/network-unification-checklist.md) - Network migration guide
+- [OpenTofu + K3s Migration](docs/guides/OPENTOFU_K3S_MIGRATION.md) - Terraform→OpenTofu swap + K3s sidecar cluster bring-up (Phase 5a)
 
 ### 🔧 Troubleshooting (`docs/troubleshooting/`)
 - [CIFS Storage Fixes](docs/troubleshooting/NETWORK_SERVICE_AND_CIFS_FIXES.md) - Fix mount errors & permissions
