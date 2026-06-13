@@ -1,8 +1,28 @@
 # Infrastructure Hardening & Recovery Roadmap
 
-**Date**: 2026-05-09
+**Date**: 2026-05-09 (job-search reprioritization added 2026-06-13)
 **Status**: ACTIVE
 **Primary Goal**: Stabilize media server host (mediaserver) and decouple critical services (DNS) from high-IO media storage.
+
+---
+
+## 🔺 **Job-Search Reprioritization (2026-06-13)**
+
+*Context: Springbig eliminated most of the org in a June 2026 RIF, including Stephen's role, and access to Springbig AWS is cut. The home lab is now the primary — and only fully-controlled — technical portfolio for an active job search on a compressed (3-week-severance) timeline. This section re-ranks existing Phase 5/6 work by job-search value. It does NOT override the production-stability-first rule (failing disk + DNS isolation still outrank everything below).*
+
+**Non-negotiable, still first — real production risk, not resume polish:**
+1. **Phase 2 — failing disk** (`/dev/sda`, 3,959+ reallocated sectors). Pull it. A dead disk mid-search is the worst possible time-sink.
+2. **Phase 3 — DNS isolation** (Pi + AdGuard/Unbound). The single-node DNS SPOF stays the top architectural fix.
+
+**Highest portfolio value — accelerate immediately after Phase 2/3:**
+3. **Phase 5a — K3s sidecar cluster.** Kubernetes-in-production is table stakes for the senior-IC roles being targeted. Get one real multi-service workload scheduled on it (Paperless or Immich counts as the smoke test).
+4. **Phase 5c — MCP server for home lab APIs.** The rarest differentiator on the roadmap for 2026 AI-adjacent DevOps roles, and it was the *parked Springbig pitch* — now unblocked and 100% yours to build and show publicly. Ship the code with a public-facing README/single-pager.
+5. **Re-homed Springbig AWS items → personal AWS account.** These no longer need Springbig access, and building them in a personal account converts dead tickets into screenshareable demos: **AFSBP Security Hub enablement**, **DORA metrics baseline**, **CloudWatch Synthetics canary**, **IAM Access Analyzer baseline**. Each is ~0.5–1 day. Original runbooks are in the archived Springbig DevOps roadmap.
+
+**Deferred during the job search — genuine personal utility, low hiring-signal value:**
+- Phase 5e (Paperless-ngx), 5f (Immich), 5g (Frigate): background/weekend work. They feed the Local-AI narrative below, but none is worth a week of search time before an offer lands.
+
+**Publishing reminder:** sanitize and push 1–2 artifacts to public GitHub *now* (Terraform secure-baseline module, Python posture checker — see the Springbig JOB_READINESS checklist). A green, recently-active GitHub matters more this month than any single new feature.
 
 ---
 
