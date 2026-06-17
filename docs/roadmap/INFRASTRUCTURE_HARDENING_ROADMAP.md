@@ -1,28 +1,8 @@
 # Infrastructure Hardening & Recovery Roadmap
 
-**Date**: 2026-05-09 (job-search reprioritization added 2026-06-13)
+**Date**: 2026-05-09
 **Status**: ACTIVE
 **Primary Goal**: Stabilize media server host (mediaserver) and decouple critical services (DNS) from high-IO media storage.
-
----
-
-## 🔺 **Job-Search Reprioritization (2026-06-13)**
-
-*Context: Springbig eliminated most of the org in a June 2026 RIF, including Stephen's role, and access to Springbig AWS is cut. The home lab is now the primary — and only fully-controlled — technical portfolio for an active job search on a compressed (3-week-severance) timeline. This section re-ranks existing Phase 5/6 work by job-search value. It does NOT override the production-stability-first rule (failing disk + DNS isolation still outrank everything below).*
-
-**Non-negotiable, still first — real production risk, not resume polish:**
-1. **Phase 2 — failing disk** (`/dev/sda`, 3,959+ reallocated sectors). Pull it. A dead disk mid-search is the worst possible time-sink.
-2. **Phase 3 — DNS isolation** (Pi + AdGuard/Unbound). The single-node DNS SPOF stays the top architectural fix.
-
-**Highest portfolio value — accelerate immediately after Phase 2/3:**
-3. **Phase 5a — K3s sidecar cluster.** Kubernetes-in-production is table stakes for the senior-IC roles being targeted. Get one real multi-service workload scheduled on it (Paperless or Immich counts as the smoke test).
-4. **Phase 5c — MCP server for home lab APIs.** The rarest differentiator on the roadmap for 2026 AI-adjacent DevOps roles, and it was the *parked Springbig pitch* — now unblocked and 100% yours to build and show publicly. Ship the code with a public-facing README/single-pager.
-5. **Re-homed Springbig AWS items → personal AWS account.** These no longer need Springbig access, and building them in a personal account converts dead tickets into screenshareable demos: **AFSBP Security Hub enablement**, **DORA metrics baseline**, **CloudWatch Synthetics canary**, **IAM Access Analyzer baseline**. Each is ~0.5–1 day. Original runbooks are in the archived Springbig DevOps roadmap.
-
-**Deferred during the job search — genuine personal utility, low hiring-signal value:**
-- Phase 5e (Paperless-ngx), 5f (Immich), 5g (Frigate): background/weekend work. They feed the Local-AI narrative below, but none is worth a week of search time before an offer lands.
-
-**Publishing reminder:** sanitize and push 1–2 artifacts to public GitHub *now* (Terraform secure-baseline module, Python posture checker — see the Springbig JOB_READINESS checklist). A green, recently-active GitHub matters more this month than any single new feature.
 
 ---
 
@@ -355,7 +335,7 @@ Naming Phase 6 now lets us make Phase 2–4 hardware decisions correctly:
 
 ## 🎯 **Local-AI Portfolio Strategy (2026-06-10)**
 
-Threading the Phase 5 + Phase 6 projects into a coherent career story for the cannabis-vertical, AI-startup, and small-SaaS job filter.
+Threading the Phase 5 + Phase 6 projects into a coherent technical narrative — deliberate, deployment-focused local-AI work rather than scattered self-hosting.
 
 **The framing:** "Edge AI is a $25B → $143B market growing at 21% CAGR. Most developers consume AI through cloud APIs; almost nobody knows how to deploy local AI inference on company hardware. I'm in the 18% of developers building AI integrations, and the 1-in-many that has run a multi-stage local AI pipeline against real personal data in a production-shaped home lab."
 
@@ -366,10 +346,10 @@ Threading the Phase 5 + Phase 6 projects into a coherent career story for the ca
 - **Phase 5c (MCP path)** — custom MCP server exposing home lab APIs. Demonstrates protocol-level understanding of agentic tooling.
 - **Phase 6 Theme B (voice replacement)** — Home Assistant Voice with Whisper + Piper + local LLM. Demonstrates speech-to-text and TTS as production pipelines.
 
-**The "boring use cases that actually work" lens** (from 5Z2HBJTUNik):
+**The "boring use cases that actually work" lens:**
 The local AI use cases that match or beat cloud are NOT the flashy ones. They're transcription (Whisper), narrow-tool agents, image classification, and OCR cleanup. Every concrete project above is in the "boring but works" category — none of them claim local LLM coding beats Claude, none claim 5-tool agentic chains work. The roadmap deliberately stays in the working zone.
 
 **The career-narrative payoff:**
 By the time Phase 5e Stage 2, 5f Stage 2, and 5g are all running, you have a portfolio that says: "I deploy local AI on commodity hardware for privacy-sensitive use cases. I've made the build-vs-buy and CPU-vs-GPU decisions deliberately based on actual benchmarks, not vibes. I understand the protocol layer (MCP), the model layer (Ollama + open-source models), and the runtime layer (Hermes Agent or raw integrations) — and I have working systems against real personal data to show it."
 
-That's the cannabis-vertical-and-AI-startup peer-group story. Avoid the FAANG-AI-research framing entirely; this is deployment engineering, not research.
+The emphasis is deployment engineering, not research — practical local-AI delivery on commodity hardware for privacy-sensitive use cases.
