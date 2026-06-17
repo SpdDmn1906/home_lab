@@ -1,6 +1,6 @@
 # Home Lab
 
-A production-shaped personal infrastructure I use to run the household stack and to learn platform-engineering patterns I'd otherwise only touch at work. Built by [Stephen Chung](https://linkedin.com/in/stephenachung) — DevOps / DevSecOps engineer, currently sole DevOps operator at a B2B cannabis-marketing SaaS.
+A production-shaped personal infrastructure I use to run the household stack and to learn platform-engineering patterns I'd otherwise only touch at work. Built by [Stephen Chung](https://linkedin.com/in/stephenachung) — DevOps / DevSecOps engineer working across AWS, IaC, and platform reliability; most recently ran the AWS platform for a B2B cannabis-marketing SaaS.
 
 The lab serves three audiences: my family (Plex / DNS / cameras), my own career growth (deliberate platform projects that produce portfolio artifacts), and curious hiring managers who want to see how I make architectural decisions in a low-stakes environment.
 
