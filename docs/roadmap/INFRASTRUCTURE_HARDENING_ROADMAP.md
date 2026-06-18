@@ -6,6 +6,19 @@
 
 ---
 
+## ⚡ **Active Build Priorities (2026-06)**
+
+The estate now spans three environments — this on-prem lab, a personal AWS account, and a Linode host running a live YouTube stream. Priorities this cycle are sequenced by one rule: **real production risk and genuine daily-use value first.**
+
+1. **Production risk — still first.** Phase 2 (failing disk) and Phase 3 (single-node DNS SPOF) outrank everything below. A new project sitting on a fragile base is the wrong trade.
+2. **`infra-mcp` — estate control plane (Phase 5c, flagship).** One read-only place to ask *"is the stream up? any lab alerts? what's my AWS spend?"* instead of three dashboards and three logins. Built lean on purpose: local, read-only, secrets kept out of git, internal services reached over Tailscale.
+3. **Right-sized delivery for what I actually run.** Automate the janellechung-site deploy (hand-uploaded over FTP today → IaC + CI/CD on managed static hosting) and add monitoring/hardening for the Linode stream. **Right-sizing is the point:** managed platforms over a Kubernetes cluster unless a workload truly needs one — over-engineering a personal app is a red flag, not an achievement.
+4. **Deferred.** Phase 5e/5f/5g (Paperless / Immich / Frigate) and the K3s cluster remain background work — real utility, lower leverage this cycle.
+
+**Anti-goal (unchanged):** production stability and right-sizing beat project count.
+
+---
+
 ## 🚨 **Phase 1: Emergency Stabilization** (✅ COMPLETED)
 *Tasks performed following the 15-minute network outage on 2026-05-09.*
 
@@ -96,7 +109,7 @@
 
 ---
 
-## 🚀 **Phase 5: Platform Maturity & Career Growth Track**
+## 🚀 **Phase 5: Platform Maturity Track**
 *Goal: Build legitimate platform-engineering experience on top of a stable lab — without destabilizing Phase 1–4 work. Each project is fortress-mode-aligned (adds resilience or learning sandbox isolation) AND produces a portfolio artifact.*
 
 **Rule of thumb**: Nothing in Phase 5 starts until Phase 2 (failing disk) and Phase 3 (DNS isolation) are complete. Production stability beats resume polish.
@@ -118,7 +131,7 @@ Bring-up procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2.
 ### 5b. GitOps on the K3s Cluster (lean FluxCD)
 *Why this passes the smell test: GitOps demonstrably works for K8s manifests; pairs naturally with 5a; does NOT require migrating prod stack.*
 
-- [ ] **Evaluation step before install** (revised 2026-06-10): both FluxCD and ArgoCD work, but the home-lab evidence leans Flux: native OpenTofu bootstrap, lighter footprint, CLI-first, and pairs cleanly with Renovate bot for image-version auto-PRs. ArgoCD has the better UI if you prefer a dashboard. Pick one; do not run both. Document the decision rationale as the resume artifact.
+- [ ] **Evaluation step before install** (revised 2026-06-10): both FluxCD and ArgoCD work, but the home-lab evidence leans Flux: native OpenTofu bootstrap, lighter footprint, CLI-first, and pairs cleanly with Renovate bot for image-version auto-PRs. ArgoCD has the better UI if you prefer a dashboard. Pick one; do not run both. Document the decision rationale — the *why* behind Flux vs Argo.
 - [ ] Install the chosen GitOps tool into the K3s cluster (5a).
 - [ ] Manifests live in a separate `home_lab_k3s/` repo (or subfolder), watched by the GitOps tool.
 - [ ] App-of-apps pattern for at least 3 workloads.
@@ -126,26 +139,33 @@ Bring-up procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2.
 - [ ] **Add Renovate bot** for automated image-version PRs. The pattern: cluster manifest references `image: foo:1.36`; Renovate sees `foo:1.42` upstream; auto-opens a PR to bump; you merge; GitOps reconciles. End-to-end automation story without losing the human approval gate.
 - [ ] **Do not** try to GitOps the Docker-Compose stack. That's a different problem; if you want compose-GitOps later, look at `komodo` or `dockge`, not ArgoCD/FluxCD.
 
-### 5c. Custom tooling for home lab APIs (MCP server OR Go CLI)
-*Why this passes the smell test: bash struggles with structured Sonarr/Radarr/Plex API calls (JSON parsing, retries, concurrency, error handling). Either path — a custom MCP server OR a Go CLI — fills bash's actual weak spots. As of 2026-06-10, the MCP server is the stronger career-portfolio pick because MCP is the protocol Claude Code, Cursor, LM Studio, Hermes Agent, and most agentic tooling already consumes.*
+### 5c. `infra-mcp` — Estate Control Plane (MCP server) — **flagship**
 
-**Path A (recommended as of 2026-06-10): Custom MCP server for home lab APIs.**
-- [ ] Build a Python (or TypeScript) MCP server exposing the operations below as tool calls.
-- [ ] Consumed by Claude Code (which you already use daily), Claude Desktop, LM Studio, Cursor, Hermes Agent, and any other MCP client. Single implementation, many consumers.
-- [ ] Tool calls to expose: `home_lab.media.find_duplicates` (Sonarr/Radarr), `home_lab.plex.profile_check`, `home_lab.fortress.status`, `home_lab.backup.verify`, `home_lab.unifi.status`, `home_lab.proxmox.vm_state`.
-- [ ] Distribution: Docker container on the media host (initially) → K3s service after Phase 5a stabilizes. Docker MCP Gateway makes the tools remotely accessible if you want them callable from n8n or a remote Claude instance.
-- [ ] **Resume artifact**: "Built a custom MCP server that exposes my home lab as tool calls for Claude / Cursor / any MCP-aware agent. Demonstrates understanding of the protocol underlying modern agentic tooling." Much stronger differentiator in 2026-2027 than yet-another-Go-CLI.
+**The need (plain terms).** The estate now spans three places: this on-prem lab, a personal AWS account, and a Linode host running a live YouTube stream. Checking health means three dashboards and three logins. I want **one read-only place to ask plain questions** — *"is the stream up? any lab alerts? what's my AWS spend this month?"* — and get one answer.
 
-**Path B (alternative): Go CLI `sb-lab`.** Same operations, packaged as a single static binary. Still defensible if you want Go on the resume. Avoid building *both* — pick one path and ship it.
+**What an MCP server is (no jargon).** A small program that sits between an AI client (Claude Desktop/Code, Cursor) and my systems. The AI can't touch the systems directly; the program hands it a fixed **menu** of safe, read-only questions it's allowed to ask, and answers each by calling the right API. Like a waiter: the AI orders off a set menu, the kitchen (my infra) stays behind the counter.
 
-- [ ] **Do NOT** rewrite `infrastructure-manager.sh` or any working bash. Bash is correct for orchestrating docker/iptables/systemd.
-- [ ] **Do** build the chosen tool to fill bash's actual weak spots:
-    - [ ] media find-duplicates — concurrent Sonarr/Radarr API calls, deduplicated output.
-    - [ ] plex profile-check — verifies managed user profiles are intact (early warning for the bug fortress guard fixes).
-    - [ ] `sb-lab fortress status` — pretty-print of guard state + blocked IPs + Prometheus metric values.
-    - [ ] `sb-lab backup verify` — checksums NAS-backed configs, alerts on drift.
-- [ ] **Distribution**: Single static binary, installed to `/usr/local/bin/sb-lab` via the Ansible playbook (5a/5b's deployment story closes the loop).
-- [ ] **Resume artifact**: Clean Go module with tests, GitHub Actions CI, semver releases.
+**Use cases — the questions it answers:**
+- `estate.health_overview` — one-shot status across all three environments (the headline tool).
+- `homelab.service_status` / `homelab.active_alerts` — Prometheus / Alertmanager.
+- `homelab.media.find_duplicates` · `homelab.plex.profile_check` · `homelab.fortress.status` · `homelab.backup.verify` — the Sonarr/Radarr/Plex/fortress operations bash is genuinely bad at (JSON parsing, retries, concurrency).
+- `aws.cost_summary` / `aws.resource_inventory` — month-to-date spend + a light resource list.
+- `linode.stream_status` / `linode.instance_metrics` — is the stream process up, instance health.
+
+**Design (lean on purpose):**
+- **Python + the official `mcp` SDK** — Python is already the daily driver and agentic tooling is Python-heavy. One provider module per service (`homelab`, `aws`, `linode`).
+- **Read-only in v1.** No destructive tools.
+- **Local stdio transport** — the client launches it as a subprocess on my machine; it reaches services over **Tailscale** + cloud APIs. Zero extra infra, and internal services never touch the public internet.
+- **Secrets stay out of git** (env / gitignored `.env`): a scoped **read-only** AWS principal (Cost Explorer + light describe/list), a read-only Linode token, the Tailscale-internal Prometheus URL.
+- **Don't rewrite working bash.** `infrastructure-manager.sh` orchestrating docker/iptables/systemd is correct as-is; the MCP server fills bash's *weak* spots (structured API calls), not its strengths.
+
+**Design tradeoffs — the "why," not just the "what":**
+- **Read-only first vs. action tools.** Handing an LLM restart/redeploy power is a real risk, so v1 stays read-only. Guarded mutation (explicit allowlist + human confirmation) is a *possible* Phase 2 — only if it earns its keep.
+- **Local stdio vs. hosted always-on.** Hosting it (HTTP, behind Tailscale on a lab host) makes it always-available but adds auth, exposure, and a thing to babysit. Not worth it for a single user; revisit only if I actually want remote or automated callers.
+- **Few, well-described tools > many narrow ones.** The LLM chooses better from a short, clear menu. Cut before adding.
+- **MCP vs. a Go CLI.** A Go CLI (`sb-lab`, single static binary, Ansible-installed) would solve the same bash gaps and is still defensible if I want Go — but MCP is the protocol modern agent tooling already speaks, so one implementation serves many clients. Pick one; don't build both.
+
+**Right-sizing guard:** this is a personal, read-only control plane — not a product. If it grows past "answer read-only questions about my own estate," that's scope creep, not progress.
 
 ### 5d. Observability Maturity (Stretch)
 *Why this passes the smell test: bridges 4 and 5; demonstrates "I don't just install Grafana, I instrument my own services."*
@@ -239,6 +259,22 @@ Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU n
 **Resume artifact**: "Built a fully local AI surveillance system on $100 of edge-inference hardware. Coral TPU handles object detection for [N] cameras with no cloud dependency, no data leaving the LAN. Demonstrates edge-AI deployment on commodity hardware — exactly the deployment skill the $25B-$143B edge AI market needs."
 
 ---
+
+### 5h. Right-Sized App Delivery & Multi-Environment Monitoring (AWS + Linode)
+
+*The estate extends past the house: a personal AWS account and a Linode host running a live YouTube stream. Two genuine needs — ship the things I deploy by hand, and watch the things that have real uptime stakes.*
+
+**janellechung-site — automate a real deploy.**
+- **Need:** the site ships today by hand-uploading files over FTP to shared hosting — manual and error-prone.
+- **Design:** managed static hosting (S3 + CloudFront, or Cloudflare Pages / Amplify) provisioned with Terraform, plus a GitHub Actions pipeline: push to `main` → build + validate (HTML/link check, security headers) → deploy → invalidate cache.
+- **Tradeoff / right-sizing:** a static marketing site needs *static hosting* — not a server, and definitely not a container cluster. The whole value is "it deploys itself and costs cents." Effort goes into the pipeline and the checks, not into running infrastructure.
+
+**Linode stream — monitor and harden what's actually in production.**
+- **Need:** the live stream has real uptime stakes (stream drops → viewers drop), and today there's no alert if the stream process dies.
+- **Design:** export host + process health to the lab's Prometheus (node_exporter + a small stream-up check), add a blackbox probe against the public stream endpoint, and alert on "stream down" the same way the lab alerts on anything else. Write the restart runbook.
+- **Tradeoff:** the cheapest reliable win is *observability + a restart runbook*, not re-platforming the stream. Watch it first; automate recovery only if failures actually recur.
+
+**Design philosophy for this section — right-sizing.** The right answer is usually the *least* infrastructure that meets the real need: managed platforms over a Kubernetes cluster unless a workload genuinely justifies one. If I want GitOps/cluster practice, it belongs on the existing lightweight K3s (5b) — not on a new managed cluster stood up to run a personal web app. Over-engineering a small workload is a red flag, not an achievement.
 
 ## 🧭 **Phase Ordering Rationale**
 - Phases 1–3 are **non-negotiable prerequisites**. A failing disk and a single-node DNS dependency outrank every career-growth item.
