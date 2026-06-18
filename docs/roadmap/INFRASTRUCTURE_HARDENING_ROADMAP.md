@@ -92,7 +92,7 @@ The estate now spans three environments — this on-prem lab, a personal AWS acc
     - [ ] Acceptance test: blow away the VM, run playbook, Plex serves a movie.
 - [ ] **OpenTofu migration** (added 2026-06-09):
     - [ ] Replace Terraform with OpenTofu as the IaC binary. HCL syntax and provider ecosystem are identical, so this is a tooling swap, not a rewrite.
-    - [ ] Rationale: maintain OSS license clarity post-HashiCorp BSL change, stay aligned with current IaC ecosystem direction, gain credible portfolio talking point for OSS-leaning hiring managers.
+    - [ ] Rationale: maintain OSS license clarity post-HashiCorp BSL change, stay aligned with current IaC ecosystem direction, and keep a clear, explainable reason for the switch.
     - [ ] Procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 1 (state backup → `tofu init -migrate-state` → verify zero-change plan → update `infrastructure-manager.sh` wrapper).
     - [ ] Rollback: copy state backup back, re-install Terraform, re-init. Symmetric because state file format is binary-compatible.
     - [ ] Acceptance test: `tofu plan` returns "No changes" and `tofu apply` returns "0 added, 0 changed, 0 destroyed" against existing Docker stack.
@@ -277,7 +277,7 @@ Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU n
 **Design philosophy for this section — right-sizing.** The right answer is usually the *least* infrastructure that meets the real need: managed platforms over a Kubernetes cluster unless a workload genuinely justifies one. If I want GitOps/cluster practice, it belongs on the existing lightweight K3s (5b) — not on a new managed cluster stood up to run a personal web app. Over-engineering a small workload is a red flag, not an achievement.
 
 ## 🧭 **Phase Ordering Rationale**
-- Phases 1–3 are **non-negotiable prerequisites**. A failing disk and a single-node DNS dependency outrank every career-growth item.
+- Phases 1–3 are **non-negotiable prerequisites**. A failing disk and a single-node DNS dependency outrank every platform-maturity item below.
 - Phase 4 is **the platform foundation**: Ansible-based reproducibility + alerting + log shipping. Everything in Phase 5 implicitly depends on this.
 - Phase 5 is **explicitly optional and parallelizable**. Pick one of 5a/5b/5c based on what you want to learn next. Skip any that stop being interesting.
 - **Anti-goal**: Do not let any Phase 5 work cause regressions in Phases 1–4. If 5a's K3s cluster needs the Pi's CPU and Phase 3's DNS suffers, kill 5a and use a second box.

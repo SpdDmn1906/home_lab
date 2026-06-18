@@ -140,7 +140,7 @@ The guiding principle: **internet-optional household.** Don't buy hardware that 
 
 ---
 
-### Phase 5 — Platform Maturity (career growth track)
+### Phase 5 — Platform Maturity
 
 #### 5.1 K3s / Dev Node *(only after Phase 1–4 stable)*
 - **Two paths**, pick based on Theme C demand:
