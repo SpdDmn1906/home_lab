@@ -126,7 +126,7 @@ Bring-up procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2.
     - [ ] Sealed Secrets demo (real-world secret management story).
     - [ ] Pod Disruption Budget + HPA examples on something throwaway.
 - [ ] **Hard boundary**: Plex, STARR, AdGuard, fortress guard, monitoring **stay on Docker on the media host**. They have host networking, GPU passthrough, and host iptables requirements that fight K8s.
-- [ ] **Resume artifact**: Public GitHub repo of the cluster manifests + write-up of "why I chose hybrid Docker + K3s instead of full migration."
+- [ ] **Write-up**: document *why* I chose hybrid Docker + K3s instead of a full migration — the decision rationale is the durable artifact, not the cluster itself.
 
 ### 5b. GitOps on the K3s Cluster (lean FluxCD)
 *Why this passes the smell test: GitOps demonstrably works for K8s manifests; pairs naturally with 5a; does NOT require migrating prod stack.*
@@ -200,7 +200,7 @@ Two-stage rollout. Stage 1 ships without AI; Stage 2 waits until Theme B's GPU n
 - Storage growth ~2-3x raw scanned size (originals + thumbnails + OCR text). Plan NAS capacity. Not a Stage 1 blocker; Synology handles the first 6+ months easily.
 - Backup is the single most important thing here. If the paperless data dir is your *only* copy of an important scan, you've made the household more fragile, not less. Get backups right before scaling document intake.
 
-**Resume artifact**: write-up of "self-hosted document workflow on K3s with local OCR, deferring AI integration until GPU hardware lands." The deliberate two-stage sequencing is the interview signal — shows you can split a project around hardware constraints instead of forcing a CPU-only build that nobody uses.
+**Design note**: the deliberate two-stage sequencing — ship a CPU / no-AI Stage 1, then add GPU-backed OCR/AI in Stage 2 once the hardware lands — is the point. Splitting a project around real hardware constraints beats forcing a CPU-only build nobody uses.
 
 ### 5f. Immich Photo Stack on K3s
 *Why this passes the smell test: same architecture pattern as 5e (self-hosted alternative to consumer cloud, K3s as the runtime, NAS as durable storage), different data type. Hits the Phase 6 Theme A photos slice. Replaces iCloud Photos / Google Photos with a stack you control.*
@@ -227,7 +227,7 @@ Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU n
 - Mobile-app auto-upload is non-negotiable for spouse adoption. If the iOS app fights you, fix that first; nothing else matters if uploads don't happen on their own.
 - CIFS PV latency can make initial library scans slow. Consider local SSD cache for hot thumbnails.
 
-**Resume artifact**: write-up of the same two-stage pattern as Paperless-ngx (5e), now applied to a second data type. The repeated pattern is the interview signal — "I have a deliberate architecture for self-hosted alternatives to consumer cloud, not a one-off project." Bonus: explicit family-adoption / migration-from-cloud playbook is a different angle than pure tech.
+**Design note**: the same two-stage pattern as Paperless-ngx (5e), applied to a second data type — a deliberate, repeatable architecture for self-hosted alternatives to consumer cloud, not a one-off. The family-adoption / migration-from-cloud playbook is the harder, more interesting half.
 
 ### 5g. Frigate NVR (defer until 5e + 5f stable)
 *Why this passes the smell test: AI-driven surveillance fits the "internet-optional household" principle, hits Phase 6 Theme B (AI-driven NVR with Frigate), Phase 6 Theme D (Home Assistant integration), and Phase 6 Theme C (kids' safety lens). Lower hardware bar than previously estimated — Coral USB TPU at ~$100 handles object detection on 4-8 cameras, no need for a $1500+ GPU. The "AI on cheap hardware" angle is a legitimate portfolio talking point for edge-AI-deployment roles.*
@@ -256,7 +256,7 @@ Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU n
 - Cell-phone-network-down failure mode: if you depend on Frigate for any safety-critical view, design the redundancy. A camera that only works when your home internet is up is not a safety tool.
 - Storage for continuous recording grows fast. Budget NAS capacity and retention policy (motion-only vs continuous) before camera count grows.
 
-**Resume artifact**: "Built a fully local AI surveillance system on $100 of edge-inference hardware. Coral TPU handles object detection for [N] cameras with no cloud dependency, no data leaving the LAN. Demonstrates edge-AI deployment on commodity hardware — exactly the deployment skill the $25B-$143B edge AI market needs."
+**Design note**: fully local AI surveillance on ~$100 of edge hardware — a Coral TPU handles object detection for the cameras with no cloud dependency and no data leaving the LAN. Edge inference on commodity hardware, privacy by design.
 
 ---
 
@@ -385,7 +385,7 @@ Threading the Phase 5 + Phase 6 projects into a coherent technical narrative —
 **The "boring use cases that actually work" lens:**
 The local AI use cases that match or beat cloud are NOT the flashy ones. They're transcription (Whisper), narrow-tool agents, image classification, and OCR cleanup. Every concrete project above is in the "boring but works" category — none of them claim local LLM coding beats Claude, none claim 5-tool agentic chains work. The roadmap deliberately stays in the working zone.
 
-**The career-narrative payoff:**
-By the time Phase 5e Stage 2, 5f Stage 2, and 5g are all running, you have a portfolio that says: "I deploy local AI on commodity hardware for privacy-sensitive use cases. I've made the build-vs-buy and CPU-vs-GPU decisions deliberately based on actual benchmarks, not vibes. I understand the protocol layer (MCP), the model layer (Ollama + open-source models), and the runtime layer (Hermes Agent or raw integrations) — and I have working systems against real personal data to show it."
+**What this adds up to:**
+By the time Phase 5e Stage 2, 5f Stage 2, and 5g are all running, the through-line is clear: "I deploy local AI on commodity hardware for privacy-sensitive use cases. I've made the build-vs-buy and CPU-vs-GPU decisions deliberately based on actual benchmarks, not vibes. I understand the protocol layer (MCP), the model layer (Ollama + open-source models), and the runtime layer (Hermes Agent or raw integrations) — and I have working systems against real personal data to show it."
 
 The emphasis is deployment engineering, not research — practical local-AI delivery on commodity hardware for privacy-sensitive use cases.
