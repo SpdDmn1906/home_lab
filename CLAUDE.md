@@ -66,6 +66,39 @@ Lets the household work during WAN outages. `plex-fortress-guard.sh` runs via sy
 ### Scripts (`scripts/`)
 ~100 Bash scripts; assume `set -euo pipefail`. Organized subdirs (`health-checks/`, `diagnostics/`, `fixes/`, `backup/`, `maintenance/`, `fortress/`, `monitoring/`, `root_utils/`) hold the durable tooling. The many top-level `*_scan.sh` / `*_corruption_*` / `*_duplicate_*` / `*_quarantine_*` files are the FFmpeg-based **media-integrity suite** (parallelized corruption + duplicate detection) — largely task-specific one-offs; prefer reusing/extending the subdir scripts over the flat ones.
 
+## Adding the next roadmap coding tasks
+
+Source of truth is `docs/roadmap/INFRASTRUCTURE_HARDENING_ROADMAP.md` — read the "Active Build Priorities" block first and respect the gate: **nothing in Phase 5 starts until Phase 2 (failing disk) and Phase 3 (DNS isolation) land.** Where each near-term coding workstream's code goes and how to verify it:
+
+### Add a Terraform-managed service (e.g. Phase 4 self-hosted Gitea)
+Follow `terraform/modules/starr/` as the template — this is the repo's extension pattern:
+1. Create `terraform/modules/<name>/{main.tf,variables.tf,outputs.tf}`.
+2. Add `enable_<name>` to the `features` object in `terraform/variables.tf` (type + `default`).
+3. Wire it into `terraform/main.tf`: `module "<name>" { count = var.features.enable_<name> ? 1 : 0; source = "./modules/<name>"; ... }` — the commented-out `adguard`/`ai_assistant`/`remote_access` blocks show the exact shape. Add an `output` if it should surface in `tofu output`.
+4. Verify: `cd terraform && tofu fmt -recursive && tofu validate && tofu plan` — the plan must show **only** the new resources, nothing else changed.
+
+### Phase 4 Ansible roles (CIFS auto-heal, bare-metal → running-lab)
+`ansible/roles/` does **not exist yet**, and `infrastructure-setup.yml` references `include_tasks: tasks/*.yml` files that aren't in the repo — building the roles is also what fixes that partial-deploy footgun.
+1. Create `ansible/roles/<role>/{tasks,handlers,defaults,templates}/main.yml`. Roadmap-named roles: `cifs_mount`, `docker_host`, `plex_gpu`, `adguard`, `starr_stack`, `fortress_guard`, `monitoring_stack`.
+2. Add `ansible/playbooks/site.yml` that composes the roles; replace the placeholder `include_tasks` with role calls.
+3. Verify: `--syntax-check`, then `--check` (dry run) before any live run.
+4. Acceptance (roadmap): fresh Ubuntu VM → `ansible-playbook site.yml` → Plex serves a movie in <10 min.
+
+### Phase 4 Alerts-as-Code
+Add alert groups to `monitoring/prometheus/rules.yml` (already covers system/network/service/storage/temperature/uptime). Still missing per roadmap: **CIFS-mount-lost**, **`plex_fortress_guard_state != 0` for >1h** (requires the fortress guard to first export that metric via a node-exporter textfile collector — a coding dependency, not just a rule), and **container-restart-rate**. Verify with `promtool check rules monitoring/prometheus/rules.yml`, then reload (`curl -X POST http://localhost:9090/-/reload`).
+
+### Phase 5c `infra-mcp` — flagship, NEW standalone codebase
+No home in the repo yet, and it is **not** wired into Terraform/Ansible — it's a standalone Python project.
+1. Create `infra-mcp/` (own `pyproject.toml`/venv) on the official `mcp` SDK, **local stdio** transport, **read-only tools only** in v1.
+2. One provider module per service: `homelab` (Prometheus/Alertmanager + the Sonarr/Radarr/Plex/fortress operations bash is bad at), `aws` (Cost Explorer + light describe/list), `linode` (stream-up + instance metrics). Reach internal services over Tailscale; call APIs/existing bash rather than reimplementing them.
+3. Secrets in a gitignored `.env` (`.gitignore` already covers `*.env`): scoped read-only AWS principal, read-only Linode token, Tailscale-internal Prometheus URL.
+4. Headline tool: `estate.health_overview`. Verify each tool returns read-only data via the MCP inspector or by registering the server in the Claude Desktop/Code MCP config.
+5. Right-sizing guard: keep it read-only and personal; action tools and hosted always-on are deliberately deferred — don't add them speculatively.
+
+### K3s workloads & Phase 5h delivery — mostly NOT in this repo
+- K3s/GitOps manifests (Phase 5a/5b/5e/5f) live in a **separate `home_lab_k3s/` repo**, not here; cluster bring-up is `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2. Hard boundary: never move Plex/STARR/AdGuard/fortress/monitoring off Docker.
+- Phase 5h: `janellechung-site` deploy automation (Terraform + GitHub Actions) belongs in that site's repo; only the **Linode stream monitoring** piece lands here — add a scrape target + blackbox probe and alert rules under `monitoring/`.
+
 ## Secrets & config
 
 Everything sensitive is gitignored — never commit it. Create from the templates before deploying:
