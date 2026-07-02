@@ -15,9 +15,12 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Configuration
+# This script lives in scripts/root_utils/, so the repo root is two levels up.
+# terraform/ and ansible/ live at the repo root, not next to this script.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TERRAFORM_DIR="$SCRIPT_DIR/terraform"
-ANSIBLE_DIR="$SCRIPT_DIR/ansible"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+TERRAFORM_DIR="$REPO_ROOT/terraform"
+ANSIBLE_DIR="$REPO_ROOT/ansible"
 LOG_FILE="/var/log/homelab/infrastructure_$(date +%Y%m%d_%H%M%S).log"
 
 # Functions
@@ -187,8 +190,9 @@ verify_deployment() {
     log "Running comprehensive health checks..."
 
     # Run network test
-    if [ -f "./comprehensive_network_test.sh" ]; then
-        ./comprehensive_network_test.sh | tee -a "$LOG_FILE"
+    NETWORK_TEST="$REPO_ROOT/scripts/diagnostics/comprehensive_network_test.sh"
+    if [ -f "$NETWORK_TEST" ]; then
+        "$NETWORK_TEST" | tee -a "$LOG_FILE"
     fi
 
     # Check Docker services
