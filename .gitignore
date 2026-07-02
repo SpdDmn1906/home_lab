@@ -25,6 +25,11 @@ logs/
 # Docker volumes (if stored locally)
 docker/volumes/
 
+# AdGuard runtime data — household browsing history + admin password hash, NEVER commit
+docker/adguard/adguard/
+*querylog*.json
+*querylog*.json.*
+
 # OS files
 .DS_Store
 Thumbs.db
