@@ -99,6 +99,9 @@ No home in the repo yet, and it is **not** wired into Terraform/Ansible — it's
 - K3s/GitOps manifests (Phase 5a/5b/5e/5f) live in a **separate `home_lab_k3s/` repo**, not here; cluster bring-up is `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2. Hard boundary: never move Plex/STARR/AdGuard/fortress/monitoring off Docker.
 - Phase 5h: `janellechung-site` deploy automation (Terraform + GitHub Actions) belongs in that site's repo; only the **Linode stream monitoring** piece lands here — add a scrape target + blackbox probe and alert rules under `monitoring/`.
 
+### AdGuard query-log analyzer (Python observability utility — `scripts/monitoring/`)
+Small stdlib-Python CLI that parses AdGuard Home's `querylog.json` (JSON-per-line) into **top-N domains/clients** + blocked-vs-allowed rate (`json` + `collections.Counter`/`defaultdict` + `argparse`). ⚠️ The query log is household browsing data — keep raw logs/output **out of git**; commit only the generic script (fake-domain sample data if any).
+
 ## Secrets & config
 
 Everything sensitive is gitignored — never commit it. Create from the templates before deploying:
