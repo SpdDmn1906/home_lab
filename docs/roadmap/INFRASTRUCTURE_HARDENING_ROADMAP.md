@@ -276,6 +276,21 @@ Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU n
 
 **Design philosophy for this section — right-sizing.** The right answer is usually the *least* infrastructure that meets the real need: managed platforms over a Kubernetes cluster unless a workload genuinely justifies one. If I want GitOps/cluster practice, it belongs on the existing lightweight K3s (5b) — not on a new managed cluster stood up to run a personal web app. Over-engineering a small workload is a red flag, not an achievement.
 
+### 5i. YouTube Data API — liked-videos export script (Python learning build, added 2026-07-18)
+*Why this passes the smell test: a small, self-contained Python build that teaches the Google Cloud API skills the estate already touches (5h's Linode host runs a live YouTube stream), against my own real data. No infra touched — it sits outside the Phase 2/3 stability gate and fits one Career & Homelab afternoon block per rung.*
+
+**The need (plain terms).** My liked-videos list is locked behind my Google account — no way to export, search, or feed it into other tooling (e.g. a graphify knowledge graph). A plain API key can't read it: the liked-videos playlist (ID `LL`) is private, which is exactly why this is the right OAuth learning vehicle instead of another key-in-a-header exercise.
+
+**What it teaches (the actual point):**
+- [ ] **Rung 1 — Google Cloud setup**: create a GCP project, enable YouTube Data API v3, create an OAuth client (Desktop type), download `client_secret.json`. Understand API key vs OAuth — *why* private data needs user consent.
+- [ ] **Rung 2 — the OAuth flow**: installed-app flow with `google-auth-oauthlib`, `youtube.readonly` scope, token cached locally so consent happens once. Watch the browser round-trip actually happen.
+- [ ] **Rung 3 — pagination + quota**: `playlistItems.list` on playlist `LL`, walk `nextPageToken` to the end, count quota units spent (1/page against the 10,000/day default) — same pagination pattern as every AWS `NextToken` API sentinel already uses.
+- [ ] **Rung 4 — output**: write CSV/JSON (title, channel, video ID, URL, liked-order position) to a local file. Stretch: `--since` filter, or hand the output to graphify.
+
+**Where it lives:** `scripts/youtube/liked_videos_export.py`. **Secrets discipline:** `client_secret.json` + the cached OAuth token must be gitignored *before* the first auth run (`.gitignore` covers `*.env` but not these JSONs — add explicit entries). The export output is personal data too — keep it out of git like the AdGuard query logs.
+
+**Right-sizing guard:** one script, stdlib + the two Google client libraries, no daemon, no schedule. If it grows a database or a dashboard, that's scope creep.
+
 ## 🧭 **Phase Ordering Rationale**
 - Phases 1–3 are **non-negotiable prerequisites**. A failing disk and a single-node DNS dependency outrank every platform-maturity item below.
 - Phase 4 is **the platform foundation**: Ansible-based reproducibility + alerting + log shipping. Everything in Phase 5 implicitly depends on this.
