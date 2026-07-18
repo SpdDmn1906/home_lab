@@ -291,6 +291,20 @@ Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU n
 
 **Right-sizing guard:** one script, stdlib + the two Google client libraries, no daemon, no schedule. If it grows a database or a dashboard, that's scope creep.
 
+### 5j. Local-AI Independence — free harness + local models (added 2026-07-18)
+*Why this passes the smell test: it's the Phase 6 "Internet-Optional Household" principle applied to AI tooling — a coding assistant that costs $0/month, obeys no provider's session limits or harness ToS, and keeps working when the WAN is down. It also gives the Local-AI Portfolio Strategy its first real deployment instead of a plan.*
+
+**The need (plain terms).** Today's AI workflow is a paid Claude Code subscription with session limits (one graph build burned an entire session in July), provider ToS that restrict which harnesses may use subscription plans (see the 5e Stage 2 caveat), and zero function without internet. Fortress mode already assumes the WAN dies — the AI tooling should survive it too. The goal is a graceful degradation tier: cloud AI when it's worth paying for, local AI always available underneath.
+
+**Steps (in order — each is one afternoon block):**
+- [ ] **Hardware-reality check first.** Inventory what inference the estate can actually do today: `mediaserver` CPU + Intel iGPU, the K3s node's CPU. Benchmark 1–2 quantized coding models (7–14B class, e.g. current Qwen-Coder tier) with Ollama or llama.cpp — measure real tok/s before designing anything. Write the numbers down; they decide everything downstream.
+- [ ] **Local model serving.** Stand up Ollama (or llama.cpp server) as a service — K3s sidecar is the intended home (5a already lists LLM inference as an experimental workload), Docker on the media host is the fallback. Expose the OpenAI-compatible endpoint over Tailscale only.
+- [ ] **Free harness on top.** Point a free, open-source harness at the local endpoint via a base-URL change. First candidate: **jcode** (MIT, Rust, vetted 2026-07-18 — real project, ignore its marketing numbers); alternatives if it disappoints: OpenCode, Aider. Result: a coding agent with zero subscription and zero internet dependency.
+- [ ] **Define the honest split.** Local models on this hardware will NOT match frontier cloud models — decide explicitly which work goes local (Python drills, small scripts, offline/fortress scenarios, anything privacy-sensitive) and which stays cloud-paid until the Theme B GPU node exists. Write the split down; revisit quarterly.
+- [ ] **Watch item — the falling floor.** Expert-streaming engines (Colibrì-class: 744B MoE in 25 GB RAM off NVMe, vetted 2026-07-18 — real but ~0.05–0.1 tok/s cold on laptop hardware) are dropping the RAM/VRAM bar monthly. Re-run the "frontier-at-home" math when the Theme B GPU decision comes up; don't buy hardware against today's numbers.
+
+**Right-sizing / no-spend guard:** no GPU purchase now — this phase runs entirely on existing hardware, and the GPU node stays a Theme B decision made on measured need, not enthusiasm. If local inference on current CPUs proves too slow to use, the deliverable is still real: the serving/harness plumbing is GPU-ready, and the benchmark numbers become the Theme B business case.
+
 ## 🧭 **Phase Ordering Rationale**
 - Phases 1–3 are **non-negotiable prerequisites**. A failing disk and a single-node DNS dependency outrank every platform-maturity item below.
 - Phase 4 is **the platform foundation**: Ansible-based reproducibility + alerting + log shipping. Everything in Phase 5 implicitly depends on this.
