@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-R_KEY="***REMOVED***"
+R_KEY="${R_KEY:?Set R_KEY (Radarr API key) in your shell environment or a local .env — never commit it}"
 
 echo "=== Enforcing Strict 4GB Limit (Radarr) ==="
 # Target: ~4GB for a 120min movie => ~34-35 MB/min

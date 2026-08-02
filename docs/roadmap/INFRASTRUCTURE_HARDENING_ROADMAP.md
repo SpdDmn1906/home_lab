@@ -351,7 +351,8 @@ Fortress mode, generalized from Plex to the entire family. Everything important 
 - GitOps + Ansible reproducibility (Phases 4–5) means the whole household stack can be rebuilt on any hardware.
 - Public-facing services for wife's business: Cloudflare Tunnel or Tailscale Funnel, never direct port forwards.
 - Optional: redundant internet (5G failover, secondary ISP) — separately tracked in `docs/architecture/ISP-ASSESSMENT.md`.
-- Private torrent trackers: VPN compliance + cross-seed + autobrr — tighter STARR stack discipline.
+- Private torrent trackers: VPN compliance + cross-seed + autobrr — tighter STARR stack discipline. Check each target tracker's specific VPN/seedbox rules before joining (some ban shared VPN IPs as a multi-accounting risk; some only whitelist specific seedbox providers).
+- Seedbox migration (evaluated 2026-08-01, prompted by a PIA renewal decision): move qBittorrent off the home VPN-gateway container onto a paid seedbox (~$5–15/mo, comparable to the PIA subscription cost) — provider's ToS explicitly allows torrent traffic, removes home IP/bandwidth from the equation entirely, and eliminates the "VPN container health = whole STARR stack health" fragility of the current `binhex/arch-qbittorrentvpn` gateway pattern. Sonarr/Radarr/Prowlarr would point at the seedbox as a remote download client instead of sharing its network namespace; finished downloads pulled to the NAS via an `rclone mount`. Real re-architecture (network_mode + storage/hardlink model both change), not a one-line swap — not urgent. Renew PIA now to unblock the stack; take this on as unhurried follow-on infra work.
 
 ### Theme F — Media Stack Evaluation (open question, NOT a commitment)
 *Goal: name the Jellyfin-vs-Plex question so it gets revisited deliberately, not drifted into.*

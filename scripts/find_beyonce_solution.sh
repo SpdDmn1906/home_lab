@@ -10,7 +10,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # API Keys (from your config)
-RADARR_API_KEY="***REMOVED***"
+RADARR_API_KEY="${RADARR_API_KEY:?Set RADARR_API_KEY in your shell environment or a local .env — never commit it}"
 RADARR_URL="http://localhost:7878"
 PROWLARR_URL="http://localhost:9696"
 

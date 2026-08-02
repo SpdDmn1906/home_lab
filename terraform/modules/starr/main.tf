@@ -80,8 +80,8 @@ resource "docker_container" "qbittorrentvpn" {
   # Environment variables for VPN and App
   env = [
     "VPN_ENABLED=yes",
-    "VPN_USER=${trimspace(file("/home/youruser/Docker/config/data_gluetun/config/pia_user.txt"))}",
-    "VPN_PASS=${trimspace(file("/home/youruser/Docker/config/data_gluetun/config/pia_pass.txt"))}",
+    "VPN_USER=${trimspace(file("${var.gluetun_config_path}/config/pia_user.txt"))}",
+    "VPN_PASS=${trimspace(file("${var.gluetun_config_path}/config/pia_pass.txt"))}",
     "VPN_PROV=pia",
     "VPN_CLIENT=wireguard",
     "VPN_INPUT_PORTS=7878,8989,9696,8191,6767",
