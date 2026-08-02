@@ -36,7 +36,7 @@ variable "vpn_server_regions" {
 }
 
 variable "gluetun_config_path" {
-  description = "Path to Gluetun configuration directory on host (must contain credentials.txt file). Set the real value in terraform.tfvars (gitignored) — do not hardcode a real path here."
+  description = "Path to Gluetun configuration directory on host (must contain pia_user.txt/pia_pass.txt). Set the real value in terraform.tfvars (gitignored) — do not hardcode a real path here. PIA requires the password to contain lowercase, uppercase, AND numbers — a pure-hex generator (e.g. `openssl rand -hex N`) will be silently rejected at the WireGuard handshake (interface comes up, 0 bytes ever received back). Use `tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 24` instead."
   type        = string
   default     = "/home/youruser/Docker/config/data_gluetun"
 }
