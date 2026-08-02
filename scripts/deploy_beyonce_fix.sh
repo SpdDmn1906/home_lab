@@ -9,7 +9,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # API Configuration
-RADARR_API_KEY="***REMOVED***"
+RADARR_API_KEY="${RADARR_API_KEY:?Set RADARR_API_KEY in your shell environment or a local .env — never commit it}"
 RADARR_URL="http://localhost:7878/api/v3"
 PROWLARR_URL="http://localhost:9696/api/v1"
 

@@ -12,8 +12,8 @@ echo "╚═══════════════════════�
 echo ""
 
 SERVER_IP="192.168.1.11"
-SERVER_USER="youruser"
-SERVER_PASS="$SSH_PASSWORD"
+SERVER_USER="${SERVER_USER:?Set SERVER_USER in your shell environment or a local .env — never commit it}"
+SERVER_PASS="${SERVER_PASS:?Set SERVER_PASS in your shell environment or a local .env — never commit it}"
 
 # Execute on remote server
 sshpass -p "$SERVER_PASS" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP 'bash -s' << 'EOFREMOTE'

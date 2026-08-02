@@ -11,6 +11,7 @@ secrets/
 credentials.txt
 terraform.tfvars
 variables.env
+ansible/playbooks/vars/secrets.yml
 
 # Terraform
 .terraform/

@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-R_KEY="***REMOVED***"
-S_KEY="***REMOVED***"
+R_KEY="${R_KEY:?Set R_KEY (Radarr API key) in your shell environment or a local .env — never commit it}"
+S_KEY="${S_KEY:?Set S_KEY (Sonarr API key) in your shell environment or a local .env — never commit it}"
 
 echo "=== Optimizing Radarr Quality Limits ==="
 R_DEFS=$(curl -s "http://localhost:7878/api/v3/qualitydefinition?apikey=$R_KEY")

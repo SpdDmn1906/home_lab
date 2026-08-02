@@ -36,7 +36,7 @@ variable "vpn_server_regions" {
 }
 
 variable "gluetun_config_path" {
-  description = "Path to Gluetun configuration directory on host (must contain credentials.txt file)"
+  description = "Path to Gluetun configuration directory on host (must contain credentials.txt file). Set the real value in terraform.tfvars (gitignored) — do not hardcode a real path here."
   type        = string
   default     = "/home/youruser/Docker/config/data_gluetun"
 }
@@ -80,7 +80,7 @@ variable "media_root_path" {
 }
 
 variable "synology_path" {
-  description = "Path to Synology NAS mount"
+  description = "Path to Synology NAS mount. Set the real value in terraform.tfvars (gitignored) — do not hardcode a real path here."
   type        = string
   default     = "/home/youruser/synology"
 }
