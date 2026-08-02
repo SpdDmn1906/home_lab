@@ -30,9 +30,9 @@ variable "vpn_service_provider" {
 }
 
 variable "vpn_server_regions" {
-  description = "Preferred VPN server regions. For PIA with port forwarding, use a region that supports it (e.g. CA Montreal, Germany, Netherlands); US East does not."
+  description = "The binhex/arch-qbittorrentvpn image passes this straight through as VPN_REMOTE_SERVER, which its wireguard.sh expects to be a literal PIA server IP address (e.g. 147.90.227.142) - NOT a friendly region name. Get real, currently-live IPs from https://serverlist.piaservers.net/vpninfo/servers/v6 (filter for port_forward: true, since STRICT_PORT_FORWARD=yes is set below). Named 'CA Montreal' historically but was never actually wired to anything until 2026-08-02 - the default below is illustrative only, always verify against the live server list before using it."
   type        = string
-  default     = "CA Montreal"
+  default     = "147.90.227.142" # DE Frankfurt, port_forward=true as of 2026-08-02 - verify freshness before reuse
 }
 
 variable "gluetun_config_path" {
