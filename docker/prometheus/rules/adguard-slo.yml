@@ -1,0 +1,9 @@
+  groups:
+    - name: adguard_slo
+      rules:
+        - record: slo:adguard_availability:ratio_5m
+          expr: avg_over_time(probe_success{job="adguard_dns_probe"}[5m])
+        - record: slo:adguard_availability:ratio_1h
+          expr: avg_over_time(probe_success{job="adguard_dns_probe"}[1h])
+        - record: slo:adguard_availability:ratio_30d
+          expr: avg_over_time(probe_success{job="adguard_dns_probe"}[30d])
