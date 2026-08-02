@@ -2,11 +2,10 @@
 #
 # Quick helper to check media scan progress
 #
+# Requires an SSH key-based `mediaserver` host entry in ~/.ssh/config
+# (no password/sshpass — see docs/guides/ssh-key-setup.md).
 
-SSH_USER="${SSH_USER:?Set SSH_USER in your shell environment or a local .env — never commit it}"
-SSH_PASS="${SSH_PASS:?Set SSH_PASS in your shell environment or a local .env — never commit it}"
-
-sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@192.168.1.11" 'bash' << 'EOFCHECK'
+ssh mediaserver 'bash' << 'EOFCHECK'
 #!/bin/bash
 clear
 echo "╔════════════════════════════════════════════════════════════════╗"

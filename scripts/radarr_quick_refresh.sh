@@ -11,12 +11,11 @@ echo "║      🔄 RADARR QUICK REFRESH                                   ║"
 echo "╚════════════════════════════════════════════════════════════════╝"
 echo ""
 
-SERVER_IP="192.168.1.11"
-SERVER_USER="${SERVER_USER:?Set SERVER_USER in your shell environment or a local .env — never commit it}"
-SERVER_PASS="${SERVER_PASS:?Set SERVER_PASS in your shell environment or a local .env — never commit it}"
+# Requires an SSH key-based `mediaserver` host entry in ~/.ssh/config
+# (no password/sshpass — see docs/guides/ssh-key-setup.md).
 
 # Execute on remote server
-sshpass -p "$SERVER_PASS" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP 'bash -s' << 'EOFREMOTE'
+ssh mediaserver 'bash -s' << 'EOFREMOTE'
 #!/bin/bash
 
 # Get Radarr API key
