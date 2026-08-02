@@ -102,10 +102,11 @@ security = {
 
 # STARR Stack Configuration (Media Automation with VPN)
 # NOTE: Update all paths to match your actual server paths
-# IMPORTANT: Credentials for VPN are read from credentials.txt file in gluetun_config_path
-# The credentials.txt file should contain two lines:
-#   Line 1: VPN username
-#   Line 2: VPN password
+# IMPORTANT: Credentials for VPN are read from pia_user.txt/pia_pass.txt in gluetun_config_path
+# PIA requires the password to contain lowercase, uppercase, AND numbers. A pure-hex or
+# pure-symbol generator will be silently rejected — the WireGuard interface still comes up,
+# but the handshake never completes (0 bytes ever received back from the peer). Generate with:
+#   tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 24
 starr = {
   puid                      = 1000
   pgid                      = 1004  # Match your actual PGID
