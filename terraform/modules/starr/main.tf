@@ -84,6 +84,7 @@ resource "docker_container" "qbittorrentvpn" {
     sensitive("VPN_PASS=${trimspace(file("${var.gluetun_config_path}/config/pia_pass.txt"))}"),
     "VPN_PROV=pia",
     "VPN_CLIENT=wireguard",
+    "VPN_REMOTE_SERVER=${var.vpn_server_regions}",
     "VPN_INPUT_PORTS=7878,8989,9696,8191,6767",
     "VPN_OPTIONS=", # Optional: add extra openvpn/wireguard options
     "STRICT_PORT_FORWARD=yes",
