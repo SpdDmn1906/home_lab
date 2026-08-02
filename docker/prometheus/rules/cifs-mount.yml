@@ -1,0 +1,39 @@
+groups:
+  - name: cifs_mount_health
+    interval: 30s
+    rules:
+      - alert: MediaShareWrongOwner
+        expr: homelab_cifs_mount_uid{mountpoint="/data/media"} != 1000
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: "/data/media owned by uid {{ $value }}, expected 1000"
+          description: "CIFS share remounted with wrong ownership. Sonarr/Radarr (uid 1000) cannot import."
+      - alert: MediaShareNotWritable
+        expr: homelab_cifs_writable{mountpoint="/data/media"} == 0
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: "/data/media is not writable by the arr user"
+          description: "uid 1000 cannot write to the media share. Imports will fail."
+      - alert: MediaShareNotMounted
+        expr: homelab_cifs_mount_present{mountpoint="/data/media"} == 0 or absent(homelab_cifs_mount_present{mountpoint="/data/media"})
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: "/data/media is not a mounted CIFS filesystem"
+          description: "Run: sudo mount /data/media (and restart sonarr radarr bazarr)."
+      - alert: MediaShareFsAbsent
+        expr: absent(node_filesystem_size_bytes{mountpoint="/data/media",fstype="cifs"})
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: "node-exporter no longer reports /data/media as cifs"
+          description: "Backup detector for an unmounted/wrongly-mounted media share."
+      - alert: CifsMountProbeStale
+        expr: absent(homelab_cifs_check_timestamp) or (time() - homelab_cifs_check_timestamp) > 600
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "CIFS mount probe is stale"
+          description: "cifs-mount-check.timer has not updated metrics in >10m. The mount alarms are blind."
