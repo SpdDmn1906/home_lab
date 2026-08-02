@@ -1,0 +1,10 @@
+  groups:
+    - name: adguard_slo_alerts
+      rules:
+        - alert: AdGuardSLOFastBurn
+          expr: (1 - slo:adguard_availability:ratio_1h) / (1 - 0.995) > 14.4
+          for: 5m
+          labels:
+            severity: page
+          annotations:
+            summary: "AdGuard burning 14.4x error budget — month's budget gone in ~2 days at this rate"
