@@ -32,10 +32,10 @@ The estate now spans three environments — this on-prem lab, a personal AWS acc
 ## 🛠️ **Phase 2: Hardware Remediation** (URGENT)
 *Goal: Remove failing hardware that is causing SATA bus resets and log corruption.*
 
-- [ ] **Physical Decommissioning of `/dev/sda`**: 
-    - [ ] Shut down server.
-    - [ ] Physically disconnect the SATA/Power cables from the 2TB Seagate (SN: 9WM7TB5T).
-    - [ ] Power up and verify system stability.
+- [x] **Physical Decommissioning of `/dev/sda`** (2026-08-05):
+    - [x] Shut down server.
+    - [x] Physically disconnect the SATA/Power cables from the 2TB Seagate (SN: 9WM7TB5T).
+    - [x] Power up and verify system stability. Verified: all 18 containers back up healthy, `fstab` had zero references to the drive (nothing depended on it), no new SATA errors post-boot. Note: device names shifted — former `/dev/sdb` (OS/boot) is now `/dev/sda`; the failing drive's old `/dev/sda` identity no longer exists. Drive is now disconnected, in anti-static storage, pending replacement-drive purchase + ddrescue clone (see Data Recovery Plan below, still open) — this was triggered by a real incident: the drive's `FAILING_NOW` SMART state caused a full-system hang requiring a hard restart, not a routine decommission.
 - [ ] **Data Recovery Plan for `/dev/sda`**:
     - [ ] **Critical Condition**: Drive is in "FAILED" state with 3,959+ reallocated sectors. No further writes should be made to this drive.
     - [ ] **Strategy**: Use `ddrescue` for a bit-level clone if a replacement 2TB+ drive is acquired.
