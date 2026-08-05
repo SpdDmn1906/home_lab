@@ -81,11 +81,19 @@ The estate now spans three environments — this on-prem lab, a personal AWS acc
     - [ ] Once logs flow to Loki, tighten Docker `max-size` aggressively (logs persist in Loki, not on disk).
     - [ ] `log-error-scanner.sh` demoted to fallback; Grafana Explore (Loki) becomes primary log view.
 - [ ] **Alerts-as-Code**:
-    - [ ] `/dev/sda` (and any future drive) SMART failure → Prometheus alert.
+    - [ ] `/dev/sda` (and any future drive) SMART failure → Prometheus alert. **⚠️ 2026-08-05: this is no longer hypothetical — the failing drive's `FAILING_NOW` SMART state hung the whole box and forced a hard restart. This alert would have caught it in advance. Highest-value item in this list.**
     - [ ] CIFS mount lost (mountpoint missing in node-exporter filesystem metrics).
     - [ ] `plex_fortress_guard_state != 0` for >1h.
     - [ ] Container restart count increasing (`rate(container_start_time_seconds[15m]) > 0`).
-    - [ ] Disk usage >85% on any local volume.
+    - [ ] Disk usage >85% on any local volume. **⚠️ 2026-08-05: `/external/media` was found at 100% full (13GB free of 2.2TB) during the same incident — this alert would have caught that too.**
+- [ ] **Notification quality — Alertmanager → ntfy formatting** (added 2026-08-05, follow-up to the working push pipeline):
+    - [ ] **Problem:** Alertmanager's generic `webhook_configs` can't template its payload, so notifications arrive as a raw JSON blob with the server URL as the title. Readable, but ugly and slow to parse on a lock screen at 3am.
+    - [ ] **Fix:** insert a bridge between Alertmanager and ntfy that sets ntfy's `X-Title`/`X-Priority`/`X-Tags` headers from alert labels/annotations. Candidates: [`ntfy-alertmanager` (xenrox)](https://codeberg.org/xenrox/ntfy-alertmanager) — supports priority, tags, icons, and action buttons (e.g. a button to silence the alert directly from the notification); [`alertmanager-ntfy` (alexbakker)](https://github.com/alexbakker/alertmanager-ntfy) — Go templating for title/body, markdown support. Evaluate both, pick one.
+    - [ ] **Payoff:** notification title becomes the actual alert name (`AdGuardSLOFastBurn`) instead of the server URL — this fixes the title *properly*, which MagicDNS below only cosmetically improves.
+- [ ] **Enable Tailscale MagicDNS** (added 2026-08-05):
+    - [ ] Enable at login.tailscale.com → DNS → Enable MagicDNS. Replaces raw tailnet IPs with hostnames everywhere (`ssh sc-base-lx`, `http://sc-base-lx:3000` for Grafana, etc.).
+    - [ ] **⚠️ Hard dependency:** if the ntfy subscription is switched to a MagicDNS hostname, `NTFY_BASE_URL` **must** be changed to match it exactly, or iOS push silently breaks with zero errors anywhere in the pipeline. See `docs/guides/tailscale-ntfy-push-setup.md` — this cost an hour to diagnose the first time.
+    - [ ] Note: MagicDNS is DNS-layer only. It does **not** fix the raw-JSON notification body — that needs the bridge above.
 - [ ] **Ansible "Bare Metal → Running Lab" Playbook**:
     - [ ] Goal: `ansible-playbook site.yml` on a fresh Ubuntu install reproduces the entire stack in <10 min.
     - [ ] Roles: `cifs_mount`, `docker_host`, `plex_gpu` (if hardware transcode is used), `adguard`, `starr_stack`, `fortress_guard`, `monitoring_stack`.
@@ -337,6 +345,7 @@ Fortress mode, generalized from Plex to the entire family. Everything important 
 ### Theme C — Tenant Isolation
 - Wife's photography & stationary business: separate storage, separate backups, possibly separate hosting (website, file delivery to clients).
 - Kids' devices: per-device DNS policies (AdGuard), screen time, MDM, content filtering. Already partial via AdGuard; needs structured profiles as devices proliferate.
+- **Kids' devices AWAY from home — decision paused 2026-08-05, pick up here.** Question raised: should kids' devices join the Tailscale mesh so AdGuard filtering follows them off the home network? **Current recommendation: no — use Apple Screen Time (Family Sharing) / Google Family Link instead**, and keep AdGuard scoped to at-home filtering for devices that can't run those (TVs, consoles, IoT). Reasoning: (a) joining a tailnet does NOT extend filtering by itself — it needs a tailnet-wide DNS override *plus* an exit node to route all traffic home, with real bandwidth/latency cost; (b) a visible VPN toggle isn't tamper-resistant without genuine device lockdown (iOS Supervised mode via Apple Configurator, or devices bought through Apple Business/School Manager — a real logistical hurdle); (c) it would make home-infra uptime a dependency for the kids' internet access *everywhere*, widening the exact failure mode that took the stack down on 2026-08-05, and doing so *before* Phase 3 (redundant DNS) exists to make an AdGuard outage survivable. **Revisit if:** Phase 3 lands AND device supervision/MDM is actually in place AND there's a filtering need Screen Time/Family Link genuinely can't cover. The Tailscale technical plan was deliberately not written up — scope it then, not now.
 - Personal dev/staging: future web and mobile app projects need real environments separate from prod media stack.
 - This is where K3s + ArgoCD from Phase 5 stop being a learning sandbox and become genuinely useful — multi-tenant scheduling, declarative deploys, real isolation.
 
