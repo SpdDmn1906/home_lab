@@ -1,6 +1,7 @@
 # ISP Assessment: Plans Meeting or Exceeding Current Performance
 
-**Date:** 2026  
+**Date:** 2026 · **Revised 2026-08-12** (fiber build started on the block; added the CGNAT/passthrough gates and a provider verdict)  
+**Status:** 🎯 **Decision made — target AT&T Fiber, reject T-Mobile Fiber.** See [Recommendation Summary](#recommendation-summary-revised-2026-08-12).  
 **Baseline:** Your current service (minimum requirement for any alternative)  
 **Context:** Home lab with Plex (local 4K, remote 1080p), STARR stack, ~30 devices, Eero mesh, future 2.5G/10G (ASUS XG-C100C). See [network-setup.md](network-setup.md), [PLEX_4K_AND_FORTRESS_MODE_STRATEGY.md](../troubleshooting/PLEX_4K_AND_FORTRESS_MODE_STRATEGY.md).
 
@@ -24,6 +25,53 @@
 **Minimum requirement for this assessment:** Any alternative must offer **at least**:
 - **Download:** 1,000 Mbps (1 Gbps) — acceptable; 2,000 Mbps preferred to match current.
 - **Upload:** 200 Mbps preferred; **no less than 35 Mbps** for your current Plex/STARR design.
+
+---
+
+## 🔴 The Two Criteria That Actually Decide This (added 2026-08-12)
+
+Speed tiers are the easy part and were the original focus of this doc. They are **not** what disqualifies an ISP for this lab. Two architectural criteria outrank raw Mbps:
+
+### 1. Public IPv4 vs CGNAT — the hard gate
+
+If the ISP puts you behind **carrier-grade NAT**, you have no routable inbound address and port forwarding silently stops meaning anything. What breaks here:
+
+| Service | Impact under CGNAT |
+|---|---|
+| **Plex remote access** | 🔴 **Breaks.** The 32400 forward documented in [network-setup.md](network-setup.md) becomes inert. Plex falls back to **Relay, ~1–2 Mbps** — versus the 3–4 concurrent 1080p @ 10 Mbps design in [PLEX_4K_AND_FORTRESS_MODE_STRATEGY.md](../troubleshooting/PLEX_4K_AND_FORTRESS_MODE_STRATEGY.md). |
+| **Tailscale** | ⚠️ **Degrades.** Traverses CGNAT, but CGNAT-on-both-ends often fails direct connection and falls back to DERP relay — added latency, throttled throughput. Matters for `infra-mcp` (Phase 5c), which reaches every service over the tailnet. |
+| **STARR / qBittorrent** | ✅ **Insulated.** Inbound rides the PIA port forward through the VPN gateway container, not the home WAN IP. |
+| **Tailscale Funnel / Cloudflare Tunnel** | ✅ **Unaffected.** Outbound-initiated by design — this is why Theme E already specifies tunnels over port forwards. |
+
+**Verification question to ask any ISP before signing:** *"Does residential service assign a public IPv4, or am I behind CGNAT — and what does a static/public IP cost?"* Do not accept a salesperson's "you can port forward" — ask for the CGNAT answer specifically.
+
+### 2. Bridge / IP-passthrough support
+
+The LAN design is **Xfinity modem in bridge → Asus RAX50 is the single router, DHCP, DNS, and firewall**, with double-NAT deliberately eliminated. Any ISP gateway that cannot bridge or pass the WAN IP through re-introduces double NAT and breaks that design.
+
+- **AT&T** — BGW320-505 supports **IP Passthrough** (`Firewall > IP Passthrough > Allocation Mode: Passthrough`, `Mode: DHCPS-fixed`, select the Asus's MAC). Not a true bridge, but it hands the public IP to the Asus, which is what matters.
+- **T-Mobile** — gateways are widely reported to have **no bridge/passthrough mode**. ⚠️ Sourcing is on the 5G gateway, not the fiber ONT — treat as unverified and confirm with the installer.
+
+---
+
+## 📊 Verdicts by Provider (2026-08-12)
+
+| Provider | Public IPv4 | Bridge/passthrough | Symmetric | Verdict |
+|---|---|---|---|---|
+| **AT&T Fiber** | ✅ Default, no CGNAT | ✅ IP Passthrough | ✅ | ✅ **Target.** Meets both gates. |
+| **Xfinity** (current) | ✅ | ✅ Bridge mode | ❌ (2000/200) | ✅ Works; overpaying for unusable download. |
+| **T-Mobile Fiber** | ❌ **CGNAT default**, public IP is a **+$10/mo** add-on | ⚠️ Unverified, likely none | ✅ | ❌ **Rejected** on the CGNAT gate. |
+| **5G Home Internet** (any carrier) | ❌ CGNAT | ❌ | ❌ | ❌ Failover only, never primary. |
+
+---
+
+## ⚠️ The Download Tier You Cannot Use
+
+Line 76 of this doc already noted it; stating it plainly because it drives the buying decision:
+
+**The Asus RAX50's 1G ports cap real WAN throughput at ~940 Mbps.** Any tier above 1 Gbps is unusable until the router is replaced. A 2 Gbps plan delivers exactly the same real-world throughput as a 1 Gbps plan on this hardware.
+
+Consequence: **do not buy above 1 Gbps.** A 500/500 or 1000/1000 symmetric fiber tier is a strict upgrade over 2000/200 cable on this LAN — identical usable download, 2.5–5× the upload.
 
 ---
 
@@ -77,14 +125,31 @@ These meet your **minimum viable** requirement (fast downloads, enough upload fo
 
 ---
 
-## Recommendation Summary
+## Recommendation Summary (revised 2026-08-12)
+
+**Decision: target AT&T Fiber. Reject T-Mobile Fiber on the CGNAT gate.**
 
 | Goal | Suggestion |
 |------|------------|
-| **Stay at current performance** | Xfinity 2 Gig already meets the bar; no change needed. |
-| **Best upgrade path** | If fiber (Google, AT&T, Frontier, Verizon, Quantum) is available: 1 Gbps symmetric or 2 Gbps symmetric gives better upload than 2 Gbps cable and is often similar or better value. |
-| **If you move or switch** | Choose a plan with **≥1 Gbps down** and **≥200 Mbps up** (or symmetric) to match or exceed current. Avoid plans with &lt;35 Mbps upload if you keep current Plex remote usage. |
-| **When comparing** | Check: upload speed, data cap, modem/ONT (2.5G port for future-proofing), and contract/price lock. |
+| **Target plan** | **AT&T Fiber 500/500 or 1000/1000.** Both are a strict upgrade over 2000/200 on this LAN. Above 1 Gbps is wasted — see the RAX50 ceiling above. |
+| **Reject** | **T-Mobile Fiber.** CGNAT by default breaks Plex remote access and degrades Tailscale; the public IP is a paid add-on that erases the price advantage. |
+| **Do not buy** | Any tier >1 Gbps, and any router upgrade to chase multi-gig. The 1G ports are not a constraint worth spending to remove. |
+| **When comparing** | In priority order: **(1) public IPv4 vs CGNAT · (2) bridge/passthrough · (3) upload speed · (4) data cap · (5) contract/price lock.** Download tier is last, not first. |
+
+### Pre-Switch Verification Checklist
+
+Do not cancel the incumbent until every item passes on the new circuit. Run a two-week overlap.
+
+- [ ] Confirm **public IPv4, not CGNAT** — ask explicitly before ordering.
+- [ ] Gateway in **IP Passthrough** to the Asus; confirm the Asus WAN shows the public IP, not a `192.168.x` / `100.64.x` address.
+- [ ] Re-add the **32400 port forward**; Plex Settings → Remote Access reads **"Fully accessible"** (not "Relayed").
+- [ ] Update Plex **"Internet upload speed"** to the new symmetric figure — currently set to 35 Mbps, which will throttle remote streams badly on fiber.
+- [ ] `tailscale status` shows **`direct`**, not `relay`, from an off-LAN peer.
+- [ ] AdGuard/Unbound still primary DNS; recursive resolution unaffected by the ISP change.
+- [ ] Run a **fortress drill** — including the untested "does MagicDNS resolve during a WAN outage" question from the Phase 4 roadmap.
+- [ ] Revisit **QoS** — the bandwidth allocations in `network-setup.md` and the Plex strategy doc are written against a ~200 Mbps upload budget and will need re-baselining.
+
+> ⚠️ **This doc covers the technical criteria only.** Billing, bundled-service, and scheduling constraints are tracked separately and privately. Do not schedule a cutover from this doc alone.
 
 ---
 
