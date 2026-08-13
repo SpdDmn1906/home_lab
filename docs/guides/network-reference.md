@@ -7,7 +7,10 @@
 
 ## 🔌 Router Configuration
 
-### Asus Nighthawk RAX50
+### Netgear Nighthawk RAX50
+
+> **Corrected 2026-08-13.** Previously recorded as *"Asus Nighthawk RAX50"* — two vendors conflated. **RAX50 is a Netgear model; Asus does not use the Nighthawk name.**
+> **Capability consequence:** guest network only. **No VLAN support, and AsusWRT-Merlin does not apply.** Any real VLAN segmentation is a hardware change, not a firmware one — see [`untrusted-device-isolation.md`](untrusted-device-isolation.md) §3 Tier 3.
 
 **Access:** http://192.168.1.1
 **Network:** 192.168.1.0/24
@@ -85,7 +88,7 @@ Resolution: Port forwarding configuration fixed issue
 
 | Device | IP Address | Purpose |
 |--------|-----------|---------|
-| Asus Router | 192.168.1.1 | Gateway, DHCP, DNS |
+| Netgear Router | 192.168.1.1 | Gateway, DHCP, DNS |
 | Media Server | 192.168.1.11 | Docker containers, Plex |
 | Synology NAS | 192.168.1.20 | Media storage |
 
