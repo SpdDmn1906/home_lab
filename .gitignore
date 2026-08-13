@@ -51,6 +51,11 @@ tmp/
 temp/
 *.tmp
 
+# Private device notes — employer names, MACs, IPs, SSIDs, observed agent
+# behaviour. This repo is PUBLIC. Only the .example template is tracked.
+docs/private/*
+!docs/private/*.example.md
+
 # graphify generated knowledge graph - regenerable, and pre-scrub copies
 # still contain the username/hostname removed from tracked files. Never commit
 # to this repo (it is public). See docs/guides/ or the leak-scan skill.
