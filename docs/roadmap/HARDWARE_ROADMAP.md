@@ -290,6 +290,19 @@ This is the real fork. Each has tradeoffs.
 - **VLAN-capable AP/router**: when eero mesh hits end of life, replace with Unifi or OPNsense + Unifi APs for real VLAN support.
 - **Why now**: needed before kids' devices + wife's biz + dev environments share the network at scale.
 
+##### ⚠️ A second trigger is now converging on this purchase (added 2026-08-15)
+
+The symmetric-fiber move in [`ISP-ASSESSMENT.md`](../architecture/ISP-ASSESSMENT.md) puts a **functional** limit on the RAX50 that the "NOT buying" rule below doesn't cover:
+
+- **1G WAN/LAN ports** cap real throughput at ~940 Mbps regardless of ISP tier.
+- **Adaptive QoS is CPU-bound** on consumer all-in-ones and typically collapses well below line rate. The Plex-priority QoS design in [`network-setup.md`](../architecture/network-setup.md) depends on it. At a gigabit tier that becomes a choice between QoS and line rate — a capability loss, not a vanity spec.
+
+**This does not overturn the standing rule.** "Don't upgrade a router for speed" still holds — the ISP recommendation is deliberately **500/500, which the RAX50 handles fine**, precisely so this purchase stays optional. Log it as *two independent needs (Theme C VLANs + QoS-at-gigabit) that one box satisfies*, and buy when Theme C forces it — not before.
+
+**When it does happen, prefer x86 mini-PC + OPNsense over a consumer all-in-one:**
+- Solves QoS-at-gigabit, which no consumer AIO in this price class does.
+- **Supply-side note:** the FCC added foreign-produced *consumer-grade routers* to its Covered List on 2026-03-23, blocking new equipment authorizations absent DoW/DHS conditional approval. Existing and already-authorized devices are untouched and remain lawful to buy and use — but the new-model consumer AIO market is tightening. A NIC-equipped mini-PC running OPNsense isn't in that category, so the build-your-own path is the more durable bet on availability grounds as well as capability.
+
 #### 6.6 (Optional) Redundant Internet
 - 5G failover modem (Cradlepoint, Peplink, or Mikrotik with Quectel modem) — $200–400 plus a T-Mobile/Verizon Home Internet plan as backup.
 - See [`docs/architecture/ISP-ASSESSMENT.md`](../architecture/ISP-ASSESSMENT.md) for the analysis triggering this.
@@ -381,7 +394,7 @@ Two paths, very different price points:
 
 ## 🚫 What We Are Explicitly NOT Buying
 
-- **Consumer router upgrades for "performance"** — current eero mesh is fine for speed. Replacement decision is driven by VLAN/tenant-isolation needs (Theme C), not throughput.
+- **Consumer router upgrades for "performance"** — current eero mesh is fine for speed. Replacement decision is driven by VLAN/tenant-isolation needs (Theme C), not throughput. *(2026-08-15: still the rule. See §6.5 for the one narrow exception — QoS collapse at gigabit — which the 500/500 ISP tier is chosen to avoid triggering.)*
 - **More cloud storage subscriptions** — direction of travel is the opposite (Theme A).
 - **A second Plex server for "redundancy"** — Plex isn't the SPOF that matters; DNS and storage are.
 - **Fancy "AI-ready" appliances** — building from used GPU + commodity parts is dramatically more capable and cheaper.
