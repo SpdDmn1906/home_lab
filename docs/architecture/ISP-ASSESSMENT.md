@@ -47,9 +47,9 @@ If the ISP puts you behind **carrier-grade NAT**, you have no routable inbound a
 
 ### 2. Bridge / IP-passthrough support
 
-The LAN design is **Xfinity modem in bridge → Asus RAX50 is the single router, DHCP, DNS, and firewall**, with double-NAT deliberately eliminated. Any ISP gateway that cannot bridge or pass the WAN IP through re-introduces double NAT and breaks that design.
+The LAN design is **Xfinity modem in bridge → Netgear RAX50 is the single router, DHCP, DNS, and firewall**, with double-NAT deliberately eliminated. Any ISP gateway that cannot bridge or pass the WAN IP through re-introduces double NAT and breaks that design.
 
-- **AT&T** — BGW320-505 supports **IP Passthrough** (`Firewall > IP Passthrough > Allocation Mode: Passthrough`, `Mode: DHCPS-fixed`, select the Asus's MAC). Not a true bridge, but it hands the public IP to the Asus, which is what matters.
+- **AT&T** — BGW320-505 supports **IP Passthrough** (`Firewall > IP Passthrough > Allocation Mode: Passthrough`, `Mode: DHCPS-fixed`, select the RAX50's MAC). Not a true bridge, but it hands the public IP to the RAX50, which is what matters.
 - **T-Mobile** — gateways are widely reported to have **no bridge/passthrough mode**. ⚠️ Sourcing is on the 5G gateway, not the fiber ONT — treat as unverified and confirm with the installer.
 
 ---
@@ -69,7 +69,7 @@ The LAN design is **Xfinity modem in bridge → Asus RAX50 is the single router,
 
 Line 76 of this doc already noted it; stating it plainly because it drives the buying decision:
 
-**The Asus RAX50's 1G ports cap real WAN throughput at ~940 Mbps.** Any tier above 1 Gbps is unusable until the router is replaced. A 2 Gbps plan delivers exactly the same real-world throughput as a 1 Gbps plan on this hardware.
+**The Netgear RAX50's 1G ports cap real WAN throughput at ~940 Mbps.** Any tier above 1 Gbps is unusable until the router is replaced. A 2 Gbps plan delivers exactly the same real-world throughput as a 1 Gbps plan on this hardware.
 
 Consequence: **do not buy above 1 Gbps.** A 500/500 or 1000/1000 symmetric fiber tier is a strict upgrade over 2000/200 cable on this LAN — identical usable download, 2.5–5× the upload.
 
@@ -118,10 +118,10 @@ These meet your **minimum viable** requirement (fast downloads, enough upload fo
 
 ## How This Ties to What We’ve Done
 
-- **Network:** Single 192.168.1.0/24, Xfinity in bridge, Asus as router, Eero for mesh. Any ISP change is “swap WAN”; LAN and Plex/STARR design stay the same.
+- **Network:** Single 192.168.1.0/24, Xfinity in bridge, RAX50 as router, Eero for mesh. Any ISP change is “swap WAN”; LAN and Plex/STARR design stay the same.
 - **Plex:** Remote limited to 10 Mbps/1080p; “Internet upload speed” set to 35 Mbps. So **35 Mbps upload is the minimum** for current design; 200 Mbps gives large headroom.
 - **STARR / Private trackers:** More upload improves ratio and peer performance; symmetric fiber is ideal.
-- **Future 2.5G/10G:** Your ASUS XG-C100C is 10G/5G/2.5G. To use >1 Gbps to the internet, you need a plan and modem/ONT that deliver it (e.g., 2 Gig fiber or 2 Gig cable with 2.5G port). Current Xfinity 2 Gig can supply it; your Asus RAX50’s 1G ports are the current limiter, not the ISP.
+- **Future 2.5G/10G:** Your ASUS XG-C100C is 10G/5G/2.5G. To use >1 Gbps to the internet, you need a plan and modem/ONT that deliver it (e.g., 2 Gig fiber or 2 Gig cable with 2.5G port). Current Xfinity 2 Gig can supply it; your Netgear RAX50’s 1G ports are the current limiter, not the ISP.
 
 ---
 
@@ -141,7 +141,7 @@ These meet your **minimum viable** requirement (fast downloads, enough upload fo
 Do not cancel the incumbent until every item passes on the new circuit. Run a two-week overlap.
 
 - [ ] Confirm **public IPv4, not CGNAT** — ask explicitly before ordering.
-- [ ] Gateway in **IP Passthrough** to the Asus; confirm the Asus WAN shows the public IP, not a `192.168.x` / `100.64.x` address.
+- [ ] Gateway in **IP Passthrough** to the RAX50; confirm the router's WAN shows the public IP, not a `192.168.x` / `100.64.x` address.
 - [ ] Re-add the **32400 port forward**; Plex Settings → Remote Access reads **"Fully accessible"** (not "Relayed").
 - [ ] Update Plex **"Internet upload speed"** to the new symmetric figure — currently set to 35 Mbps, which will throttle remote streams badly on fiber.
 - [ ] `tailscale status` shows **`direct`**, not `relay`, from an off-LAN peer.

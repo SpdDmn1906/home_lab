@@ -27,7 +27,7 @@ The guiding principle: **internet-optional household.** Don't buy hardware that 
 
 ### Network
 - Xfinity Xfi modem (bridge mode)
-- Asus Nighthawk RAX50 (primary router, DHCP, DNS)
+- Netgear Nighthawk RAX50 (primary router, DHCP, DNS)
 - Amazon Eero mesh (3 nodes, bridge mode)
 - Unified 192.168.1.0/24 subnet
 
