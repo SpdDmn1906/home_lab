@@ -15,8 +15,9 @@ The guiding principle: **internet-optional household.** Don't buy hardware that 
 ### Compute
 | Node | Role | Notes |
 |---|---|---|
-| `mediaserver` (Linux desktop) | Media host: Plex, STARR, fortress guard, monitoring | Single point of failure today |
-| Mac Pro (workstation) | Daily driver, photo editing | Not part of lab infra |
+| `mediaserver` (Linux desktop) | Media host: Plex, STARR, fortress guard, monitoring | Single point of failure today. **i5-4690K (Haswell, 2014), 3 cores** — the binding constraint on anything CPU-heavy |
+| Linux mobile workstation | Daily driver, repo authoring, local-AI benchmark target | **i7-11850H 8C/16T · 31 GB RAM · NVIDIA T1200 4 GB (CUDA)** — added to inventory 2026-08-24. **The estate's only CUDA GPU.** Not lab infra; not a service host (sleeps, and it's the daily driver) |
+| Mac Pro (workstation) | Daily driver, photo editing | Not part of lab infra. Chip generation unrecorded — **if Apple Silicon, it likely beats the T1200 for inference** (unified memory + MLX). Worth confirming before the Theme B decision |
 
 ### Storage
 | Device | Capacity | Role | State |
@@ -165,6 +166,21 @@ These are flagged for **planning awareness**, not immediate purchase. Sequence d
 - **Cost**: ~$700–900 (used 3090) + ~$400–600 (used Ryzen tower / new mini-ITX build) = **~$1,200–1,500 total**.
 - **Downsides**: noise, power draw (350W under load), heat, takes rack/floor space. Needs a real chassis with airflow.
 - **Best for**: maxing out capability per dollar, willing to tinker with PC hardware.
+
+##### 📊 Measured baseline — first real inference numbers (2026-08-24)
+
+Phase 5j step ② produced actual data on the mobile workstation (T1200, 4 GB VRAM). **These are the numbers the Theme B decision gets made against — not vibes.**
+
+| Model | Prompt eval (prefill) | Eval (generation) | Notes |
+|---|---|---|---|
+| `qwen2.5-coder:7b` (4.7 GB) | 33.6 tok/s ⚠️ | **8.43 tok/s** | Exceeds 4 GB VRAM → partial CPU offload |
+| `qwen2.5-coder:3b` (1.9 GB) | *pending* | *pending* | Fits fully in VRAM — the comparison that isolates GPU benefit |
+
+⚠️ **The prefill figure is not trustworthy yet.** It was measured on a **30-token prompt**, where fixed overhead (load, tokenization, first-token latency) dominates and understates the real rate badly. Prefill batches far better on long prompts. **Re-measure with a realistic multi-thousand-token prompt before drawing conclusions** — prefill is the number that decides agentic viability, so getting it wrong decides the GPU purchase wrong.
+
+**What is already solid: 8.43 tok/s generation.** Generation rate is stable regardless of prompt size, so this one is real. That is roughly human reading speed — tolerable for short answers, painful for code generation, and below the ~10 tok/s line set as the usability floor.
+
+**Interpretation so far:** 4 GB VRAM is the binding constraint. It forces partial CPU offload at the 7B class and cannot hold a raised context window (Hermes requires one, and KV cache grows with it). This is a legitimate *baseline*, not a verdict — but it is already evidence that the Theme B GPU node is about **VRAM capacity**, not raw compute.
 
 ##### Path B — Mac Mini M4 Pro (or Mac Studio M4 Max) *(silent, simple, LLMs-focused)*
 - **You're hearing about this for good reason.** Apple Silicon unified memory is genuinely excellent for LLM inference, and Ollama supports it natively via MLX.
