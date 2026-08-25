@@ -114,6 +114,6 @@ Everything sensitive is gitignored — never commit it. Create from the template
 
 ## Network constants (recur everywhere)
 
-- Subnet `192.168.1.0/24` (unified, double-NAT eliminated) · Gateway `192.168.1.1` (Asus router)
+- Subnet `192.168.1.0/24` (unified, double-NAT eliminated) · Gateway `192.168.1.1` (Netgear RAX50 router)
 - Media host `mediaserver` `192.168.1.11` (Docker host) · Synology NAS `192.168.1.20`
 - Service ports: Grafana 3000, Prometheus 9090, Alertmanager 9093, Plex 32400, qBittorrent 8080

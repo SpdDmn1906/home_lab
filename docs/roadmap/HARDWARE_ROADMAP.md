@@ -167,46 +167,57 @@ These are flagged for **planning awareness**, not immediate purchase. Sequence d
 - **Downsides**: noise, power draw (350W under load), heat, takes rack/floor space. Needs a real chassis with airflow.
 - **Best for**: maxing out capability per dollar, willing to tinker with PC hardware.
 
-##### 📊 Measured baseline — Phase 5j step ② (2026-08-24/25)
+##### 📊 Measured baseline — Phase 5j step ② (2026-08-24/25) — **COMPLETE**
 
-Real numbers on the mobile workstation. **These are what the Theme B decision gets made against — not vibes.**
+Real numbers on the mobile workstation (i7-11850H 8C/16T, NVIDIA T1200, **3.6 GiB usable VRAM** — not the nominal 4 GB; Xorg holds the rest).
 
-**Test:** `qwen2.5-coder:7b`, ~1,970-token real prompt (a repo script + an analysis question).
+**Test held constant:** `qwen2.5-coder`, identical ~1,970-token real prompt (a repo script + an analysis question).
 
-| Backend | Prefill | Generation | Output correct? | Verdict |
-|---|---|---|---|---|
-| **CPU** (8C/16T i7-11850H) | **36.78 tok/s** | **6.69 tok/s** | ✅ Yes | Baseline |
-| **Intel iGPU** (Vulkan, `OLLAMA_IGPU_ENABLE=1`) | 47.30 tok/s | 3.33 tok/s | 🔴 **NO — garbage** | ❌ **Rejected** |
-| **NVIDIA T1200 CUDA** | *pending* | *pending* | — | ⏳ Blocked on reboot |
+| Backend | Model | Split | Prefill | Generation | Turn | Output |
+|---|---|---|---|---|---|---|
+| CPU only | 7b | 100% CPU | 36.78 tok/s | 6.69 tok/s | 2m50s | ✅ |
+| Vulkan iGPU | 7b | 100% GPU | 47.30 tok/s | 3.33 tok/s | 1m32s | 🔴 **garbage** |
+| CUDA T1200 | 7b | **53%/47% CPU/GPU** | **37.74 tok/s** | 9.99 tok/s | 2m41s | ✅ |
+| **CUDA T1200** | **3b** | **100% GPU** | **154.24 tok/s** | **47.57 tok/s** | **39.5s** | ✅ |
 
-**One turn, CPU, end to end: 2m50s** (53.5s prefill + 116.7s generation).
+###### 🎯 The finding: VRAM *capacity* is the constraint, not compute
 
-###### 🔴 Root cause of the missing GPU: no driver, not insufficient VRAM
+This is now proven rather than inferred, and it is the single most useful output of the benchmark.
 
-The first read — "4 GB VRAM is the binding constraint" — was **wrong**. `ollama ps` reported `100% CPU`, and the cause was simpler: **the NVIDIA proprietary driver was never installed.** Ollama's startup log showed `inference compute id=cpu` on every boot going back to July; the T1200 was visible to `lspci` but had no driver, so no CUDA device existed to offload to.
+- **Partial offload buys almost nothing on prefill.** The 7B (5.8 GB) exceeds 3.6 GiB, so Ollama splits it 53/47 — and prefill improved **+2.6%** over pure CPU (36.78 → 37.74). Generation improved ~49%, but prefill is what gates agentic use. A model that does not fit is barely worth the GPU.
+- **Full VRAM residency is transformative.** The 3B (2.2 GB) fits entirely: prefill **4.1×** (37.74 → 154.24) and generation **4.8×** (9.99 → 47.57) versus the same card running the split. Same GPU, same driver, same prompt — the only variable is whether the model fits.
 
-`system76-driver-nvidia` + `nvidia-driver-595` installed 2026-08-25. **Kernel module is not yet loaded — `nvidia-smi` still fails. A reboot is required before the CUDA row above can be filled in.**
+**Theme B consequence: buy VRAM capacity, not raw compute.** A card fast enough but too small reproduces the 7B row. The decision criterion is "does the target model fit entirely," which argues for the 24 GB used-3090 path or Apple Silicon unified memory over a faster small card.
 
-###### ❌ Intel iGPU via Vulkan — rejected on correctness, not speed
+###### Hermes viability (agentic, needs a raised context window)
 
-`OLLAMA_IGPU_ENABLE=1` does successfully expose the Intel UHD (TGL GT1) and reports `100% GPU` with a 32k context. Prefill improved 29% (36.78 → 47.30 tok/s) and generation halved (6.69 → 3.33 tok/s), which is the expected shape for a bandwidth-starved iGPU sharing system RAM.
+Prefill at a 16k context — the number that decides it:
 
-**But the output is numerically broken.** Identical model, identical prompt, identical server version — only the backend differs:
+| Config | Prefill for 16k | Verdict |
+|---|---|---|
+| CPU 7B | ~435s (7.3 min) | ❌ Unusable |
+| CUDA 7B (split) | ~424s (7.1 min) | ❌ Unusable — the GPU did not rescue this |
+| CUDA 3B (resident) | ~104s (1.7 min) | 🟡 Marginal, but a different category |
+
+**Local tier verdict:** a fully-resident small model is genuinely usable — 47.57 tok/s generation is well clear of the 10 tok/s floor, and a full turn ran in 39.5s. The tradeoff is capability: 3B is materially weaker than 7B for code. For the local tier's actual job (household data, privacy-sensitive work, offline/fortress) that may be sufficient; it is not a daily-driver replacement.
+
+###### ❌ Intel iGPU via Vulkan — rejected on correctness
+
+`OLLAMA_IGPU_ENABLE=1` exposes the Intel UHD (TGL GT1), reports `100% GPU`, and shows better prefill than CPU. **The output is numerically broken.** Identical model, prompt, and server version:
 
 - CPU: `find . -name "*.sh" -exec wc -l {} + | awk '{sum += $1} END {print sum}'`
 - iGPU: `0 \" "' ""*" I**your``- ``Halloa0ah"" b"`
 
-**Do not set `OLLAMA_IGPU_ENABLE=1`.** The speed numbers are meaningless — it is fast at computing nonsense. Textbook *absence of error ≠ success*: Ollama reported success, `100% GPU`, and plausible metrics, while producing garbage.
+**Do not set `OLLAMA_IGPU_ENABLE=1`.** It is fast at computing nonsense. Textbook *absence of error ≠ success*: success reported, `100% GPU` shown, plausible metrics, garbage produced.
 
-###### Verdict for the local tier (CPU-only, today)
+###### Corrections logged (both were wrong in this doc earlier)
 
-**Generation at 6.69 tok/s** is roughly reading speed — tolerable for short answers, painful for code, below the ~10 tok/s usability floor. Note it degraded from 8.43 tok/s on a shorter run: **laptop thermal throttling is real** and short benchmarks flatter this machine.
+1. **"4 GB VRAM is the binding constraint"** — asserted, then retracted as premature when the real cause turned out to be a missing driver. **Now re-established as correct**, but on evidence rather than assumption: the driver was genuinely absent *and* VRAM capacity is genuinely the limit. Two separate problems that presented identically.
+2. **"The 33.6 tok/s prefill is understated by fixed overhead and will be several times higher on a long prompt"** — false. Measured 36.78 tok/s on 1,969 tokens. The small-prompt figure was accurate; the explanation was not.
 
-**Prefill at 36.78 tok/s is the disqualifier for agentic use.** Hermes requires a raised context window (agent memory + skill defs + tool schemas overflow the default). At 16k context that is **~435 seconds of prefill per turn** — over 7 minutes before generation starts. Unusable.
+###### Environment note
 
-⚠️ Correction to an earlier claim in this doc: the first prefill measurement (33.6 tok/s on a 30-token prompt) was dismissed as understated by fixed overhead and expected to be "several times higher" on a real prompt. **It was not** — 1,969 tokens measured 36.78 tok/s. The small-prompt figure was accurate all along.
-
-**What this means for Theme B:** the VRAM-capacity conclusion is *unproven* and must wait for post-reboot CUDA numbers. What is proven is that **CPU-only inference cannot carry the local tier for agentic work**, which is the actual business case the benchmark existed to produce.
+`nvidia-driver-595` / `system76-driver-nvidia` installed 2026-08-25; **reboot required** before the kernel module loads (`nvidia-smi` fails until then). Ollama then reports `library=CUDA compute=7.5 ... driver=13.2 total="3.6 GiB"`. Also: generation fell 8.43 → 6.69 tok/s between a short and a long CPU run — **laptop thermal throttling is real, and short benchmarks flatter this machine.**
 
 ##### Path B — Mac Mini M4 Pro (or Mac Studio M4 Max) *(silent, simple, LLMs-focused)*
 - **You're hearing about this for good reason.** Apple Silicon unified memory is genuinely excellent for LLM inference, and Ollama supports it natively via MLX.
