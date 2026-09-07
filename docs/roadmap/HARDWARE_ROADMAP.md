@@ -23,7 +23,7 @@ The guiding principle: **internet-optional household.** Don't buy hardware that 
 | Device | Capacity | Role | State |
 |---|---|---|---|
 | Synology NAS (2-bay) | 4 TB | TV, movies, backups | Healthy |
-| External HDD #1 | 2 TB | Movies / TV overflow | **FAILING — `/dev/sda`, 3,959+ reallocated sectors** |
+| External HDD #1 (Seagate 2 TB) | 2 TB | ~~Movies / TV overflow~~ | ⚰️ **DECOMMISSIONED 2026-08-05** — physically disconnected, in anti-static storage. `FAILING_NOW`, 3,959+ reallocated sectors. **Not in service.** Data recovery still open (Phase 2) |
 | Mac Pro internal | — | Photo library / business files | Backup story incomplete |
 
 ### Network

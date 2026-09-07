@@ -88,6 +88,20 @@ Designed for local independence during WAN outages.
 - **Primary Subnet:** `192.168.1.0/24`
 - **Main Server:** `192.168.1.11` (Media Server / Docker Host)
 - **NAS:** `192.168.1.20` (Synology)
-- **Gateway:** `192.168.1.1` (Asus Router)
+- **Gateway:** `192.168.1.1` (Netgear RAX50)
 
 *Note: This project aims for a "Unified Network" topology, eliminating double NAT by using bridge modes for ISPs and mesh extensions.*
+
+### ⚠️ Router capability constraint (corrected 2026-08-13)
+The RAX50 is a **Netgear** model — previously miscorded here and across the docs as "Asus Nighthawk", two vendors conflated. **Consequence: guest network only. No VLAN support, and AsusWRT-Merlin does not apply.** Any real VLAN segmentation is a hardware change, not a firmware one. See [`docs/guides/network-reference.md`](docs/guides/network-reference.md) and [`docs/guides/untrusted-device-isolation.md`](docs/guides/untrusted-device-isolation.md).
+
+---
+
+## 🗓️ Recent Decisions (kept in sync with CLAUDE.md — last synced 2026-08-25)
+
+Operational facts that changed since this file was last reviewed. Full reasoning lives in the linked docs.
+
+- **ISP: target AT&T Fiber, reject T-Mobile Fiber.** The deciding criteria are **public IPv4 vs CGNAT** and **bridge/IP-passthrough support** — not speed tiers. T-Mobile Fiber is CGNAT by default, which breaks the Plex 32400 forward (falls back to ~1–2 Mbps Relay) and degrades Tailscale to DERP relay. **Do not buy above 1 Gbps** — the RAX50's 1G ports cap real throughput at ~940 Mbps. See [`docs/architecture/ISP-ASSESSMENT.md`](docs/architecture/ISP-ASSESSMENT.md).
+- **Failing drive is out.** The Seagate 2 TB was **physically decommissioned 2026-08-05**; data recovery remains open. ⚠️ Device names shifted — former `/dev/sdb` (OS/boot) is now `/dev/sda`. References to `/dev/sda` in older docs mean the *removed* drive.
+- **Phase 5j re-sequenced around a three-tier AI split** (cheap cloud → local → frontier paid). Local's justification is fortress mode and privacy, **not cost**. Benchmark complete: **VRAM capacity is the constraint, not compute** — a model that doesn't fit entirely gains almost nothing from partial offload. **Never run inference on `mediaserver`** (3-core Haswell already serving Plex/STARR). ❌ **Do not set `OLLAMA_IGPU_ENABLE=1`** — the Vulkan iGPU path produces numerically broken output while reporting success. See [`docs/roadmap/HARDWARE_ROADMAP.md`](docs/roadmap/HARDWARE_ROADMAP.md) §Measured baseline.
+- **`docs/private/` is gitignored** except `*.example.md`. This repo is **public** — no hostnames, usernames, home paths, addresses, or household specifics in tracked files.

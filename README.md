@@ -34,7 +34,7 @@ The lab serves three audiences: my family (Plex / DNS / cameras), my own career 
 
 ### Network topology
 - **Internet**: Comcast Xfinity 2GB with Xfinity Xfi modem (bridge mode)
-- **Routers**: Asus Nighthawk RAX50 (primary), Amazon Eero (mesh extension, 3 nodes in bridge mode)
+- **Routers**: Netgear Nighthawk RAX50 (primary), Amazon Eero (mesh extension, 3 nodes in bridge mode)
 - **Unified subnet**: 192.168.1.0/24 (eliminated double NAT)
 - **VLAN segmentation**: deferred to Phase 6 Theme C when router refresh happens
 

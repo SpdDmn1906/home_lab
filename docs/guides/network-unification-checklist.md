@@ -11,7 +11,7 @@
 - [ ] Document WiFi credentials (SSID, password)
 - [ ] Note any port forwarding rules
 
-**Network 2: Asus Nighthawk (192.168.1.0/24)**
+**Network 2: Netgear Nighthawk (192.168.1.0/24)**
 - [ ] Document all devices on this network
   - [ ] Media server IP: _____________
   - [ ] NAS IP: _____________
@@ -23,7 +23,7 @@
 
 ### Backup Current Configuration
 
-- [ ] Backup Asus router configuration (save to file)
+- [ ] Backup Netgear router configuration (save to file)
 - [ ] Screenshot current network settings from both routers
 - [ ] Document current port forwarding rules
 - [ ] Save current DHCP reservations
@@ -53,16 +53,16 @@
 - If bridge mode option not available, contact Xfinity support
 - Some Xfinity gateways require support to enable bridge mode
 
-### Phase 3: Configure Asus Nighthawk (Primary Router)
+### Phase 3: Configure Netgear Nighthawk (Primary Router)
 
-- [ ] Access Asus admin: http://192.168.1.1
+- [ ] Access Netgear admin: http://192.168.1.1
 - [ ] Login with admin credentials
 
 **WAN Configuration:**
 - [ ] Set WAN Connection Type: Automatic IP (DHCP)
-- [ ] Connect Ethernet cable from Xfinity Xfi to Asus WAN port
-- [ ] Verify Asus gets IP address from Xfinity
-- [ ] Test internet connectivity from Asus router
+- [ ] Connect Ethernet cable from Xfinity Xfi to Netgear WAN port
+- [ ] Verify Netgear gets IP address from Xfinity
+- [ ] Test internet connectivity from Netgear router
 
 **LAN Configuration:**
 - [ ] Verify LAN IP: 192.168.1.1
@@ -72,7 +72,7 @@
 - [ ] Set Gateway: 192.168.1.1
 - [ ] Set DNS: 1.1.1.1, 8.8.8.8 (or preferred DNS)
 
-**WiFi Configuration (if using Asus WiFi):**
+**WiFi Configuration (if using Netgear WiFi):**
 - [ ] Configure 2.4GHz SSID and password
 - [ ] Configure 5GHz SSID and password
 - [ ] Set security: WPA2/WPA3
@@ -92,9 +92,9 @@
 - [ ] Wait for Eero to restart
 
 **Physical Connection:**
-- [ ] Connect Eero gateway to Asus router via Ethernet
+- [ ] Connect Eero gateway to Netgear router via Ethernet
 - [ ] Use LAN port on Eero (not WAN port)
-- [ ] Verify Eero connects to Asus network
+- [ ] Verify Eero connects to Netgear network
 - [ ] Check Eero app for status
 
 **Eero Node Configuration:**
@@ -116,7 +116,7 @@
 - [ ] Media server (verify connectivity)
 - [ ] NAS (verify connectivity)
 - [ ] External drive (verify connectivity)
-- [ ] Any other devices connected to Asus
+- [ ] Any other devices connected to Netgear
 
 **Update Static IPs (if needed):**
 - [ ] Check if any devices had static IPs on 10.0.0.0/8
@@ -208,7 +208,7 @@
   - [ ] Update any rules that reference old IP addresses
 
 - [ ] **QoS Settings:**
-  - [ ] Configure QoS on Asus router
+  - [ ] Configure QoS on Netgear router
   - [ ] Set priorities for gaming, streaming, cameras
   - [ ] Test QoS effectiveness
 
@@ -223,9 +223,9 @@
 
 **Issue: Devices can't connect to internet**
 - [ ] Verify Xfinity bridge mode is active
-- [ ] Verify Asus WAN gets IP from Xfinity
+- [ ] Verify Netgear WAN gets IP from Xfinity
 - [ ] Check DNS settings
-- [ ] Restart Asus router
+- [ ] Restart Netgear router
 
 **Issue: Devices can't see each other**
 - [ ] Verify all devices on 192.168.1.0/24 network
@@ -234,7 +234,7 @@
 - [ ] Test ping between devices
 
 **Issue: Eero not working in bridge mode**
-- [ ] Verify Ethernet connection to Asus
+- [ ] Verify Ethernet connection to Netgear
 - [ ] Check Eero app for errors
 - [ ] Try resetting Eero and reconfiguring
 - [ ] Contact Eero support if needed
@@ -260,7 +260,7 @@ If migration fails:
    - Disable bridge mode
    - Restore original settings
 
-2. **Revert Asus Nighthawk:**
+2. **Revert Netgear Nighthawk:**
    - Restore configuration backup
    - Or reset to factory defaults and reconfigure
 

@@ -30,10 +30,10 @@ Comcast 2GB
     ↓
 Xfinity Xfi Modem (bridge mode)
     ↓
-Asus Nighthawk RAX50 (DHCP + DNS)
+Netgear Nighthawk RAX50 (DHCP + DNS)
     ↓                    ↓                    ↓
 "SC Home" WiFi      Eero Mesh (bridge,    Wired devices
-  (Asus, primary)    3 nodes, "_Ext")     (NAS, cameras, etc.)
+  (Netgear, primary)    3 nodes, "_Ext")     (NAS, cameras, etc.)
 ```
 Single 192.168.1.0/24 subnet (eliminated double NAT). ~30+ devices.
 

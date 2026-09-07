@@ -6,7 +6,7 @@ This guide shows you how to set up proper DNS name resolution for your home lab 
 
 ## Current Situation
 
-Your Asus router is currently handling DHCP and DNS, but devices are accessed by IP addresses that can change. We need to:
+Your Netgear router is currently handling DHCP and DNS, but devices are accessed by IP addresses that can change. We need to:
 
 1. **Reserve static IP addresses** for key devices
 2. **Set up local DNS resolution** for hostname access
@@ -20,7 +20,7 @@ Your Asus router is currently handling DHCP and DNS, but devices are accessed by
 - Easier device management
 - Better for services and automation
 
-### Asus Router Static IP Setup
+### Netgear Router Static IP Setup
 
 1. **Access Router Admin:**
    - Open browser: `http://192.168.1.1`
@@ -45,7 +45,7 @@ Your Asus router is currently handling DHCP and DNS, but devices are accessed by
    | iPad Child2 | child2-ipad | `XX:XX:XX:XX:XX:XX` | 192.168.1.51 |
 
 4. **Find MAC Addresses:**
-   - **Current DHCP Clients:** Asus admin → LAN → DHCP Server → Client List
+   - **Current DHCP Clients:** Netgear admin → LAN → DHCP Server → Client List
    - **Device Settings:** Check each device:
      - **Windows:** Settings → Network → Hardware Address
      - **macOS:** System Settings → WiFi → Details → Hardware Address
@@ -105,7 +105,7 @@ Your Asus router is currently handling DHCP and DNS, but devices are accessed by
 ### Option A: Custom Domain Names
 
 **Add `.homelab.local` domain:**
-1. Asus admin → LAN → DHCP Server
+1. Netgear admin → LAN → DHCP Server
 2. Set **"Domain Name"** to: `homelab.local`
 3. Now access devices as:
    - `mediaserver.homelab.local`
@@ -155,7 +155,7 @@ Prometheus:    http://prometheus.homelab.local
    ```
 
 2. **Wrong IP Assigned:**
-   - Check Asus router DHCP client list
+   - Check Netgear router DHCP client list
    - Verify MAC address in static lease
    - Remove and re-add the static lease
 
@@ -178,7 +178,7 @@ Prometheus:    http://prometheus.homelab.local
 
 2. **Add New Devices:**
    - Get MAC address of new device
-   - Add static lease in Asus router
+   - Add static lease in Netgear router
    - Test hostname resolution
 
 3. **Update Documentation:**

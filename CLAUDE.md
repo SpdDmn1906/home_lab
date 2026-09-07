@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A production-shaped home datacenter managed as code. There is **no application to build or test** — the repo is OpenTofu/Terraform HCL, Ansible playbooks, Docker Compose files, monitoring configs, and a large suite of operational Bash scripts. Most commands here mutate real infrastructure on the media host, so default to read-only/plan operations and confirm before applying.
 
-`GEMINI.md` is a parallel AI-context file with overlapping content; keep it roughly in sync when you change operational facts here.
+`GEMINI.md` is a parallel AI-context file with overlapping content; keep it roughly in sync when you change operational facts here. *(Last synced 2026-08-25.)*
+
+⚠️ **`graphify-out/` is stale and gitignored.** The graph was built **2026-07-20** and predates every August change — the vendor correction, the ISP decision, the drive decommission, and the Phase 5j re-sequence. **Do not treat it as current**; regenerate before relying on it for architecture questions.
 
 ## Operating model (read first)
 

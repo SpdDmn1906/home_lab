@@ -430,8 +430,8 @@ Naming Phase 6 now lets us make Phase 2–4 hardware decisions correctly:
 
 ## 📊 **Current System Vitals**
 - **Host**: mediaserver (192.168.1.11)
-- **Uptime**: ~45 minutes (since 19:03 reboot)
-- **Known Failing Parts**: `/dev/sda` (Seagate 2TB)
+- **Uptime**: _(point-in-time value from the 2026-05-09 incident removed — check `uptime` on the host, do not trust a number in a doc)_
+- **Known Failing Parts**: none in service — the failing Seagate 2TB was **physically removed 2026-08-05**. ⚠️ Note the device-name shift: former `/dev/sdb` (OS/boot) is now `/dev/sda`; references to `/dev/sda` elsewhere in this doc mean the *old, removed* drive.
 - **Network Dependency**: AdGuard (Docker) currently handles ALL home DNS.
 
 ---

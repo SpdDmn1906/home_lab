@@ -168,7 +168,7 @@ terraform apply
 
 ### Configure Router DNS
 
-**Asus Nighthawk:**
+**Netgear Nighthawk:**
 1. Access router: http://192.168.1.1
 2. Navigate: LAN → DHCP Server
 3. Set DNS servers:

@@ -4,7 +4,7 @@
 
 ### Hardware Configuration
 - **Primary Internet**: Comcast Xfinity 2GB with Xfinity Xfi modem (bridge mode)
-- **Primary Router**: Asus Nighthawk RAX50 (DHCP, DNS, firewall)
+- **Primary Router**: Netgear Nighthawk RAX50 (DHCP, DNS, firewall)
 - **Mesh Extension**: Amazon Eero (3 nodes in bridge mode)
 - **Total Devices**: ~30 devices on unified network
 - **Network**: Single 192.168.1.0/24 subnet
@@ -12,11 +12,11 @@
 ### Current Network Configuration (UNIFIED)
 
 **Unified Network: 192.168.1.0/24**
-- **Gateway**: Asus Nighthawk (192.168.1.1)
-- **DHCP Server**: Asus Nighthawk (192.168.1.100-192.168.1.200)
-- **DNS**: Asus Nighthawk + Cloudflare/Google (1.1.1.1, 8.8.8.8)
+- **Gateway**: Netgear Nighthawk (192.168.1.1)
+- **DHCP Server**: Netgear Nighthawk (192.168.1.100-192.168.1.200)
+- **DNS**: Netgear Nighthawk + Cloudflare/Google (1.1.1.1, 8.8.8.8)
 - **WiFi Networks**:
-  - "SC Home" (Asus - primary coverage)
+  - "SC Home" (Netgear - primary coverage)
   - "SC Home_Ext" (Eero - extended coverage)
 - **All Devices**: Unified communication across entire network
 
@@ -38,7 +38,7 @@
 Internet → Xfinity Xfi (Router Mode) → 10.0.0.0/8 Network
                                     └→ Eero Mesh (same network)
 
-Internet → Asus Nighthawk (Router Mode) → 192.168.1.0/24 Network
+Internet → Netgear Nighthawk (Router Mode) → 192.168.1.0/24 Network
                                         └→ Media Server, NAS, External Drive
 ```
 
@@ -56,7 +56,7 @@ Internet → Asus Nighthawk (Router Mode) → 192.168.1.0/24 Network
 ```
 Internet → Xfinity Xfi (Bridge Mode - modem only)
     ↓
-Asus Nighthawk (Primary Router - 192.168.1.0/24)
+Netgear Nighthawk (Primary Router - 192.168.1.0/24)
     ↓
 Eero Mesh System (Access Point Mode - same network)
 ```
@@ -64,7 +64,7 @@ Eero Mesh System (Access Point Mode - same network)
 **Benefits:**
 - Single unified network (192.168.1.0/24)
 - All devices can communicate directly
-- Single DHCP server (Asus Nighthawk)
+- Single DHCP server (Netgear Nighthawk)
 - Single point for QoS, port forwarding, firewall rules
 - Eliminates double NAT
 - Better performance and troubleshooting
@@ -76,8 +76,8 @@ Eero Mesh System (Access Point Mode - same network)
    - Enable Bridge Mode
    - This disables routing and WiFi on Xfi
 
-2. **Configure Asus Nighthawk as Primary Router**
-   - Connect to Asus admin panel (likely 192.168.1.1)
+2. **Configure Netgear Nighthawk as Primary Router**
+   - Connect to Netgear admin panel (likely 192.168.1.1)
    - Set WAN connection type: Automatic IP (DHCP from Xfi)
    - LAN IP: 192.168.1.1 (keep current)
    - Subnet: 255.255.255.0 (/24)
@@ -87,7 +87,7 @@ Eero Mesh System (Access Point Mode - same network)
    - Open Eero app
    - Settings > Network Settings > Advanced Settings
    - Enable Bridge Mode or Access Point Mode
-   - Connect Eero gateway to Asus router via Ethernet (LAN port)
+   - Connect Eero gateway to Netgear router via Ethernet (LAN port)
    - Eero will now extend WiFi on the 192.168.1.0/24 network
 
 4. **Migrate Devices**
@@ -102,12 +102,12 @@ If you prefer to keep Xfinity Xfi as the primary router:
 ```
 Internet → Xfinity Xfi (Router Mode - 10.0.0.0/24)
     ↓
-Asus Nighthawk (Access Point Mode - extend 10.0.0.0/24)
+Netgear Nighthawk (Access Point Mode - extend 10.0.0.0/24)
     ↓
 Eero Mesh System (Access Point Mode - extend 10.0.0.0/24)
 ```
 
-**Note**: This requires reconfiguring the Asus Nighthawk network to match the Xfinity network, which may require resetting devices.
+**Note**: This requires reconfiguring the Netgear Nighthawk network to match the Xfinity network, which may require resetting devices.
 
 ## Configuration Steps
 
@@ -121,7 +121,7 @@ ip addr show
 ip route show
 ping -c 3 192.168.1.1  # Should fail (different network)
 
-# On a device connected to 192.168.1.0/24 network (Asus)
+# On a device connected to 192.168.1.0/24 network (Netgear)
 ip addr show
 ip route show
 ping -c 3 10.0.0.1     # Should fail (different network)
@@ -132,13 +132,13 @@ ping -c 3 10.0.0.1     # Should fail (different network)
 
 **Device Inventory Checklist:**
 - [ ] List devices on 10.0.0.0/8 network (Xfinity/Eero)
-- [ ] List devices on 192.168.1.0/24 network (Asus)
+- [ ] List devices on 192.168.1.0/24 network (Netgear)
 - [ ] Identify critical devices (media server, NAS, etc.)
 - [ ] Note any static IP configurations
 
 ### Step 2: Choose Your Primary Router
 
-**Recommendation: Use Asus Nighthawk as Primary (192.168.1.0/24)**
+**Recommendation: Use Netgear Nighthawk as Primary (192.168.1.0/24)**
 
 **Reasons:**
 - More advanced features (better QoS, VLAN support, more control)
@@ -146,7 +146,7 @@ ping -c 3 10.0.0.1     # Should fail (different network)
 - More configuration options
 - Already on 192.168.1.0/24 (common standard)
 
-### Step 3: Configure Unified Network (Recommended: Asus as Primary)
+### Step 3: Configure Unified Network (Recommended: Netgear as Primary)
 
 #### 3a. Put Xfinity Xfi in Bridge Mode
 
@@ -165,15 +165,15 @@ ping -c 3 10.0.0.1     # Should fail (different network)
    - Should obtain public IP from ISP
    - No routing functionality active
 
-#### 3b. Configure Asus Nighthawk as Primary Router
+#### 3b. Configure Netgear Nighthawk as Primary Router
 
-1. **Access Asus Admin:**
+1. **Access Netgear Admin:**
    - URL: http://192.168.1.1
    - Login with admin credentials
 
 2. **Configure WAN:**
    - WAN Connection Type: Automatic IP (DHCP)
-   - Asus will get IP from Xfinity Xfi (bridge mode)
+   - Netgear will get IP from Xfinity Xfi (bridge mode)
 
 3. **Configure LAN:**
    - IP Address: 192.168.1.1 (keep current)
@@ -183,7 +183,7 @@ ping -c 3 10.0.0.1     # Should fail (different network)
    - Gateway: 192.168.1.1
    - DNS: 1.1.1.1, 8.8.8.8 (or auto from ISP)
 
-4. **Configure WiFi (if using Asus WiFi):**
+4. **Configure WiFi (if using Netgear WiFi):**
    - SSID: Your preferred name
    - Security: WPA2/WPA3
    - Channels: Auto or manual selection
@@ -200,7 +200,7 @@ ping -c 3 10.0.0.1     # Should fail (different network)
    - This disables Eero's routing/DHCP
 
 3. **Physical Connection:**
-   - Connect Eero gateway to Asus router via Ethernet
+   - Connect Eero gateway to Netgear router via Ethernet
    - Use LAN port on Eero (not WAN port, if it has both)
    - Eero will now extend WiFi on 192.168.1.0/24 network
 
@@ -213,7 +213,7 @@ ping -c 3 10.0.0.1     # Should fail (different network)
 
 1. **Reconnect Devices:**
    - Devices previously on 10.0.0.0/8 need to reconnect
-   - They should now get 192.168.1.x addresses from Asus DHCP
+   - They should now get 192.168.1.x addresses from Netgear DHCP
 
 2. **Update Static IPs:**
    - If any devices had static IPs on 10.0.0.0/8, update to 192.168.1.x
@@ -426,12 +426,12 @@ External Port: 32400
 Internal Port: 32400
 Protocol: TCP
 Internal IP: 192.168.1.11
-Router: Asus Nighthawk (192.168.1.1)
+Router: Netgear Nighthawk (192.168.1.1)
 Location: WAN → Virtual Server / Port Forwarding
 Status: ✅ Configured and working
 ```
 
-**Configuration Steps (Asus Router):**
+**Configuration Steps (Netgear RAX50):**
 1. Access router admin: http://192.168.1.1
 2. Navigate to: WAN → Virtual Server / Port Forwarding
 3. Add new rule with above settings

@@ -68,7 +68,7 @@ This guide details the hardware and software required to decouple your home DNS 
 ### **Phase 5: The "Cutover"**
 1.  **Test**: On your PC, manually set your DNS to the Pi's IP. Try to browse the web.
 2.  **Router Config**: 
-    - Log into your **Asus/Eero Router (192.168.1.1)**.
+    - Log into your **Netgear/Eero Router (192.168.1.1)**.
     - Go to **LAN -> DHCP Server**.
     - Set **DNS Server 1** to your Raspberry Pi's Static IP.
     - Set **DNS Server 2** to `1.1.1.1` (Cloudflare) for emergency redundancy.
