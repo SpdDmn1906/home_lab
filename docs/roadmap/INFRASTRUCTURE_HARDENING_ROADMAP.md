@@ -187,18 +187,53 @@ Bring-up procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2.
 - [ ] OpenTelemetry traces for `sb-lab` operations that span multiple API calls.
 - [ ] Grafana dashboard pulling from both Prometheus (metrics) and Loki (logs) on the same time range — "single pane of glass" story.
 
-### 5e. Paperless-ngx Document Stack on K3s
-*Why this passes the smell test: real multi-service workload for the K3s cluster (better K3s smoke test than throwaway demos), genuine personal utility (replaces Google Drive / Dropbox for documents), and the first concrete implementation of the Phase 6 Theme A ("move away from consumer cloud for primary storage") and Theme B ("retrieval over family docs") visions.*
+### 5e. Paperless-ngx Document Stack — **RE-SCOPED 2026-09-20, PROMOTED**
 
-Two-stage rollout. Stage 1 ships without AI; Stage 2 waits until Theme B's GPU node exists.
+*Originally "on K3s," gated behind 5a. That coupling was wrong and is removed — see below. Promoted because the real-world need became concrete: a physical document backlog that needs digitizing so it can be searched and read by tooling.*
 
-**Stage 1: Vanilla Paperless-ngx (do now, post-K3s bring-up)**
-- [ ] Deploy paperless-ngx stack on K3s: paperless-web + postgres + redis + tika + gotenberg.
-- [ ] Persistent volumes: documents + originals + thumbnails on Synology NAS (CIFS-mounted PV or NFS). Configs/DB on local node SSD.
-- [ ] Ingress via nginx-ingress (per 5a's ingress story). Tailscale Funnel for off-LAN access.
-- [ ] CPU-based OCR (Paperless-ngx defaults: tesseract). Good enough for typed docs and decent handwriting.
-- [ ] Backup discipline: paperless data dir is Tier-1 in 3-2-1 backup *before* first medical/tax document gets scanned.
-- [ ] Auto-import workflow: a watch folder on the NAS that paperless-ngx polls; mobile scanner app (Scanbot, Genius Scan, or iOS Notes) drops PDFs into the folder; auto-tagging on ingest.
+#### ⚠️ What changed and why (read before touching the checklist)
+
+**1. K3s is no longer a prerequisite.** Paperless-ngx is five containers — web, Postgres, Redis, tika, gotenberg. Nothing about it requires Kubernetes. The original plan put it on K3s for the *learning* value ("a better K3s smoke test than throwaway demos"), which is a **portfolio** goal — and it was holding the **utility** goal hostage behind a cluster that still does not exist. This directly contradicted the 5h doctrine: *"managed platforms over a Kubernetes cluster unless a workload genuinely justifies one. Over-engineering a personal app is a red flag, not an achievement."*
+> **Ship it on Docker Compose. K3s becomes an optional later migration** — and migrating a working compose stack is a better learning exercise than greenfielding one anyway.
+
+**2. The Phase 2 gate no longer applies to this.** That gate was written when the failing drive was *in the machine* causing SATA resets. It has been physically out since 2026-08-05. What remains is recovering data from a shelved drive — a data-recovery task, not a stability risk.
+
+**3. The Phase 3 gate only binds if this runs on `mediaserver` — so it does not run there.** 3-core Haswell already serving Plex, STARR, and 18 containers; OCR is CPU-hungry and would compete directly with transcoding.
+
+#### 🔴 Hardware reality (verified 2026-09-20 — these are constraints, not preferences)
+
+| Asset | Verdict for this project |
+|---|---|
+| **Synology DS213** | ❌ **Cannot host.** ARM CPU, DSM 6.2 maximum — **Docker is impossible, not merely unconfigured.** See the EOL callout in Theme A. |
+| **HP DeskJet 3755** | ❌ **Not a viable intake device.** *Sheetfed* scanner (not even flatbed), no ADF, no duplex, 600 dpi, one manually-fed page at a time. Cannot scan anything bound, stapled, folded, or non-standard. No scan-to-network-folder. |
+| **Linux mobile workstation** | ✅ **Backlog host.** 8C/16T, 31 GB, 358 GB free, Docker + Compose already installed. |
+| **Phone** | ✅ **The intake device.** Auto-crop, deskew, multi-page PDF — and *faster than the printer* because there is no feed mechanism to fight. |
+
+#### 🔑 The decision that sets the whole risk profile: **KEEP THE ORIGINALS**
+
+**Do not shred.** The only local backup target is a 13-year-old appliance that has been unsupported since 2024. That tier is not trustworthy enough to justify destroying paper.
+
+Consequence — and this is what makes the project startable this week: **Paperless becomes an *index* over documents still physically held, not the sole copy.** The Tier-1 3-2-1 backup requirement below softens from a hard gate to a follow-on. **It re-hardens the moment any original is destroyed.**
+
+**Stage 1: Vanilla Paperless-ngx on Docker (do now — no gates)**
+- [ ] **Deploy via Docker Compose on the workstation**, not K3s, not `mediaserver`. Official `docker-compose.yml` from paperless-ngx; five services, local volumes to start.
+- [ ] **Intake: phone → Tailscale → Paperless web UI, direct upload.** No Syncthing, no Nextcloud, no watch folder, no sync plumbing — Tailscale is already in the estate. The consume-folder pattern is a later optimization, not a starting requirement.
+- [ ] **CPU-based OCR** (tesseract / OCRmyPDF defaults). 8 real cores make the backlog tractable; this is exactly the burst workload the workstation is good at.
+- [ ] **Pilot with ~20 documents before bulk intake.** Validate OCR quality on *your* actual paper — faded receipts and carbon copies OCR far worse than clean letterhead. If quality is poor, that is a scanning-technique problem (lighting, contrast), not a Paperless problem.
+- [ ] **Tag taxonomy before volume, not after.** Retagging 500 documents by hand is the thing that kills these projects.
+- [ ] ⚠️ **Storage growth ~2–3× raw scanned size** (originals + thumbnails + OCR text). Fine on 358 GB for the backlog.
+
+**Stage 1b: Permanent host (after the backlog is digitized)**
+- [ ] The workstation is a laptop daily driver that sleeps — fine for a sprint, wrong for a service.
+- [ ] **Target: used mini-PC, ~$150–250.** One purchase serves **both** this and 5a (K3s node). Buy it when the backlog proves the habit stuck, not before.
+- [ ] Migrate: stop stack → move volumes → recompose on the new host. Trivial for compose; this is also the natural moment to do the K3s migration *if* the learning artifact is still wanted.
+
+**Stage 1c: Backup — re-hardens to a gate before any original is destroyed**
+- [ ] 3-2-1 on the paperless data dir. ⚠️ **The DS213 does not count as a trustworthy tier** (unsupported since 2024). An offsite target (Backblaze B2 or a relative's box over Tailscale) is the realistic second copy.
+- [ ] **Test the restore, not the backup.** Untested backups are a regression of fortress mode.
+
+**What Stage 1 already gives you — and why Stage 2 may be unnecessary:**
+Full-text search over OCR'd documents requires **no AI at all**. Once documents are OCR'd they are *text*, readable by any tooling pointed at the folder — which is the actual stated need. The 2026-08-25 benchmark showed prefill at ~37 tok/s on available hardware, making agentic work over a corpus impractical locally. **Do not let the Stage 2 ambition block the digitization.**
 
 **Stage 2: Local AI integration (defer to Theme B)**
 - [ ] Wait for the GPU node from Phase 6 Theme B. CPU-only LLM inference is too slow to actually use day-to-day; if Stage 2 ships without a GPU, the AI features will get abandoned.
@@ -359,6 +394,7 @@ Fortress mode, generalized from Plex to the entire family. Everything important 
 - 3-2-1 backup discipline: 3 copies, 2 media types, 1 offsite.
 - Tiers: hot (SSD, working set), warm (HDD NAS, media + photos), cold (offsite or rotated drive).
 - Likely path: expand Synology, then DIY TrueNAS box for capacity tier when Synology fills.
+- 🔴 **Blocker surfaced 2026-09-20 — the existing NAS is a DS213 and it is END OF SUPPORT.** ARM, DSM 6.2 max, unpatched since Synology ended 6.2 support on 2024-10-01, and **incapable of running Docker at all**. This theme currently rests on a 13-year-old unsupported appliance that is also the only local backup copy. **Capacity is not the driver for replacing it — supportability is.** Until it is replaced, treat "backed up to the NAS" as one fragile copy, not a 3-2-1 tier, and do not destroy any original whose only remaining copy lives there.
 - **Concrete implementations of this theme**: Phase 5e (Paperless-ngx for documents), Phase 5f (Immich for photos). Future candidates: Vaultwarden for credentials, Joplin/Trilium for notes.
 
 ### Theme B — AI / Intelligence Layer

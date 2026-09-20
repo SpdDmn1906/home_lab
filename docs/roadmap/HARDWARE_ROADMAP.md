@@ -22,7 +22,7 @@ The guiding principle: **internet-optional household.** Don't buy hardware that 
 ### Storage
 | Device | Capacity | Role | State |
 |---|---|---|---|
-| Synology NAS (2-bay) | 4 TB | TV, movies, backups | Healthy |
+| Synology **DS213** (2-bay) | 4 TB | TV, movies, backups | 🔴 **END OF SUPPORT.** ARM CPU, **DSM 6.2 maximum — Docker impossible, not merely uninstalled.** Synology ended DSM 6.2 support **2024-10-01**, so it has run unpatched for ~2 years, on a flat `/24` the RAX50 cannot segment. It is simultaneously the **only local backup target** and the least trustworthy device on the network. **Do not treat it as a durable 3-2-1 tier.** Replacement is a Theme A decision. |
 | External HDD #1 (Seagate 2 TB) | 2 TB | ~~Movies / TV overflow~~ | ⚰️ **DECOMMISSIONED 2026-08-05** — physically disconnected, in anti-static storage. `FAILING_NOW`, 3,959+ reallocated sectors. **Not in service.** Data recovery still open (Phase 2) |
 | Mac Pro internal | — | Photo library / business files | Backup story incomplete |
 
