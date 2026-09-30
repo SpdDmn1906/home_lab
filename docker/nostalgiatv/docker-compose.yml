@@ -1,0 +1,48 @@
+# NostalgiaTV server — media host deployment.
+#
+# ⚠️ This host is a 4-core i5-4690K already running Plex, the STARR stack and
+# ~19 containers, and it hung hard in Aug 2026. Limits below are NOT optional
+# decoration: they exist so this service can never starve Plex transcoding.
+#   cpus 2.0      -> at most half the box
+#   cpu_shares 512 -> half the default weight, so Plex (1024) wins contention
+# 🔴 Do NOT enable the SILENCE mid-break mode here. It runs real ffmpeg silence
+#    detection across the library and will saturate this CPU.
+services:
+  nostalgiatv:
+    # PINNED. Upstream is pre-1.0 and ships multiple builds per day; a silent
+    # :latest bump breaking the DVR is a real failure mode, not a theoretical one.
+    image: purestream711/nostalgiatv-server:0.10.14-20260929-1914
+    container_name: nostalgiatv-server
+    ports:
+      - "19850:19850"
+    volumes:
+      # On / (118G free) — deliberately NOT /external/media, which is 100% full.
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./logos:/app/logos
+    environment:
+      - TZ=America/New_York
+      - PUID=1000
+      - PGID=1004
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      # Entrypoint chowns the bind mounts then gosu-drops to appuser.
+      # Dropping ALL with no add-backs crash-loops on "failed switching to appuser".
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETUID
+      - SETGID
+    cpu_shares: 512
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+    restart: unless-stopped
