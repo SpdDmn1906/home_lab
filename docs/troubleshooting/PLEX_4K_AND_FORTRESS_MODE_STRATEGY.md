@@ -33,7 +33,7 @@
 
 ### Current Hardware Constraints
 
-**CPU**: Intel Core i5-4690K (Haswell, 3 cores @ 3.50GHz)
+**CPU**: Intel Core i5-4690K (Haswell, 4 cores @ 3.50GHz)
 - ✅ Has Intel Quick Sync (Hardware transcoding)
 - ⚠️ Limited 4K transcoding capability
 - ✅ Can handle 1080p transcoding easily

@@ -198,13 +198,13 @@ Bring-up procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2.
 
 **2. The Phase 2 gate no longer applies to this.** That gate was written when the failing drive was *in the machine* causing SATA resets. It has been physically out since 2026-08-05. What remains is recovering data from a shelved drive — a data-recovery task, not a stability risk.
 
-**3. The Phase 3 gate only binds if this runs on `mediaserver` — so it does not run there.** 3-core Haswell already serving Plex, STARR, and 18 containers; OCR is CPU-hungry and would compete directly with transcoding.
+**3. The Phase 3 gate only binds if this runs on `mediaserver` — so it does not run there.** 4-core Haswell already serving Plex, STARR, and 18 containers; OCR is CPU-hungry and would compete directly with transcoding.
 
 #### 🔴 Hardware reality (verified 2026-09-20 — these are constraints, not preferences)
 
 | Asset | Verdict for this project |
 |---|---|
-| **Synology DS213** | ❌ **Cannot host.** ARM CPU, DSM 6.2 maximum — **Docker is impossible, not merely unconfigured.** See the EOL callout in Theme A. |
+| **Synology DS213j** | ❌ **Cannot host.** ARM CPU — **Docker is impossible, not merely unconfigured.** Capped at DSM 7.0.1 (last installed build 2024-11-25). And it is **100% full**. |
 | **HP DeskJet 3755** | ❌ **Not a viable intake device.** *Sheetfed* scanner (not even flatbed), no ADF, no duplex, 600 dpi, one manually-fed page at a time. Cannot scan anything bound, stapled, folded, or non-standard. No scan-to-network-folder. |
 | **Linux mobile workstation** | ✅ **Backlog host.** 8C/16T, 31 GB, 358 GB free, Docker + Compose already installed. |
 | **Phone** | ✅ **The intake device.** Auto-crop, deskew, multi-page PDF — and *faster than the printer* because there is no feed mechanism to fight. |
@@ -229,7 +229,7 @@ Consequence — and this is what makes the project startable this week: **Paperl
 - [ ] Migrate: stop stack → move volumes → recompose on the new host. Trivial for compose; this is also the natural moment to do the K3s migration *if* the learning artifact is still wanted.
 
 **Stage 1c: Backup — re-hardens to a gate before any original is destroyed**
-- [ ] 3-2-1 on the paperless data dir. ⚠️ **The DS213 does not count as a trustworthy tier** (unsupported since 2024). An offsite target (Backblaze B2 or a relative's box over Tailscale) is the realistic second copy.
+- [ ] 3-2-1 on the paperless data dir. ⚠️ **The DS213j does not count as a trustworthy tier** (capped at DSM 7.0.1, last build 2024-11-25, and 100% full). An offsite target (Backblaze B2 or a relative's box over Tailscale) is the realistic second copy.
 - [ ] **Test the restore, not the backup.** Untested backups are a regression of fortress mode.
 
 **What Stage 1 already gives you — and why Stage 2 may be unnecessary:**
@@ -367,8 +367,8 @@ Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU n
     - [ ] **Do not cancel the paid subscription until the replacement is verified** across a real workload. Overlap one billing cycle. Same discipline as any other cutover: verify, then cancel.
     - [ ] 🔴 **Hard line:** nothing employer-adjacent goes through a third-party aggregator to a foreign-hosted model. Personal projects only.
 - [ ] **② Hardware-reality check** *(now for Tier 2 scoping, not as the gate on everything)*. Inventory what inference the estate can actually do: `mediaserver` CPU + Intel iGPU, the workstation, the K3s node's CPU. Benchmark 1–2 quantized coding models (7–14B class) with Ollama or llama.cpp — record **prompt-eval (prefill) and eval (generation) rates separately**; for agentic use prefill is the number that decides usability. Write them down.
-    - ⚠️ `mediaserver` is a 3-core Haswell (2014) already serving Plex, STARR, and 18 containers, and it has hung hard once. Benchmark on a **non-critical machine**.
-- [ ] **③ Local model serving.** Stand up Ollama (or llama.cpp server) as a service — K3s sidecar is the intended home (5a already lists LLM inference as an experimental workload). ~~Docker on the media host is the fallback.~~ **Struck 2026-08-24: the media host is not an acceptable fallback.** Pegging 3 cores with inference starves Plex transcoding and recreates the exact CPU/IO avalanche Phase 1 was written to prevent, on the box that is the subject of the Phase 2/3 gate. If K3s isn't up, use the workstation or wait. Expose the OpenAI-compatible endpoint over Tailscale only.
+    - ⚠️ `mediaserver` is a 4-core Haswell (2014) already serving Plex, STARR, and 18 containers, and it has hung hard once. Benchmark on a **non-critical machine**.
+- [ ] **③ Local model serving.** Stand up Ollama (or llama.cpp server) as a service — K3s sidecar is the intended home (5a already lists LLM inference as an experimental workload). ~~Docker on the media host is the fallback.~~ **Struck 2026-08-24: the media host is not an acceptable fallback.** Pegging all 4 cores with inference starves Plex transcoding and recreates the exact CPU/IO avalanche Phase 1 was written to prevent, on the box that is the subject of the Phase 2/3 gate. If K3s isn't up, use the workstation or wait. Expose the OpenAI-compatible endpoint over Tailscale only.
 - [ ] **Free harness on top.** Point a free, open-source harness at the local endpoint via a base-URL change. First candidate: **jcode** (MIT, Rust, vetted 2026-07-18 — real project, ignore its marketing numbers); alternatives if it disappoints: OpenCode, Aider. Result: a coding agent with zero subscription and zero internet dependency.
 - [ ] **Define the honest split.** Local models on this hardware will NOT match frontier cloud models — decide explicitly which work goes local (Python drills, small scripts, offline/fortress scenarios, anything privacy-sensitive) and which stays cloud-paid until the Theme B GPU node exists. Write the split down; revisit quarterly.
 - [ ] **Watch item — the falling floor.** Expert-streaming engines (Colibrì-class: 744B MoE in 25 GB RAM off NVMe, vetted 2026-07-18 — real but ~0.05–0.1 tok/s cold on laptop hardware) are dropping the RAM/VRAM bar monthly. Re-run the "frontier-at-home" math when the Theme B GPU decision comes up; don't buy hardware against today's numbers.
@@ -394,7 +394,7 @@ Fortress mode, generalized from Plex to the entire family. Everything important 
 - 3-2-1 backup discipline: 3 copies, 2 media types, 1 offsite.
 - Tiers: hot (SSD, working set), warm (HDD NAS, media + photos), cold (offsite or rotated drive).
 - Likely path: expand Synology, then DIY TrueNAS box for capacity tier when Synology fills.
-- 🔴 **Blocker surfaced 2026-09-20 — the existing NAS is a DS213 and it is END OF SUPPORT.** ARM, DSM 6.2 max, unpatched since Synology ended 6.2 support on 2024-10-01, and **incapable of running Docker at all**. This theme currently rests on a 13-year-old unsupported appliance that is also the only local backup copy. **Capacity is not the driver for replacing it — supportability is.** Until it is replaced, treat "backed up to the NAS" as one fragile copy, not a 3-2-1 tier, and do not destroy any original whose only remaining copy lives there.
+- 🔴 **Blocker surfaced 2026-09-20, corrected 2026-10-01 — the NAS is a DS213j: ARM, capped at DSM 7.0.1, 5.4 TB, and 100% full.** Installed build is 7.0.1-42218 Update 7 (built 2024-11-25); whether Synology still patches 7.0.1 is unverified. It cannot run Docker. **On 2026-10-01 it was found holding 1.8 TB of the `JC` business/family archive alongside the media library** — the most irreplaceable data in the house on its oldest storage device. **Capacity and supportability both now argue for replacement, and the `JC` archive is the first thing to move off it.** Until then, treat "on the NAS" as one fragile copy, not a 3-2-1 tier.
 - **Concrete implementations of this theme**: Phase 5e (Paperless-ngx for documents), Phase 5f (Immich for photos). Future candidates: Vaultwarden for credentials, Joplin/Trilium for notes.
 
 ### Theme B — AI / Intelligence Layer

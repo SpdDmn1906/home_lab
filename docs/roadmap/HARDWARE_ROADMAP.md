@@ -15,14 +15,14 @@ The guiding principle: **internet-optional household.** Don't buy hardware that 
 ### Compute
 | Node | Role | Notes |
 |---|---|---|
-| `mediaserver` (Linux desktop) | Media host: Plex, STARR, fortress guard, monitoring | Single point of failure today. **i5-4690K (Haswell, 2014), 3 cores** — the binding constraint on anything CPU-heavy |
+| `mediaserver` (Linux desktop) | Media host: Plex, STARR, fortress guard, monitoring | Single point of failure today. **i5-4690K (Haswell, 2014), 4 cores** *(verified `nproc` 2026-10-01; older docs say 3)* — the binding constraint on anything CPU-heavy |
 | Linux mobile workstation | Daily driver, repo authoring, local-AI benchmark target | **i7-11850H 8C/16T · 31 GB RAM · NVIDIA T1200 4 GB (CUDA)** — added to inventory 2026-08-24. **The estate's only CUDA GPU.** Not lab infra; not a service host (sleeps, and it's the daily driver) |
 | Mac Pro (workstation) | Daily driver, photo editing | Not part of lab infra. Chip generation unrecorded — **if Apple Silicon, it likely beats the T1200 for inference** (unified memory + MLX). Worth confirming before the Theme B decision |
 
 ### Storage
 | Device | Capacity | Role | State |
 |---|---|---|---|
-| Synology **DS213** (2-bay) | 4 TB | TV, movies, backups | 🔴 **END OF SUPPORT.** ARM CPU, **DSM 6.2 maximum — Docker impossible, not merely uninstalled.** Synology ended DSM 6.2 support **2024-10-01**, so it has run unpatched for ~2 years, on a flat `/24` the RAX50 cannot segment. It is simultaneously the **only local backup target** and the least trustworthy device on the network. **Do not treat it as a durable 3-2-1 tier.** Replacement is a Theme A decision. |
+| Synology **DS213j** (2-bay) | **5.4 TB** usable | Media library + `JC` archive + `SC` | 🔴 **100% full (2026-10-01)** — see the storage analysis in `docs/architecture/STORAGE_CAPACITY_2026-10.md`. ARM (`armv7l`, Armada 370) — **Docker is impossible**. **Capped at DSM 7.0.1** (DSM 7.1+ dropped the x13 series); installed: **7.0.1-42218 Update 7, built 2024-11-25**. Whether Synology still ships 7.0.1 patches is **unverified** (update check needs root). Old and near end of life, not proven unpatched. *(Corrected 2026-10-01: previously recorded as a DS213, 4 TB, DSM 6.2 max, "unpatched since 2024" — all four wrong, from web research on the model line instead of checking the device.)* |
 | External HDD #1 (Seagate 2 TB) | 2 TB | ~~Movies / TV overflow~~ | ⚰️ **DECOMMISSIONED 2026-08-05** — physically disconnected, in anti-static storage. `FAILING_NOW`, 3,959+ reallocated sectors. **Not in service.** Data recovery still open (Phase 2) |
 | Mac Pro internal | — | Photo library / business files | Backup story incomplete |
 
