@@ -39,7 +39,7 @@
 ## What was ruled out
 
 - **Movie-library duplication — none.** Movie titles on the external drive vs the NAS: **0 overlap** (189 vs 909). Split libraries, not copies. *(TV and Kids folders not cross-checked.)*
-- ⚠️ **Correction (audit, 2026-10-01): cross-volume duplication *does* exist elsewhere.** The external drive holds a second copy of the archive share's video-editor libraries, with their source footage. An earlier draft of this doc said "no cross-volume duplication" on the strength of the Movies check alone.
+- ⚠️ **Correction (audit, 2026-10-01): cross-volume duplication *does* exist elsewhere.** The external drive holds a second copy of the archive share's video-editor libraries — but source footage is present for only some projects; most "originals" in both copies are symlink placeholders. An earlier draft of this doc said "no cross-volume duplication" on the strength of the Movies check alone.
 - **Runaway download staging — no.** ~29 GB total.
 - **Photoshop scratch / temp files — no.** Under 6 GB of PSDs and no scratch-file signatures.
 
@@ -64,12 +64,22 @@ The download client is mounted into three different devices (NAS via CIFS, the e
 ### 4. The NAS itself is the bottleneck
 DS213j: ARM, capped at DSM 7.0.1, cannot run Docker. Enumerating ~23 GB of small files took longer than a full scan of the 2.1 TB external drive. It slows every Plex scan and every monitoring probe that touches it.
 
+## 🔴 Correction (2026-10-02): the render-cache deletion was justified by a false check
+
+The 106 GB render-cache deletion was gated on "65 of 67 referenced source clips exist on the external drive." **That check was wrong.** The external copy's `Original Media` entries are mostly **`XSym` files** — the format SMB servers use to store a *symbolic link as a ~1 KB regular file*. The check matched filenames against these placeholders.
+
+Re-verified counting only real footage (>64 KB): **5 of 67** referenced sources exist (3 clips + 2 template assets). Real footage exists locally for only two projects (one with in-library originals on the NAS, one on the external drive). **For four projects, the source footage is on neither drive** — it lived on a separate external drive referenced by the symlinks.
+
+Consequence: render caches for those four projects **could not have been regenerated from local data**, and they are **not recoverable** (ext4, no snapshots, deleted over SSH). Mitigations: render caches are not a playable deliverable on their own; the external drive retains a separate (smaller) render set for the same projects; and the finished videos were exported and published. **What was destroyed is derived cache, not original footage — but the deletion should not have happened on that evidence.**
+
+Lesson recorded: *a filename match is not existence; a regular file is not footage.* Verify by size (and ideally hash), and treat any file under ~4 KB in a media folder as a probable placeholder.
+
 ## Reclaimable without deleting wanted content
 
 | Item | Size | Status |
 |---|---:|---|
 | Recycle Bin | 22.6 GB | ✅ cleared 2026-10-01 |
-| Video-editor **render/analysis caches** (archive share) | **106 GB** | ✅ deleted 2026-10-01 — only after confirming 65/67 source clips exist on the external drive (the other 2: an iCloud placeholder and one PNG) |
+| Video-editor **render/analysis caches** (archive share) | **106 GB** | ⚠️ **deleted 2026-10-01 on a verification later found to be false** (see correction below) |
 | Video-editor **proxy media** | 3.5 GB | ❌ **held** — 10 of 14 proxies have no original on either volume; for those, the proxy *is* the footage |
 | Docker images | 2.1 GB | ⏳ |
 | Duplicate archives in the archive share | **167.4 GB** | ✅ deleted 2026-10-01 after **per-file SHA-256** of every member vs its loose copy (3,047/3,047, 3,047/3,047, 457/457; 0 mismatches). A same-size "twin" pair failed whole-file hashing; member-level SHA-256 proved identical photos (13/13) before the redundant one was removed. |
@@ -78,6 +88,26 @@ DS213j: ARM, capped at DSM 7.0.1, cannot run Docker. Enumerating ~23 GB of small
 ## ⚠️ The bigger risk the scan surfaced
 
 About **600 GB** of the archive share is irreplaceable photo work that exists **only inside zip archives, with no second copy on the NAS** — and one of those archives is a truncated download (cut off at ~4.47 GB; entries before the cut are likely recoverable with a zip-repair tool). The external drive has **not** yet been checked for copies of these. Single copies of irreplaceable data, on the oldest and fullest device in the house, outrank the capacity problem. Details in `docs/private/`.
+
+## External drive review (2026-10-02)
+
+| Fact | Value |
+|---|---|
+| Physical disk | **4.00 TB** USB enclosure |
+| Data partition (`/external/media`, NTFS via ntfs-3g) | 2.31 TB — **100% full** |
+| **Unallocated space on the same disk** | **1.69 TB — never partitioned** |
+
+**The external drive is not out of capacity; 42% of the disk was never allocated.** Using it is a partition decision (add a new partition in the free space — non-destructive to existing data — or grow the existing one), deliberately not taken without the owner.
+
+| Category | Size | Note |
+|---|---:|---|
+| Kids movies | 756 GB | 398 titles — **137 also exist on the NAS** (233 GB here / 262 GB there), mostly different encodes; ~34 GB byte-identical. The NAS kids folder is **not a Radarr root folder** — an unmanaged legacy library. |
+| Archive/editor/personal share | 446 GB | Editor libraries 222 GB (≈139 GB render caches + 13 GB transcoded; real sources for only two projects), personal data 88 GB, software installers 54 GB, courses 35 GB, one 44.5 GB ambient-video file |
+| Movies | 413 GB | 188 titles; 2 overlap the NAS |
+| Kids TV | 285 GB | 114 shows; no NAS overlap |
+| TV | 248 GB | 60 shows; 5 overlap the NAS (partial seasons here) |
+
+⚠️ **Security:** the software-installer folder contains **cracked/"pre-activated" builds** of commercial apps and an OS image modified to bypass TPM. Cracked installers are a common malware vector, and this drive is mounted into the Plex and Radarr containers.
 
 ## Recommended order
 
