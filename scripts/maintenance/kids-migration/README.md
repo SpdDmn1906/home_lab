@@ -10,8 +10,8 @@ afterwards by Radarr/Sonarr. Run on the media host as the normal user. Python 3.
 |---|---|---|---|
 | 1 | `configure.py` — TRaSH layout (`media/movies`, `media/tv`), root folders, TRaSH naming, Radarr *analyse video files* on + free-space guard on, legacy Torznab indexers disabled, Plex kids libraries pointed at the new paths | seconds | yes — every value it changes is printed in the dry run |
 | 2 | `migrate_copy.py` — SHA-256-verified copy of every kids video + sidecar (executables excluded), resumable via `~/kids-migration/manifest.jsonl` | hours (~1.1 TB, same physical disk) | yes — sources untouched |
-| 3 | Re-point Radarr/Sonarr to the copies (editor, *move files: no*), rescan, add the unmanaged titles, then TRaSH folder + file rename (editor same root *move files: yes*, then Rename) — same filesystem, so instant. Pilot one movie and one series first. | minutes | yes, until step 4 |
-| 4 | Plex: confirm every item has a part under `/external/kids`, remove the old NTFS location from the library **before** deleting files, refresh, empty trash. Then delete the verified sources and drop the old root folders. | minutes | **no** — needs the owner's explicit go-ahead |
+| 3 | `reconcile.py` (catch changes made during the copy) → `repoint.py` (Radarr/Sonarr → copies, add unmanaged titles) → `delete_sources.py --snapshot` → `rename.py` (TRaSH folder + file renames; pilot with `--movie-ids`/`--series-ids` first) → `plex_swap.py` (verify, drop old library location, empty trash) → remove the old root folders | minutes | yes, until step 4 |
+| 4 | `delete_sources.py` — deletes the NTFS originals + listed junk only if every gate passes: each copy found by inode at its renamed path with the right size, each original unchanged, every other file explained by a junk rule, nothing in Radarr/Sonarr/Plex still pointing at the old folders | minutes | **no** |
 
 ```bash
 cd ~/kids-migration/tool
@@ -20,6 +20,13 @@ python3 configure.py --apply
 python3 migrate_copy.py         # preview: plan, residue list, space check
 nohup setsid python3 migrate_copy.py --apply > ~/kids-migration/copy.log 2>&1 &
 tail -f ~/kids-migration/copy.log
+# step 3
+python3 reconcile.py && python3 repoint.py --apply
+python3 delete_sources.py --snapshot            # BEFORE any rename
+python3 rename.py --apply --movie-ids N --series-ids M   # pilot, then without the ids
+python3 plex_swap.py && python3 plex_swap.py --apply
+# step 4
+python3 delete_sources.py && python3 delete_sources.py --apply
 ```
 
 Not copied, left in place for an owner decision: release-group executables
