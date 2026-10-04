@@ -112,3 +112,9 @@ variable "bazarr_config_path" {
   type        = string
   default     = "/usr/local/bin/bazarr/config"
 }
+
+variable "kids_media_path" {
+  description = "Dedicated ext4 partition for kids media on the external USB drive (added 2026-10-04). Mounted into Radarr and Sonarr at /kids."
+  type        = string
+  default     = "/external/kids"
+}

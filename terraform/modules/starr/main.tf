@@ -74,7 +74,7 @@ resource "docker_container" "qbittorrentvpn" {
   }
 
   capabilities {
-    add = ["NET_ADMIN"]
+    add = ["CAP_NET_ADMIN"] # Docker reports the CAP_ form; matching it stops a perpetual replace (2026-10-04)
   }
 
   # Environment variables for VPN and App
@@ -200,6 +200,10 @@ resource "docker_container" "radarr" {
     host_path      = var.external_media_path
     container_path = "/external"
   }
+  volumes {
+    host_path      = var.kids_media_path
+    container_path = "/kids"
+  }
 
   # Security options
   security_opts = ["no-new-privileges:true"]
@@ -277,6 +281,10 @@ resource "docker_container" "sonarr" {
   volumes {
     host_path      = var.external_media_path
     container_path = "/external"
+  }
+  volumes {
+    host_path      = var.kids_media_path
+    container_path = "/kids"
   }
 
   # Security options

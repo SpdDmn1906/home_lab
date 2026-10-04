@@ -109,6 +109,13 @@ About **600 GB** of the archive share is irreplaceable photo work that exists **
 
 ⚠️ **Security:** the software-installer folder contains **cracked/"pre-activated" builds** of commercial apps and an OS image modified to bypass TPM. Cracked installers are a common malware vector, and this drive is mounted into the Plex and Radarr containers.
 
+## Follow-through (2026-10-04)
+
+- **External drive:** new **ext4 partition, 1.69 TB, at `/external/kids`** in the never-allocated tail of the disk. The NTFS data partition was not touched (geometry verified before and after; GPT backed up first). SMART unreadable via the USB bridge; proceeded on 0 kernel I/O errors and the owner's decision.
+- **STARR:** Radarr and Sonarr each gained one mount (`/external/kids` → `/kids`) via a **targeted** Terraform apply (2 replaced, nothing else touched); root folders `/kids/Kids Movies` (Radarr) and `/kids/Kids TV` (Sonarr) added. To make the targeted apply safe, the VPN gateway's capability had to be spelled `CAP_NET_ADMIN` to stop a perpetual replacement — see the drift warning in `CLAUDE.md`.
+- **Kids library consolidated onto the external drive.** The NAS kids folder (unmanaged by Radarr) was retired after every one of its 162 entries was accounted for: 134 titles with a Radarr-managed copy on the external drive (file confirmed on disk), 9 unique titles moved and SHA-256 verified, 4 cam/telesync rips superseded by Bluray copies, the rest empty or junk. Plex location removed *before* the files (so Plex cleaned up rather than treating the folder as an unplugged drive); every external kids folder still has its Plex entry. **NAS: 277 GB → 561 GB free.**
+- Software installers purged from the external drive (~54 GB): 4 GB → 58 GB free.
+
 ## Recommended order
 
 1. **Establish a second copy of the single-copy archive data, off this NAS.** Then move the household/business archive off the media NAS onto its own storage. Solves capacity *and* the business-continuity risk of irreplaceable data on the oldest device. Highest-value single action.
