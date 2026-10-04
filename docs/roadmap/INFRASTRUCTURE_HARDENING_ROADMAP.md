@@ -204,7 +204,7 @@ Bring-up procedure documented in `docs/guides/OPENTOFU_K3S_MIGRATION.md` Part 2.
 
 | Asset | Verdict for this project |
 |---|---|
-| **Synology DS213j** | ❌ **Cannot host.** ARM CPU — **Docker is impossible, not merely unconfigured.** Capped at DSM 7.0.1 (last installed build 2024-11-25). And it is **100% full**. |
+| **Synology DS213j** | ❌ **Cannot host.** ARM CPU — **Docker is impossible, not merely unconfigured.** Capped at DSM 7.0.1 (last installed build 2024-11-25). It was 100% full on 2026-10-01; **561 GB free as of 2026-10-04** after cleanup and moving the kids library off it — room again, but it is still the oldest device in the house. |
 | **HP DeskJet 3755** | ❌ **Not a viable intake device.** *Sheetfed* scanner (not even flatbed), no ADF, no duplex, 600 dpi, one manually-fed page at a time. Cannot scan anything bound, stapled, folded, or non-standard. No scan-to-network-folder. |
 | **Linux mobile workstation** | ✅ **Backlog host.** 8C/16T, 31 GB, 358 GB free, Docker + Compose already installed. |
 | **Phone** | ✅ **The intake device.** Auto-crop, deskew, multi-page PDF — and *faster than the printer* because there is no feed mechanism to fight. |
@@ -229,7 +229,7 @@ Consequence — and this is what makes the project startable this week: **Paperl
 - [ ] Migrate: stop stack → move volumes → recompose on the new host. Trivial for compose; this is also the natural moment to do the K3s migration *if* the learning artifact is still wanted.
 
 **Stage 1c: Backup — re-hardens to a gate before any original is destroyed**
-- [ ] 3-2-1 on the paperless data dir. ⚠️ **The DS213j does not count as a trustworthy tier** (capped at DSM 7.0.1, last build 2024-11-25, and 100% full). An offsite target (Backblaze B2 or a relative's box over Tailscale) is the realistic second copy.
+- [ ] 3-2-1 on the paperless data dir. ⚠️ **The DS213j does not count as a trustworthy tier** (capped at DSM 7.0.1, last build 2024-11-25; 561 GB free as of 2026-10-04 — usable as a *second* copy, never the only one). An offsite target (Backblaze B2 or a relative's box over Tailscale) is the realistic second copy.
 - [ ] **Test the restore, not the backup.** Untested backups are a regression of fortress mode.
 
 **What Stage 1 already gives you — and why Stage 2 may be unnecessary:**
@@ -394,7 +394,7 @@ Fortress mode, generalized from Plex to the entire family. Everything important 
 - 3-2-1 backup discipline: 3 copies, 2 media types, 1 offsite.
 - Tiers: hot (SSD, working set), warm (HDD NAS, media + photos), cold (offsite or rotated drive).
 - Likely path: expand Synology, then DIY TrueNAS box for capacity tier when Synology fills.
-- 🔴 **Blocker surfaced 2026-09-20, corrected 2026-10-01 — the NAS is a DS213j: ARM, capped at DSM 7.0.1, 5.4 TB, and 100% full.** Installed build is 7.0.1-42218 Update 7 (built 2024-11-25); whether Synology still patches 7.0.1 is unverified. It cannot run Docker. **On 2026-10-01 it was found holding 1.8 TB of the `JC` business/family archive alongside the media library** — the most irreplaceable data in the house on its oldest storage device. **Capacity and supportability both now argue for replacement, and the `JC` archive is the first thing to move off it.** Until then, treat "on the NAS" as one fragile copy, not a 3-2-1 tier.
+- 🔴 **Blocker surfaced 2026-09-20, corrected 2026-10-01 — the NAS is a DS213j: ARM, capped at DSM 7.0.1, 5.4 TB, and was 100% full** *(561 GB free as of 2026-10-04 — capacity relief, not a supportability fix)*. Installed build is 7.0.1-42218 Update 7 (built 2024-11-25); whether Synology still patches 7.0.1 is unverified. It cannot run Docker. **On 2026-10-01 it was found holding 1.8 TB of the `JC` business/family archive alongside the media library** — the most irreplaceable data in the house on its oldest storage device. **Capacity and supportability both now argue for replacement, and the `JC` archive is the first thing to move off it.** Until then, treat "on the NAS" as one fragile copy, not a 3-2-1 tier.
 - **Concrete implementations of this theme**: Phase 5e (Paperless-ngx for documents), Phase 5f (Immich for photos). Future candidates: Vaultwarden for credentials, Joplin/Trilium for notes.
 
 ### Theme B — AI / Intelligence Layer

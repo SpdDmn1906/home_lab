@@ -44,6 +44,11 @@ resource "docker_container" "bazarr" {
     container_path = "/external"
   }
 
+  volumes {
+    host_path      = var.kids_media_path
+    container_path = "/kids"
+  }
+
   security_opts = ["no-new-privileges:true"]
 
   healthcheck {
