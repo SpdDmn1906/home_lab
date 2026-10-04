@@ -11,7 +11,7 @@ afterwards by Radarr/Sonarr. Run on the media host as the normal user. Python 3.
 | 1 | `configure.py` — TRaSH layout (`media/movies`, `media/tv`), root folders, TRaSH naming, Radarr *analyse video files* on + free-space guard on, legacy Torznab indexers disabled, Plex kids libraries pointed at the new paths | seconds | yes — every value it changes is printed in the dry run |
 | 2 | `migrate_copy.py` — SHA-256-verified copy of every kids video + sidecar (executables excluded), resumable via `~/kids-migration/manifest.jsonl` | hours (~1.1 TB, same physical disk) | yes — sources untouched |
 | 3 | `reconcile.py` (catch changes made during the copy) → `repoint.py` (Radarr/Sonarr → copies, add unmanaged titles) → `delete_sources.py --snapshot` → `rename.py` (TRaSH folder + file renames; pilot with `--movie-ids`/`--series-ids` first) → `plex_swap.py` (verify, drop old library location, empty trash) → remove the old root folders | minutes | yes, until step 4 |
-| 4 | `delete_sources.py` — deletes the NTFS originals + listed junk only if every gate passes: each copy found by inode at its renamed path with the right size, each original unchanged, every other file explained by a junk rule, nothing in Radarr/Sonarr/Plex still pointing at the old folders | minutes | **no** |
+| 4 | **Requires readable, clean SMART on the USB drive first** (added 2026-10-04 after UAS read errors). `delete_sources.py` — deletes the NTFS originals + listed junk only if every gate passes: each copy found by inode at its renamed path with the right size, each original unchanged, every other file explained by a junk rule, nothing in Radarr/Sonarr/Plex still pointing at the old folders | minutes | **no** |
 
 ```bash
 cd ~/kids-migration/tool
