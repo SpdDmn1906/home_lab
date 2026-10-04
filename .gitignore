@@ -60,3 +60,6 @@ docs/private/*
 # still contain the username/hostname removed from tracked files. Never commit
 # to this repo (it is public). See docs/guides/ or the leak-scan skill.
 graphify-out/
+
+# Recyclarr API keys (host-only)
+docker/recyclarr/secrets.yml

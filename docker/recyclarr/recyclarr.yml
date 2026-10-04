@@ -1,0 +1,69 @@
+# Recyclarr — syncs TRaSH-Guides settings into Radarr/Sonarr (schema: Recyclarr v8).
+# Lives on the host at <recyclarr_config_path>/recyclarr.yml; API keys come from secrets.yml
+# beside it (host-only, never committed — see secrets.yml.example).
+#
+# Synced: TRaSH naming (Plex TMDb/TVDb, which current Jellyfin also parses), propers/repacks mode,
+# and a small set of custom formats that are safe with public trackers and the size caps.
+#
+# Deliberately NOT synced (see docs/guides/starr-trash-alignment.md):
+#   - quality_definition: TRaSH sizes would undo the 1080p caps (Radarr 35 MB/min, Sonarr 50 MB/min)
+#   - TRaSH quality profiles, LQ and x265 (HD): they block YTS/YIFY/RARBG/GalaxyRG/PSA and HEVC 1080p,
+#     i.e. most of what these indexers carry
+#   - a UHD profile: waits until a 4K-capable player (Shield) is in the house
+
+radarr:
+  radarr-main:   # instance names must be unique across BOTH apps, or Recyclarr silently skips them
+    base_url: http://localhost:7878
+    api_key: !secret radarr_api_key
+
+    media_naming:
+      folder: plex-tmdb
+      movie:
+        rename: true
+        standard: plex-tmdb
+
+    media_management:
+      propers_and_repacks: do_not_prefer   # repacks are scored by the custom formats below instead
+
+    custom_formats:
+      - trash_ids:
+          - ed38b889b31be83fda192888e2286d83   # BR-DISK  (-10000: disc images Plex can't direct play)
+          - b8cd450cbfa689c0259a01d9e29ba3d6   # 3D       (-10000)
+          - 0a3f082873eb454bde444150b70253cc   # Extras   (-10000: bonus-features-only releases)
+          - cae4ca30163749b891686f95532519bd   # AV1      (-10000: not reliably direct-played by the TVs)
+          - e7718d7a3ce595f289bfee26adc178f5   # Repack/Proper (+5)
+          - ae43b294509409a6a13919dedd4764c4   # Repack2  (+6)
+          - 5caaaa1c08c1742aa4342d8c4cc463f2   # Repack3  (+7)
+        assign_scores_to:                      # the profiles actually in use
+          - name: 1080p Movies Max 4GB
+          - name: Any
+          - name: Custom 1080p
+
+sonarr:
+  sonarr-main:
+    base_url: http://localhost:8989
+    api_key: !secret sonarr_api_key
+
+    media_naming:
+      series: plex-tvdb
+      season: default
+      episodes:
+        rename: true
+        standard: default
+        daily: default
+        anime: default
+
+    media_management:
+      propers_and_repacks: do_not_prefer
+
+    custom_formats:
+      - trash_ids:
+          - 85c61753df5da1fb2aab6f2a47426b09   # BR-DISK
+          - fbcb31d8dabd2a319072b84fc0b7249c   # Extras
+          - 15a05bc7c1a36e2b57fd628f8977e2fc   # AV1
+          - ec8fa7296b64e8cd390a1600981f3923   # Repack/Proper
+          - eb3d5cc0a2be0db205fb823640db6a3c   # Repack2
+          - 44e7c4de10ae50265753082e5dc76047   # Repack3
+        assign_scores_to:
+          - name: 1080p with 720p Fallback Under 1GB
+          - name: HD-720p

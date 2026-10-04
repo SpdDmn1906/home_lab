@@ -86,7 +86,10 @@ the capped profile.
 |---|---|
 | Kids ext4 partition + Radarr/Sonarr `/kids` mount | ✅ 2026-10-04 |
 | Bazarr `/kids` mount (path parity with Radarr/Sonarr) | ✅ 2026-10-04 (targeted apply, Bazarr only) |
-| Layout, naming, media-management, indexer changes | ⏳ scripted (`scripts/maintenance/kids-migration/configure.py`), dry-run reviewed, awaiting go-ahead |
-| Kids library copy (1,524 files, 1,122.6 GB → 566 GB headroom left) | ⏳ scripted (`migrate_copy.py`), dry-run reviewed, awaiting go-ahead |
+| Layout, naming, media-management, indexer changes | ✅ 2026-10-04 (`configure.py --apply`; re-run as a dry run shows nothing pending) |
+| Kids library copy (1,524 files, 1,122.6 GB → 566 GB headroom left) | 🔄 running since 2026-10-04 (~40 MB/s, ~8 h); sources untouched |
+| Re-point Radarr/Sonarr/Plex at the copies + TRaSH renames | ⏳ after the copy — needs go-ahead |
+| Delete the NTFS originals + residue | ⏳ needs explicit go-ahead |
+| Recyclarr: naming + 7 custom formats (BR-DISK, 3D, Extras, AV1 blocked; repacks preferred) | ✅ synced 2026-10-04 · daily container planned (`docker/recyclarr/`), waits on its host config dir |
 | Kids downloads → `/kids/torrents` (hardlinks) | 🤔 decision — recreates the VPN gateway; small gain while torrents don't seed |
-| TRaSH UHD profile via Recyclarr for chosen titles | 🤔 decision — storage budget vs the 4K/lossless goal |
+| TRaSH UHD profile via Recyclarr for chosen titles | ⏸️ deferred by owner until a 4K-capable player (Shield) is in the house |

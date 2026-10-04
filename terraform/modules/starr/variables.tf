@@ -118,3 +118,9 @@ variable "kids_media_path" {
   type        = string
   default     = "/external/kids"
 }
+
+variable "recyclarr_config_path" {
+  description = "Recyclarr config + state directory on the host (added 2026-10-04). Must be writable by puid:pgid."
+  type        = string
+  default     = "/usr/local/bin/recyclarr/config"
+}
