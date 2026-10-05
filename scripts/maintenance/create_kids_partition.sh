@@ -69,12 +69,15 @@ else echo "  + partx -a -n 3 $DISK   (register sdb3 with the kernel; sdb2 stays 
 echo "== 5. Format ${DISK}3 as ext4 =="
 run mkfs.ext4 -L $LABEL -m 0 -T largefile ${DISK}3
 
-echo "== 6. Mount via fstab (nofail: a missing USB drive never blocks boot) =="
+# fsck pass MUST be 0 on a USB/external disk: nofail only covers a *missing* device. If a boot-time
+# fsck of a present-but-failing disk exits >=4, systemd-fsck starts emergency.target regardless of
+# nofail (this happened 2026-10-05 and left the host stuck in emergency mode).
+echo "== 6. Mount via fstab (nofail + fsck pass 0: a missing or failing USB drive never blocks boot) =="
 run cp /etc/fstab /etc/fstab.bak-$TS
 if [ $APPLY = 1 ]; then
   uuid=$(blkid -o value -s UUID ${DISK}3); [ -n "$uuid" ] || die "no UUID on ${DISK}3"
-  grep -q "$uuid" /etc/fstab || echo "UUID=$uuid  $MNT  ext4  defaults,noatime,nofail,x-systemd.device-timeout=30s  0  2" >> /etc/fstab
-else echo "  + append: UUID=<new>  $MNT  ext4  defaults,noatime,nofail,x-systemd.device-timeout=30s  0  2"; fi
+  grep -q "$uuid" /etc/fstab || echo "UUID=$uuid  $MNT  ext4  defaults,noatime,nofail,x-systemd.device-timeout=10s  0  0" >> /etc/fstab
+else echo "  + append: UUID=<new>  $MNT  ext4  defaults,noatime,nofail,x-systemd.device-timeout=10s  0  0"; fi
 run mkdir -p $MNT
 run systemctl daemon-reload
 run mount $MNT
