@@ -80,6 +80,20 @@ Resolution: Port forwarding configuration fixed issue
 
 **Note:** Not exposed externally (internal monitoring only)
 
+### DNS (verified 2026-10-06)
+
+Clients get **192.168.1.1** from DHCP; the router forwards every lookup upstream.
+
+| Router setting (BASIC → Internet → DNS Address) | Value | Role |
+|---|---|---|
+| Primary | 192.168.1.11 | AdGuard Home → Unbound on the media server |
+| Secondary | 9.9.9.9 (Quad9) | Failover only — malware filtering, no ad blocking |
+
+- **No leak in normal operation:** 120/120 uncached blocked lookups were answered by AdGuard with the secondary set.
+- **Failover works:** with the AdGuard container stopped, 20/20 lookups were answered by Quad9 in 20–40 ms; AdGuard took over again on restart.
+- While the media server is down: lookups still work, ads are not blocked, and AdGuard's local rewrites don't apply.
+- Before 2026-10-06 the router had no secondary, so the media server was a single point of failure for DNS. The Raspberry Pi DNS node ([RASPBERRY_PI_DNS_SETUP.md](RASPBERRY_PI_DNS_SETUP.md)) remains the real fix: a second filtering resolver instead of an unfiltered fallback.
+
 ---
 
 ## 📍 Static IP Assignments
