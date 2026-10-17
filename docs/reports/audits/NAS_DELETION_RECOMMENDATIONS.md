@@ -223,7 +223,7 @@ Even if you delete **ALL recommended content (~452GB)**, you'll have:
    - External expansion unit
    - Estimated cost: $300-600 for 2-4TB additional
 
-2. **Move Family Content**:
+2. **Move the JC Content**:
    - If possible, archive infrequently accessed content (photo dumps, old backups)
    - Move to cloud storage (Google Drive, Backblaze)
    - Move to external USB drive

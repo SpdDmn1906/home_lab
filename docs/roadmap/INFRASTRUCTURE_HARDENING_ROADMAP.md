@@ -12,7 +12,7 @@ The estate now spans three environments — this on-prem lab, a personal AWS acc
 
 1. **Production risk — still first.** Phase 2 (failing disk) and Phase 3 (single-node DNS SPOF) outrank everything below. A new project sitting on a fragile base is the wrong trade.
 2. **`infra-mcp` — estate control plane (Phase 5c, flagship).** One read-only place to ask *"is the stream up? any lab alerts? what's my AWS spend?"* instead of three dashboards and three logins. Built lean on purpose: local, read-only, secrets kept out of git, internal services reached over Tailscale.
-3. **Right-sized delivery for what I actually run.** Automate the family-business-site deploy (hand-uploaded over FTP today → IaC + CI/CD on managed static hosting) and add monitoring/hardening for the Linode stream. **Right-sizing is the point:** managed platforms over a Kubernetes cluster unless a workload truly needs one — over-engineering a personal app is a red flag, not an achievement.
+3. **Right-sized delivery for what I actually run.** Automate the family business site deploy (hand-uploaded over FTP today → IaC + CI/CD on managed static hosting) and add monitoring/hardening for the Linode stream. **Right-sizing is the point:** managed platforms over a Kubernetes cluster unless a workload truly needs one — over-engineering a personal app is a red flag, not an achievement.
 4. **Deferred.** Phase 5e/5f/5g (Paperless / Immich / Frigate) and the K3s cluster remain background work — real utility, lower leverage this cycle.
 
 **Anti-goal (unchanged):** production stability and right-sizing beat project count.
@@ -313,7 +313,7 @@ Same two-stage shape as 5e. Stage 1 ships without AI; Stage 2 waits on the GPU n
 
 *The estate extends past the house: a personal AWS account and a Linode host running a live YouTube stream. Two genuine needs — ship the things I deploy by hand, and watch the things that have real uptime stakes.*
 
-**family-business-site — automate a real deploy.**
+**Family business site — automate a real deploy.**
 - **Need:** the site ships today by hand-uploading files over FTP to shared hosting — manual and error-prone.
 - **Design:** managed static hosting (S3 + CloudFront, or Cloudflare Pages / Amplify) provisioned with Terraform, plus a GitHub Actions pipeline: push to `main` → build + validate (HTML/link check, security headers) → deploy → invalidate cache.
 - **Tradeoff / right-sizing:** a static marketing site needs *static hosting* — not a server, and definitely not a container cluster. The whole value is "it deploys itself and costs cents." Effort goes into the pipeline and the checks, not into running infrastructure.
